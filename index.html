@@ -16,14 +16,9 @@
     <style>
         /* ---------------------------
            Self-hosted Cormorant Garamond
-           ---------------------------
            Files expected under:
              /fonts/Cormorant_Garamond/static/
-           Filenames used here (if yours differ, replace paths):
-             - CormorantGaramond-Light.ttf   (300)
-             - CormorantGaramond-Regular.ttf (400)
-             - CormorantGaramond-SemiBold.ttf (600)
-             - CormorantGaramond-Bold.ttf   (700)
+           Replace filenames if yours differ.
         */
         @font-face {
             font-family: "Cormorant Garamond";
@@ -54,24 +49,90 @@
             font-display: swap;
         }
 
-        /* If you have italics files, add them the same way with font-style: italic */
+        /* ---- color variables (white / gold / black) ---- */
+        :root{
+          --gold: #D4AF37;
+          --gold-dark: #B58826;
+          --black: #000000;
+          --muted: #222222;
+          --muted-light: #666666;
+        }
 
-        /* ---------------------------
-           Site styles (kept same, only font families changed)
-           --------------------------- */
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        .font-sans  { font-family: 'Cormorant Garamond', serif; } /* using Cormorant for all site text as requested */
+        /* Use Cormorant sitewide and make text thicker */
+        html, body {
+          font-family: "Cormorant Garamond", serif;
+          font-weight: 600; /* thicker base text */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          background: #ffffff;
+          color: var(--black);
+        }
 
-        /* keep the rest identical to your original styling */
-        @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@300;400;600&display=swap');
+        /* typography helpers (preserve your original utility class names) */
+        .font-serif { font-family: "Cormorant Garamond", serif; }
+        .font-sans  { font-family: "Cormorant Garamond", serif; } /* using Cormorant for everything as requested */
+
+        /* override common Tailwind color utilities used in your markup so the site uses white/gold/black */
+        .bg-amber-600 { background-color: var(--gold) !important; }
+        .bg-amber-700 { background-color: var(--gold-dark) !important; }
+        .text-amber-600, .text-yellow-600, .text-teal-600 { color: var(--gold) !important; }
+        .bg-gray-900 { background-color: var(--black) !important; }
+        .text-gray-300 { color: var(--muted-light) !important; }
+        .text-gray-600 { color: var(--muted) !important; }
+        .text-gray-800 { color: var(--black) !important; }
+        .border-gray-800 { border-color: #111 !important; }
+        .bg-white { background-color: #fff !important; }
+        .text-white { color: #fff !important; }
+
+        /* keep other utility classes used in markup */
         .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F9D423 100%); }
         .bg-charcoal { background-color: #1a1a1a; }
         .hover\:scale-105:hover { transform: scale(1.05); }
         .transition-all { transition: all 0.3s ease; }
         [x-cloak] { display: none !important; }
 
-        /* OPTIONAL: tweak default body text rendering for serif */
-        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        /* --- Make headings heavier than body --- */
+        h1, h2, h3, h4, h5 { font-weight: 700; }
+
+        /* --- NAV header stacking fix --- */
+        nav .container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        nav .container > div:first-child { display:flex; align-items:center; gap:1rem; flex:1 1 auto; min-width:0; }
+        nav .container > div:last-child { display:flex; align-items:center; gap:1rem; flex-shrink:0; }
+
+        /* Prevent desktop nav from wrapping */
+        @media (min-width: 768px) {
+          nav .container { flex-wrap: nowrap; }
+          nav .container .hidden.md\:flex { display: flex; } /* Reinforce Tailwind behavior */
+        }
+
+        /* adjust dropdown width so content doesn't wrap weirdly */
+        .relative .group .absolute { min-width: 18rem; }
+
+        /* Small adjustments so text doesn't overflow */
+        .container { max-width: 1200px; }
+
+        /* Make dropdown items and product cards use the same color palette */
+        .group-hover\:block:hover { display:block; }
+        .rounded-md { border-radius: 8px; }
+
+        /* Logo small tweak for consistent alignment */
+        .font-serif.text-2xl { font-weight: 700; }
+
+        /* Keep footer border color aligned */
+        .border-gray-800 { border-color: #111 !important; }
+
+        /* keep product-card shadows subtle on white background */
+        .shadow-md { box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+        .hover\:shadow-lg:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.12); }
+
+        /* make "pill" badges gold on black backgrounds */
+        .badge-gold { background: var(--gold); color: #000; font-weight:700; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+        /* small helper for the inline merch logo */
+        .merch-inline-img { width: 20px; height: 20px; object-fit: contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+
+        /* ensure top sticky nav sits above content */
+        nav { z-index: 60; }
     </style>
 </head>
 <body class="bg-white font-sans text-gray-800">
@@ -83,12 +144,14 @@
                     <a href="index.html" class="flex items-center">
                         <span class="font-serif text-2xl text-black">BlingBound</span>
                     </a>
+
                     <div class="hidden md:flex space-x-8">
                         <div class="relative group">
                             <button class="flex items-center space-x-1">
                                 <span>All Products</span>
                                 <i data-feather="chevron-down" class="w-4 h-4"></i>
                             </button>
+
                             <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-md p-4 w-64">
                                 <div class="grid grid-cols-1 gap-4">
                                     <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded">
@@ -98,19 +161,28 @@
                                     <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded">Grillz</a>
                                     <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded">Nail Jewelry</a>
                                     <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded">Earrings</a>
+
                                     <div class="border-t pt-2 mt-1">
                                         <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded text-red-600">Veerwear Drops</a>
-                                    <div class="border-t pt-2 mt-1">
-                                        <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded text-yellow-600">aL vaLe Merch</a>
+                                    </div>
+
+                                    <div class="border-t pt-2 mt-1 flex items-center">
+                                        <!-- inline merch image next to text (small logo) -->
+                                        <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded text-yellow-600">
+                                          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                                          aL vaLe Merch
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <a href="#" class="hover:text-amber-600">How to Order</a>
                         <a href="#" class="hover:text-amber-600">Impression Kit</a>
                         <a href="#" class="hover:text-amber-600">Gallery</a>
                     </div>
                 </div>
+
                 <div class="flex items-center space-x-4">
                     <a href="#" class="text-sm">USD</a>
                     <a href="#"><i data-feather="search" class="w-5 h-5"></i></a>
@@ -142,9 +214,10 @@
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- Filters -->
                 <div class="md:w-1/4">
-                    <div class="bg-gray-50 p-6 rounded-lg sticky top-24">
+                    <div class="bg-white p-6 rounded-lg sticky top-24">
                         <h3 class="font-medium text-lg mb-4">Filter By</h3>
-                        <!-- rest unchanged -->
+
+                        <!-- Category Filter -->
                         <div class="mb-6">
                             <h4 class="font-medium mb-3 flex items-center justify-between">
                                 <span>Category</span>
@@ -173,7 +246,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ... rest of the filters and content remain identical to your original file ... -->
+
+                        <!-- Material Filter -->
                         <div class="mb-6">
                             <h4 class="font-medium mb-3 flex items-center justify-between">
                                 <span>Material</span>
@@ -199,6 +273,7 @@
                             </div>
                         </div>
 
+                        <!-- Price Filter -->
                         <div class="mb-6">
                             <h4 class="font-medium mb-3 flex items-center justify-between">
                                 <span>Price Range</span>
@@ -228,7 +303,7 @@
                             </div>
                         </div>
 
-                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-md transition-all">
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 rounded-md transition-all">
                             Apply Filters
                         </button>
                     </div>
@@ -258,7 +333,7 @@
                             <div class="relative overflow-hidden h-64">
                                 <img src="http://static.photos/jewelry/640x360/30" alt="Gold Grillz" class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                                <div class="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded">BESTSELLER</div>
+                                <div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>
                                 <button class="absolute top-3 right-3 bg-white/80 hover:bg-white rounded-full p-2">
                                     <i data-feather="heart" class="w-4 h-4"></i>
                                 </button>

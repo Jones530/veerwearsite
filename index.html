@@ -663,6 +663,9 @@
         if (p.category === 'Veerwear') titleClass = 'veerwear';
         else if (p.category === 'aL vaLe') titleClass = 'plunct';
 
+        // priceClass follows the same rule as titleClass so prices match product font
+        let priceClass = titleClass;
+
         const card = document.createElement('div');
         card.className = 'bg-white rounded-lg overflow-hidden product-card';
         card.innerHTML = `
@@ -678,7 +681,7 @@
             <h3 class="font-medium mb-1 ${titleClass}" style="color:var(--black);">${p.title}</h3>
             <p class="${titleClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
             <div class="flex justify-between items-center">
-              <span class="font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
+              <span class="${priceClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
               <button class="text-amber-600 hover:text-amber-700">
                 <i data-feather="shopping-bag" class="w-5 h-5"></i>
               </button>

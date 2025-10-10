@@ -28,11 +28,12 @@
           font-style: normal;
           font-display: swap;
         }
+        /* Ultrabold / heaviest Monument weight */
         @font-face {
           font-family: "Monument Extended";
           src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.woff2") format("woff2"),
                url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.ttf") format("truetype");
-          font-weight: 700;
+          font-weight: 900;
           font-style: normal;
           font-display: swap;
         }
@@ -49,20 +50,18 @@
           font-display: swap;
         }
 
-        /* color palette & variables (gold stays same) */
+        /* color palette & variables (gold unchanged) */
         :root {
           --gold: #D4AF37;
           --gold-dark: #B58826;
           --black: #000000;
           --white: #ffffff;
-          --veer-deep: #4B0000; /* extremely deep red for Veerwear */
+          --veer-deep: #4B0000; /* very deep red for Veerwear */
         }
 
         /* ---------------------------
-           Invert black/white globally (per your request)
-           - Body background becomes black, text becomes white.
-           - Where your markup used bg-white, we invert that to black and vice-versa.
-           - Leave gold unchanged.
+           Global: Monument Extended Ultrabold for everything except Plunct & Veerwear
+           - body/font-weight set to 900
            --------------------------- */
         html, body {
           font-family: "Monument Extended", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -71,15 +70,16 @@
           background: var(--black); /* inverted: site background = black */
           color: var(--white);      /* default text = white */
           margin: 0;
+          font-weight: 900;         /* Ultrabold everywhere by default (Monument) */
         }
 
-        /* plunct for aL vaLe instances (these should remain distinct) */
+        /* plunct for aL vaLe instances — preserve distinct font and moderate weight */
         .plunct { font-family: "Plunct", "Monument Extended", sans-serif; font-weight:700; }
 
-        /* Make Monument Extended the default for the rest */
-        .monument { font-family: "Monument Extended", sans-serif; }
+        /* Make Monument Extended explicit utility */
+        .monument { font-family: "Monument Extended", sans-serif; font-weight:900; }
 
-        /* Veerwear styling — extremely deep red, extra-bold, all caps */
+        /* Veerwear styling — extremely deep red, extra-bold, uppercase */
         .veerwear {
           color: var(--veer-deep);
           font-weight: 900;
@@ -89,23 +89,23 @@
 
         /* In the All Products dropdown we want the aL vaLe to be black */
         .group .plunct { color: var(--white); }            /* default plunct color (on dark bg) */
-        .group .plunct.in-dropdown { color: var(--black); }/* specifically black when used in the dropdown (add class in markup below) */
+        .group .plunct.in-dropdown { color: var(--black); }/* specifically black when used in the dropdown */
 
         /* Color utility overrides (invert black/white but keep gold) */
         .bg-white { background-color: var(--black) !important; }   /* previously white -> now black */
         .bg-gray-900 { background-color: var(--white) !important; }/* previously dark -> now white */
-        .text-white { color: var(--black) !important; }           /* reversed usage */
-        .text-gray-300 { color: var(--white) !important; }        /* small helpers */
-        .text-gray-600 { color: var(--white) !important; }        /* avoid greys on inverted dark bg */
-        .text-gray-800 { color: var(--black) !important; }        /* when text should be dark on inverted white areas */
+        .text-white { color: var(--black) !important; }           /* reversed usage when class present */
+        .text-gray-300 { color: var(--white) !important; }
+        .text-gray-600 { color: var(--white) !important; }
+        .text-gray-800 { color: var(--black) !important; }
         .border-gray-800 { border-color: #111 !important; }
         .bg-amber-600 { background-color: var(--gold) !important; }
         .bg-amber-700 { background-color: var(--gold-dark) !important; }
         .text-amber-600, .text-yellow-600, .text-teal-600 { color: var(--gold) !important; }
 
-        /* Footer: remove grey — use black (on white footer) or white depending on inverted background */
-        footer { background: var(--white); color: var(--black); } /* footer becomes white with black text (inverted) */
-        footer a, footer p, footer li { color: var(--black) !important; } /* no greys in footer */
+        /* Footer: remove grey — use black (footer is white background due to inversion) */
+        footer { background: var(--white); color: var(--black); }
+        footer a, footer p, footer li { color: var(--black) !important; }
 
         /* Keep other utility classes used in markup */
         .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F9D423 100%); }
@@ -114,7 +114,7 @@
         [x-cloak] { display: none !important; }
 
         /* Make headings heavier */
-        h1,h2,h3,h4,h5 { font-weight: 700; font-family: "Monument Extended", sans-serif; }
+        h1,h2,h3,h4,h5 { font-weight: 900; font-family: "Monument Extended", sans-serif; }
 
         /* NAV header stacking fix + layout */
         nav .container { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
@@ -132,10 +132,26 @@
 
         /* small misc */
         .merch-inline-img { width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
-        .badge-gold { background:var(--gold); color:#000; font-weight:700; padding:4px 8px; border-radius:6px; font-size:11px; }
+        .badge-gold { background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
 
         /* ensure icons inherit color */
         svg { color:inherit; stroke:currentColor; }
+
+        /* Shop header gif styling: left aligned and responsive */
+        .shop-banner {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+        .shop-banner .banner-gif {
+          width: 64px;
+          height: 64px;
+          object-fit: contain;
+        }
+        @media (min-width:768px) {
+          .shop-banner .banner-gif { width: 96px; height:96px; }
+        }
 
     </style>
 </head>
@@ -145,7 +161,7 @@
         <div class="container mx-auto px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-6 min-w-0">
                 <a href="index.html" class="flex items-center">
-                    <span class="monument text-2xl" style="font-weight:700;">BlingBound</span>
+                    <span class="monument text-2xl" style="font-weight:900;">BlingBound</span>
                 </a>
 
                 <!-- Desktop links -->
@@ -160,7 +176,7 @@
                             <div class="grid grid-cols-1 gap-4">
                                 <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded">
                                     <img src="http://static.photos/jewelry/200x200/1" alt="Grillz" class="w-10 h-10 object-cover rounded-full">
-                                    <a href="shop.html" class="monument" style="font-weight:600;">Jewelry Collection</a>
+                                    <a href="shop.html" class="monument" style="font-weight:900;">Jewelry Collection</a>
                                 </div>
 
                                 <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument">Grillz</a>
@@ -208,7 +224,7 @@
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                     <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
-                    <span class="monument text-lg">BlingBound</span>
+                    <span class="monument text-lg" style="font-weight:900;">BlingBound</span>
                 </div>
                 <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
             </div>
@@ -251,14 +267,20 @@
         </div>
     </nav>
 
-    <!-- Shop Header -->
+    <!-- Shop Header (with left-aligned GIF) -->
     <section class="bg-gray-900 text-white py-16">
         <div class="container mx-auto px-6">
-            <h1 class="monument text-4xl md:text-5xl mb-4" style="font-weight:700;">Shop All Products</h1>
-            <div class="flex items-center text-gray-300 text-sm monument">
-                <a href="index.html" class="hover:text-white">Home</a>
-                <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-                <span>Shop</span>
+            <div class="shop-banner">
+              <!-- left-aligned GIF (space encoded) -->
+              <img src="/images/smoking%20cat.gif" alt="Smoking cat" class="banner-gif" />
+              <div>
+                <h1 class="monument text-4xl md:text-5xl mb-2" style="font-weight:900;">Shop All Products</h1>
+                <div class="flex items-center text-gray-300 text-sm monument">
+                  <a href="index.html" class="hover:text-white">Home</a>
+                  <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+                  <span>Shop</span>
+                </div>
+              </div>
             </div>
         </div>
     </section>
@@ -442,12 +464,12 @@
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="monument text-xl mb-4" style="font-weight:700;">BlingBound</h3>
+                    <h3 class="monument text-xl mb-4" style="font-weight:900;">BlingBound</h3>
                     <p class="mb-4" style="color:var(--black);">Custom grillz and street jewelry crafted with precision and attitude.</p>
                     <div class="flex space-x-4 mt-4">
-                        <a href="#" class="" style="color:var(--black);"><i data-feather="instagram"></i></a>
-                        <a href="#" class="" style="color:var(--black);"><i data-feather="twitter"></i></a>
-                        <a href="#" class="" style="color:var(--black);"><i data-feather="facebook"></i></a>
+                        <a href="#" style="color:var(--black);"><i data-feather="instagram"></i></a>
+                        <a href="#" style="color:var(--black);"><i data-feather="twitter"></i></a>
+                        <a href="#" style="color:var(--black);"><i data-feather="facebook"></i></a>
                     </div>
                 </div>
                 <div>

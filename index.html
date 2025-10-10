@@ -69,6 +69,28 @@
       --veer-deep: #B30000;
     }
 
+    /* ------- Increase global text (a couple points bigger) ------- */
+/* Increase root font-size by 12.5% -> ~16px * 1.125 = 18px (about +2px) */
+html {
+  font-size: 112.5%; /* affects all rem-based sizes (Tailwind uses rem) */
+}
+
+/* Keep veerwear visually unchanged: lock it to the original px size
+   (previously we used ~1.125rem which was ~18px on a 16px root).
+   Force px so it doesn't scale with the changed root. */
+.veerwear {
+  font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif; /* keep Monument for veerwear */
+  font-size: 18px !important;      /* exact visual size you want — won't scale with root */
+  line-height: 1;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--veer-deep);
+}
+
+/* If you want headings slightly larger still, tweak these (optional): */
+h1 { font-size: calc(2.25rem * 1.05); } /* small boost to H1 */
+h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
+
     /* Make Pirata One the default for everything except explicit exceptions */
     html, body {
       font-family: "Pirata One", "Monument Extended", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

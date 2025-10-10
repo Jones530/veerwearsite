@@ -96,19 +96,23 @@
 
     .shop-banner{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 
-    /* select-with-icon: arrow inside select, right aligned (fixed) */
-    .select-with-icon{ position:relative; display:inline-flex; align-items:center; }
-    /* feather icon sits above the select at z-index 2 so it's visually inside it */
-    .select-with-icon i{ position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; }
-    /* select sits at z-index:1 so the icon overlays it; padding-right reserves space for the icon */
+    /* select-with-icon: arrow inside select, right aligned (fixed)
+       NOTE: feather.replace() swaps <i> to <svg>, so target svg + i */
+    .select-with-icon{ position:relative; display:inline-flex; align-items:center; vertical-align:middle; }
+    /* target both original <i> and replaced <svg> */
+    .select-with-icon i,
+    .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    /* select sits below the icon so icon visually overlays it; padding-right reserves space for the icon */
     .select-with-icon select{
       position:relative;
       z-index:1;
       -webkit-appearance:none; -moz-appearance:none; appearance:none;
       background:white; border:1px solid var(--black); color:var(--black);
-      padding-left:12px; padding-right:40px; height:38px; line-height:1; border-radius:6px;
+      padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px;
       display:inline-block;
       vertical-align:middle;
+      background-image: none; /* remove default arrow on some browsers */
+      min-width:150px;
     }
 
     /* filter collapse */
@@ -130,6 +134,15 @@
     /* dropdown menu in header: match header inverted style */
     .group .dropdown-menu { background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.06); }
     .group .plunct.in-dropdown { color: var(--black) !important; }
+
+    /* Responsive tweaks: ensure select + icon look right on smaller screens */
+    @media (max-width: 767px) {
+      .select-with-icon { display:block; width:100%; }
+      .select-with-icon select { width:100%; min-width:0; }
+      .sort-row { display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; }
+      /* keep icon positioned relative to the select on mobile */
+      .select-with-icon svg, .select-with-icon i { right:12px; }
+    }
   </style>
 </head>
 <body class="monument">
@@ -274,7 +287,7 @@
                     <label for="grillz" class="text-sm" style="color:var(--black);">Grillz</label>
                   </div>
                   <div class="flex items-center">
-                    <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2" checked>
+                    <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2">
                     <label for="earrings" class="text-sm" style="color:var(--black);">Earrings</label>
                   </div>
                   <div class="flex items-center">
@@ -374,11 +387,11 @@
               <span id="showingText" class="text-gray-600" style="color:var(--black);">Showing 0 of 0 products</span>
             </div>
             <!-- USE items-baseline so "Sort by:" text and the select align on baseline -->
-            <div class="flex items-baseline">
+            <div class="flex items-baseline sort-row">
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
 
               <div class="select-with-icon">
-                <!-- right-aligned arrow inside the select box (now overlays the select) -->
+                <!-- feather icon sits above the select via absolute positioning -->
                 <i data-feather="chevron-down" class="w-4 h-4"></i>
                 <select id="sortSelect" class="text-black rounded-md text-sm">
                   <option value="featured">Featured</option>
@@ -677,6 +690,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       // initial state
+      // ensure no category/material checkboxes are pre-checked (HTML has none checked)
       readFiltersFromUI();
       currentSort = document.getElementById('sortSelect').value || 'featured';
       renderProducts();

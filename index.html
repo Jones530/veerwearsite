@@ -87,22 +87,22 @@
       nav .container .hidden.md\:flex{ display:flex; }
     }
 
-    /* mobile nav */
+    /* mobile nav (header inverted too) */
     #mobileNav{ display:none; }
-    #mobileNav.open{ display:block; position:fixed; inset:0; background:var(--black); color:var(--white); z-index:70; overflow:auto; padding:1.25rem; }
+    #mobileNav.open{ display:block; position:fixed; inset:0; background:var(--white); color:var(--black); z-index:70; overflow:auto; padding:1.25rem; }
 
     .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
     .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
 
     .shop-banner{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 
-    /* select-with-icon: choose left icon position (keeps earlier request) */
+    /* select-with-icon: arrow inside select, right aligned (per request) */
     .select-with-icon{ position:relative; display:inline-block; }
-    .select-with-icon i{ position:absolute; left:8px; top:50%; transform:translateY(-50%); pointer-events:none; }
+    .select-with-icon i{ position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; width:18px; height:18px; }
     .select-with-icon select{
       -webkit-appearance:none; -moz-appearance:none; appearance:none;
-      background:white; border:1px solid var(--black);
-      padding-left:36px; padding-right:12px; height:36px;
+      background:white; border:1px solid var(--black); color:var(--black);
+      padding-left:12px; padding-right:36px; height:38px; line-height:1; border-radius:6px;
     }
 
     /* filter collapse */
@@ -121,41 +121,47 @@
     footer{ background:transparent; color:var(--black); }
     footer a, footer p, footer li{ color:var(--black) !important; }
 
+    /* dropdown menu in header: match header inverted style */
+    .group .dropdown-menu { background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.06); }
+    .group .plunct.in-dropdown { color: var(--black) !important; }
+
   </style>
 </head>
 <body class="monument">
-  <!-- Navigation -->
-  <nav class="bg-black text-white shadow-md sticky top-0 z-50">
+  <!-- Navigation (inverted header: white background, black text/icons) -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
         <a href="index.html" class="flex items-center">
-          <span class="monument text-2xl" style="font-weight:900; color:var(--white);">BlingBound</span>
+          <!-- title now black on white -->
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">BlingBound</span>
         </a>
 
         <div class="hidden md:flex space-x-8">
           <div class="relative group">
-            <button class="flex items-center space-x-1 monument text-white">
+            <button class="flex items-center space-x-1 monument text-black">
               <span>All Products</span>
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
-            <div class="absolute hidden group-hover:block bg-black text-white shadow-lg rounded-md p-4 w-64">
+            <!-- dropdown inverted to match header -->
+            <div class="absolute hidden group-hover:block dropdown-menu shadow-lg rounded-md p-4 w-64">
               <div class="grid grid-cols-1 gap-4">
-                <div class="flex items-center space-x-3 p-2 hover:bg-gray-800 rounded">
+                <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded">
                   <img src="http://static.photos/jewelry/200x200/1" alt="Grillz" class="w-10 h-10 object-cover rounded-full">
-                  <a href="shop.html" class="monument" style="font-weight:900; color:var(--white);">Jewelry Collection</a>
+                  <a href="shop.html" class="monument" style="font-weight:900; color:var(--black);">Jewelry Collection</a>
                 </div>
 
-                <a href="#" class="px-2 py-1 hover:bg-gray-800 rounded monument text-white">Grillz</a>
-                <a href="#" class="px-2 py-1 hover:bg-gray-800 rounded monument text-white">Nail Jewelry</a>
-                <a href="#" class="px-2 py-1 hover:bg-gray-800 rounded monument text-white">Earrings</a>
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Grillz</a>
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Nail Jewelry</a>
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Earrings</a>
 
-                <div class="border-t border-gray-700 pt-2 mt-1">
-                  <a href="#" class="px-2 py-1 hover:bg-gray-800 rounded"><span class="veerwear">Veerwear Drops</span></a>
+                <div class="border-t border-gray-200 pt-2 mt-1">
+                  <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded"><span class="veerwear">Veerwear Drops</span></a>
                 </div>
 
-                <div class="border-t border-gray-700 pt-2 mt-1 flex items-center">
-                  <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-800 rounded">
+                <div class="border-t border-gray-200 pt-2 mt-1 flex items-center">
+                  <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded">
                     <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
                     <span class="plunct in-dropdown">aL vaLe Merch</span>
                   </a>
@@ -164,33 +170,33 @@
             </div>
           </div>
 
-          <a href="#" class="monument hover:text-amber-600 text-white">How to Order</a>
-          <a href="#" class="monument hover:text-amber-600 text-white">Impression Kit</a>
-          <a href="#" class="monument hover:text-amber-600 text-white">Gallery</a>
+          <a href="#" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="#" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="#" class="monument hover:text-amber-600 text-black">Gallery</a>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
-        <a href="#" class="text-sm hidden md:inline monument text-white">USD</a>
+        <a href="#" class="text-sm hidden md:inline monument text-black">USD</a>
         <button class="md:hidden p-2" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileNav" title="Open menu">
-          <i data-feather="menu" class="text-white"></i>
+          <i data-feather="menu" class="text-black"></i>
         </button>
 
-        <a href="#" class="hidden md:inline text-white"><i data-feather="search" class="w-5 h-5"></i></a>
-        <a href="#" class="hidden md:inline text-white"><i data-feather="user" class="w-5 h-5"></i></a>
-        <a href="#" class="relative text-white">
+        <a href="#" class="hidden md:inline text-black"><i data-feather="search" class="w-5 h-5"></i></a>
+        <a href="#" class="hidden md:inline text-black"><i data-feather="user" class="w-5 h-5"></i></a>
+        <a href="#" class="relative text-black">
           <i data-feather="shopping-bag" class="w-5 h-5"></i>
           <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
         </a>
       </div>
     </div>
 
-    <!-- Mobile nav -->
+    <!-- Mobile nav (inverted style to match header) -->
     <div id="mobileNav" class="md:hidden">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
           <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
-          <span class="monument text-lg" style="font-weight:900;">BlingBound</span>
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">BlingBound</span>
         </div>
         <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
       </div>
@@ -368,12 +374,14 @@
             <div>
               <span id="showingText" class="text-gray-600" style="color:var(--black);">Showing 0 of 0 products</span>
             </div>
-            <div class="flex items-center">
+            <!-- USE items-baseline so "Sort by:" text and the select align on baseline -->
+            <div class="flex items-baseline">
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
 
               <div class="select-with-icon">
+                <!-- right-aligned arrow inside the select box -->
                 <i data-feather="chevron-down" class="w-4 h-4"></i>
-                <select id="sortSelect" class="text-black rounded-md text-sm pr-8">
+                <select id="sortSelect" class="text-black rounded-md text-sm">
                   <option value="featured">Featured</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
@@ -397,7 +405,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer (unchanged) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -496,7 +504,6 @@
 
     /* --------------------------
        Product data generator + renderer (demo)
-       Replace `products` with your API data if desired
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
@@ -667,6 +674,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+      feather.replace(); // initial icons
       readFiltersFromUI();
       currentSort = document.getElementById('sortSelect').value || 'featured';
       renderProducts();

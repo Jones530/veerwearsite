@@ -96,13 +96,19 @@
 
     .shop-banner{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 
-    /* select-with-icon: arrow inside select, right aligned (per request) */
-    .select-with-icon{ position:relative; display:inline-block; }
-    .select-with-icon i{ position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; width:18px; height:18px; }
+    /* select-with-icon: arrow inside select, right aligned (fixed) */
+    .select-with-icon{ position:relative; display:inline-flex; align-items:center; }
+    /* feather icon sits above the select at z-index 2 so it's visually inside it */
+    .select-with-icon i{ position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; }
+    /* select sits at z-index:1 so the icon overlays it; padding-right reserves space for the icon */
     .select-with-icon select{
+      position:relative;
+      z-index:1;
       -webkit-appearance:none; -moz-appearance:none; appearance:none;
       background:white; border:1px solid var(--black); color:var(--black);
-      padding-left:12px; padding-right:36px; height:38px; line-height:1; border-radius:6px;
+      padding-left:12px; padding-right:40px; height:38px; line-height:1; border-radius:6px;
+      display:inline-block;
+      vertical-align:middle;
     }
 
     /* filter collapse */
@@ -124,7 +130,6 @@
     /* dropdown menu in header: match header inverted style */
     .group .dropdown-menu { background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.06); }
     .group .plunct.in-dropdown { color: var(--black) !important; }
-
   </style>
 </head>
 <body class="monument">
@@ -133,7 +138,6 @@
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
         <a href="index.html" class="flex items-center">
-          <!-- title now black on white -->
           <span class="monument text-2xl" style="font-weight:900; color:var(--black);">BlingBound</span>
         </a>
 
@@ -144,14 +148,9 @@
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
-            <!-- dropdown inverted to match header -->
+            <!-- dropdown inverted to match header; "Jewelry Collection" removed as requested -->
             <div class="absolute hidden group-hover:block dropdown-menu shadow-lg rounded-md p-4 w-64">
-              <div class="grid grid-cols-1 gap-4">
-                <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded">
-                  <img src="http://static.photos/jewelry/200x200/1" alt="Grillz" class="w-10 h-10 object-cover rounded-full">
-                  <a href="shop.html" class="monument" style="font-weight:900; color:var(--black);">Jewelry Collection</a>
-                </div>
-
+              <div class="grid grid-cols-1 gap-2">
                 <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Grillz</a>
                 <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Nail Jewelry</a>
                 <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Earrings</a>
@@ -379,7 +378,7 @@
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
 
               <div class="select-with-icon">
-                <!-- right-aligned arrow inside the select box -->
+                <!-- right-aligned arrow inside the select box (now overlays the select) -->
                 <i data-feather="chevron-down" class="w-4 h-4"></i>
                 <select id="sortSelect" class="text-black rounded-md text-sm">
                   <option value="featured">Featured</option>
@@ -457,7 +456,10 @@
   </footer>
 
   <script>
-    feather.replace();
+    // replace icons once DOM is ready and after dynamic inserts
+    document.addEventListener('DOMContentLoaded', () => {
+      feather.replace();
+    });
 
     // Mobile nav toggle
     const mobileBtn = document.getElementById('mobileMenuBtn');
@@ -674,7 +676,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      feather.replace(); // initial icons
+      // initial state
       readFiltersFromUI();
       currentSort = document.getElementById('sortSelect').value || 'featured';
       renderProducts();

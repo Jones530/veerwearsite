@@ -69,29 +69,10 @@
       --veer-deep: #B30000;
     }
 
-    /* ------- Increase global text (a couple points bigger) ------- */
-/* Increase root font-size by 12.5% -> ~16px * 1.125 = 18px (about +2px) */
-html {
-  font-size: 112.5%; /* affects all rem-based sizes (Tailwind uses rem) */
-}
+    /* Increase root font-size slightly */
+    html { font-size: 112.5%; }
 
-/* Keep veerwear visually unchanged: lock it to the original px size
-   (previously we used ~1.125rem which was ~18px on a 16px root).
-   Force px so it doesn't scale with the changed root. */
-.veerwear {
-  font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif; /* keep Monument for veerwear */
-  font-size: 18px !important;      /* exact visual size you want — won't scale with root */
-  line-height: 1;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--veer-deep);
-}
-
-/* If you want headings slightly larger still, tweak these (optional): */
-h1 { font-size: calc(2.25rem * 1.05); } /* small boost to H1 */
-h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
-
-    /* Make Pirata One the default for everything except explicit exceptions */
+    /* Default body font: Pirata One (as requested for select) */
     html, body {
       font-family: "Pirata One", "Monument Extended", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -102,26 +83,54 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       font-weight: 400;
     }
 
-    /* vaLe special: Plunct (unchanged) */
+    /* ---------- Utility font classes ---------- */
     .plunct { font-family: "Plunct", "Pirata One", "Monument Extended", sans-serif; font-weight:700; font-size:inherit; }
+    .veerwear { font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument { font-family: "Monument Extended", "Pirata One", sans-serif; font-weight:700; }
 
-    /* veerwear: force Monument Extended Ultrabold and slightly larger text */
-    .veerwear {
-      font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif;
-      color: var(--veer-deep);
+    /* Badge for shopping bag count: Monument Extended */
+    .bag-count {
+      font-family: "Monument Extended Ultrabold", "Monument Extended", sans-serif;
       font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      /* make it a couple points bigger than surrounding text */
-      font-size: 1.125rem; /* ~18px — a couple points up from default */
+      font-size: 11px;
       line-height: 1;
-      display: inline-block;
     }
 
-    /* Keep the .monument class but make it use Pirata One by default for headings,
-       Monument Extended remains available as fallback for weights where needed. */
-    .monument { font-family: "Pirata One", "Monument Extended", sans-serif; font-weight:900; }
-    h1,h2,h3,h4,h5{ font-weight:900; font-family:"Pirata One", "Monument Extended", sans-serif; }
+    /* Ensure the Sort select uses Pirata One explicitly */
+    .select-with-icon select, #sortSelect {
+      font-family: "Pirata One", "Monument Extended", system-ui, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Tidy select appearance */
+    .select-with-icon{ position:relative; display:inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i,
+    .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select{
+      position:relative;
+      z-index:1;
+      -webkit-appearance:none; -moz-appearance:none; appearance:none;
+      background:white; border:1px solid var(--black); color:var(--black);
+      padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px;
+      display:inline-block;
+      vertical-align:middle;
+      background-image:none;
+      min-width:150px;
+    }
+
+    /* Filter panel: sticky and scrollable within viewport */
+    .filter-panel {
+      position: sticky;
+      top: 96px; /* adjust if header height changes */
+      max-height: calc(100vh - 110px); /* leaves space for header/footer */
+      overflow: auto;
+      padding-right: 8px; /* allow scrollbar without covering content */
+    }
+    /* nicer scrollbar for desktop (optional) */
+    .filter-panel::-webkit-scrollbar { width: 8px; }
+    .filter-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
 
     /* small utility overrides */
     .bg-amber-600 { background-color: var(--gold) !important; }
@@ -161,33 +170,13 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       color: #ffffff;
       overflow: hidden;
     }
-    /* dark overlay to keep text readable over animated GIF */
     .shop-hero .overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.35); /* subtle darken */
+      background: rgba(0,0,0,0.35);
       pointer-events: none;
     }
-    .shop-hero .hero-inner {
-      position: relative; /* above overlay */
-      z-index: 2;
-    }
-
-    /* select-with-icon: arrow inside select, right aligned */
-    .select-with-icon{ position:relative; display:inline-flex; align-items:center; vertical-align:middle; }
-    .select-with-icon i,
-    .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
-    .select-with-icon select{
-      position:relative;
-      z-index:1;
-      -webkit-appearance:none; -moz-appearance:none; appearance:none;
-      background:white; border:1px solid var(--black); color:var(--black);
-      padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px;
-      display:inline-block;
-      vertical-align:middle;
-      background-image: none;
-      min-width:150px;
-    }
+    .shop-hero .hero-inner { position: relative; z-index: 2; }
 
     /* filter collapse */
     .filter-section{ border-bottom:1px solid #eee; padding-bottom:0.75rem; margin-bottom:0.75rem; }
@@ -215,8 +204,8 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       .select-with-icon select { width:100%; min-width:0; }
       .sort-row { display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; }
       .select-with-icon svg, .select-with-icon i { right:12px; }
-      /* slightly reduce veerwear font on small screens so it doesn't overflow */
       .veerwear { font-size: 1.05rem; }
+      .filter-panel { position: static; max-height: none; overflow: visible; top: auto; }
     }
   </style>
 </head>
@@ -236,10 +225,8 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
-            <!-- dropdown inverted to match header; "Jewelry Collection" removed as requested -->
             <div class="absolute hidden group-hover:block dropdown-menu shadow-lg rounded-md p-4 w-64">
               <div class="grid grid-cols-1 gap-2">
-                <!-- ADDED: All Products link + divider -->
                 <a href="shop.html" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">All Products</a>
                 <div class="border-t border-gray-200 my-1"></div>
 
@@ -268,7 +255,7 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       </div>
 
       <div class="flex items-center gap-4">
-        <a href="#" class="text-sm hidden md:inline monument text-black">USD</a>
+        <!-- USD removed as requested -->
         <button class="md:hidden p-2" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileNav" title="Open menu">
           <i data-feather="menu" class="text-black"></i>
         </button>
@@ -277,7 +264,8 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
         <a href="#" class="hidden md:inline text-black"><i data-feather="user" class="w-5 h-5"></i></a>
         <a href="#" class="relative text-black">
           <i data-feather="shopping-bag" class="w-5 h-5"></i>
-          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+          <!-- bag count uses Monument Extended Ultrabold -->
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">0</span>
         </a>
       </div>
     </div>
@@ -351,7 +339,8 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Filters -->
         <aside class="md:w-1/4">
-          <div class="bg-white p-6 rounded-lg sticky top-24 monument">
+          <!-- added filter-panel: sticky + independent scrolling -->
+          <div class="bg-white p-6 rounded-lg filter-panel monument">
             <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
 
             <!-- Category Filter -->
@@ -669,6 +658,11 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
       showingText.textContent = `Showing ${pageItems.length} of ${total} products`;
 
       for (const p of pageItems) {
+        // determine font class for this product: Veerwear -> Monument Extended Ultrabold; aL vaLe -> Plunct; otherwise default monument
+        let titleClass = 'monument';
+        if (p.category === 'Veerwear') titleClass = 'veerwear';
+        else if (p.category === 'aL vaLe') titleClass = 'plunct';
+
         const card = document.createElement('div');
         card.className = 'bg-white rounded-lg overflow-hidden product-card';
         card.innerHTML = `
@@ -681,8 +675,8 @@ h2 { font-size: calc(1.5rem * 1.05); }  /* small boost to H2 */
             </button>
           </div>
           <div class="p-4">
-            <h3 class="font-medium mb-1" style="color:var(--black);">${p.title}</h3>
-            <p class="text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
+            <h3 class="font-medium mb-1 ${titleClass}" style="color:var(--black);">${p.title}</h3>
+            <p class="${titleClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
             <div class="flex justify-between items-center">
               <span class="font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
               <button class="text-amber-600 hover:text-amber-700">

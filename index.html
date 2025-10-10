@@ -19,10 +19,9 @@
 
   <style>
     /* ---------------------------
-       Fonts (keep once)
+       Fonts
     --------------------------- */
-    /* Local Monument Extended (kept as fallback for weights)
-       (existing local files left intact in case they're used as fallback) */
+    /* Monument Extended regular (fallback) */
     @font-face {
       font-family: "Monument Extended";
       src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"),
@@ -31,16 +30,17 @@
       font-style: normal;
       font-display: swap;
     }
+
+    /* Monument Extended ultrabold (explicit OTF provided by user) */
     @font-face {
-      font-family: "Monument Extended";
-      src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.woff2") format("woff2"),
-           url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.ttf") format("truetype");
+      font-family: "Monument Extended Ultrabold";
+      src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype");
       font-weight: 900;
       font-style: normal;
       font-display: swap;
     }
 
-    /* Plunct (vaLe) - kept as special-case font */
+    /* Plunct (vaLe) - special-case */
     @font-face {
       font-family: "Plunct";
       src: url("/fonts/Plunct(1).woff2") format("woff2");
@@ -49,20 +49,13 @@
       font-display: swap;
     }
 
-    /* Pirata One: local file fallback + use Google hosted if available */
+    /* Pirata One: local file fallback + Google hosted fallback */
     @font-face {
       font-family: 'Pirata One';
       src: url('/fonts/PirataOne-Regular.ttf') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
-    }
-
-    /* Utility class user provided */
-    .pirata-one-regular {
-      font-family: "Pirata One", system-ui;
-      font-weight: 400;
-      font-style: normal;
     }
 
     /* ---------------------------
@@ -76,7 +69,7 @@
       --veer-deep: #B30000;
     }
 
-    /* Make Pirata One the default for everything except explicit exceptions (.plunct, .veerwear) */
+    /* Make Pirata One the default for everything except explicit exceptions */
     html, body {
       font-family: "Pirata One", "Monument Extended", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -84,20 +77,31 @@
       background: var(--white);
       color: var(--black);
       margin: 0;
-      font-weight: 400; /* Pirata One regular as default weight */
+      font-weight: 400;
     }
 
-    /* Keep plunct (aL vaLe) and veerwear as distinct exceptions:
-       plunct uses the Plunct face; veerwear keeps its color and bold weight. */
+    /* vaLe special: Plunct (unchanged) */
     .plunct { font-family: "Plunct", "Pirata One", "Monument Extended", sans-serif; font-weight:700; font-size:inherit; }
-    .veerwear { color: var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; font-family: "Pirata One", "Monument Extended", sans-serif; }
 
-    /* If there are other parts explicitly using Monument class, we set it to Pirata One
-       to ensure consistent site-wide font use. Headings will also use Pirata One. */
+    /* veerwear: force Monument Extended Ultrabold and slightly larger text */
+    .veerwear {
+      font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif;
+      color: var(--veer-deep);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      /* make it a couple points bigger than surrounding text */
+      font-size: 1.125rem; /* ~18px — a couple points up from default */
+      line-height: 1;
+      display: inline-block;
+    }
+
+    /* Keep the .monument class but make it use Pirata One by default for headings,
+       Monument Extended remains available as fallback for weights where needed. */
     .monument { font-family: "Pirata One", "Monument Extended", sans-serif; font-weight:900; }
     h1,h2,h3,h4,h5{ font-weight:900; font-family:"Pirata One", "Monument Extended", sans-serif; }
 
-    /* colors / small utilities */
+    /* small utility overrides */
     .bg-amber-600 { background-color: var(--gold) !important; }
     .bg-amber-700 { background-color: var(--gold-dark) !important; }
     .text-amber-600, .text-yellow-600, .text-teal-600 { color: var(--gold) !important; }
@@ -147,13 +151,10 @@
       z-index: 2;
     }
 
-    /* select-with-icon: arrow inside select, right aligned (fixed)
-       NOTE: feather.replace() swaps <i> to <svg>, so target svg + i */
+    /* select-with-icon: arrow inside select, right aligned */
     .select-with-icon{ position:relative; display:inline-flex; align-items:center; vertical-align:middle; }
-    /* target both original <i> and replaced <svg> */
     .select-with-icon i,
     .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
-    /* select sits below the icon so icon visually overlays it; padding-right reserves space for the icon */
     .select-with-icon select{
       position:relative;
       z-index:1;
@@ -162,7 +163,7 @@
       padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px;
       display:inline-block;
       vertical-align:middle;
-      background-image: none; /* remove default arrow on some browsers */
+      background-image: none;
       min-width:150px;
     }
 
@@ -186,13 +187,14 @@
     .group .dropdown-menu { background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.06); }
     .group .plunct.in-dropdown { color: var(--black) !important; }
 
-    /* Responsive tweaks: ensure select + icon look right on smaller screens */
+    /* Responsive tweaks */
     @media (max-width: 767px) {
       .select-with-icon { display:block; width:100%; }
       .select-with-icon select { width:100%; min-width:0; }
       .sort-row { display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; }
-      /* keep icon positioned relative to the select on mobile */
       .select-with-icon svg, .select-with-icon i { right:12px; }
+      /* slightly reduce veerwear font on small screens so it doesn't overflow */
+      .veerwear { font-size: 1.05rem; }
     }
   </style>
 </head>

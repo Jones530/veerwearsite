@@ -18,7 +18,6 @@
            Self-hosted Cormorant Garamond
            Files expected under:
              /fonts/Cormorant_Garamond/static/
-           Replace filenames if yours differ.
         */
         @font-face {
             font-family: "Cormorant Garamond";
@@ -47,6 +46,27 @@
             font-weight: 700;
             font-style: normal;
             font-display: swap;
+        }
+
+        /* ---------------------------
+           Plunct (self-hosted) — used only for aL vaLe / aL vaLe Merch
+           --------------------------- */
+        @font-face {
+          font-family: "Plunct";
+          src: url("/fonts/Plunct(1).woff2") format("woff2");
+          font-weight: 400 800;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        .plunct { font-family: "Plunct", "Cormorant Garamond", serif; font-weight: 700; }
+
+        /* veerwear style: deep red, extra bold, uppercase */
+        .veerwear {
+          color: #440000;               /* extremely deep red */
+          font-weight: 900;             /* force extra bold */
+          text-transform: uppercase;
+          letter-spacing: 0.6px;
         }
 
         /* ---- color variables (white / gold / black) ---- */
@@ -163,14 +183,14 @@
                                     <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded">Earrings</a>
 
                                     <div class="border-t pt-2 mt-1">
-                                        <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded text-red-600">Veerwear Drops</a>
+                                        <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded"><span class="veerwear">Veerwear Drops</span></a>
                                     </div>
 
                                     <div class="border-t pt-2 mt-1 flex items-center">
-                                        <!-- inline merch image next to text (small logo) -->
-                                        <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded text-yellow-600">
+                                        <!-- inline merch image next to text (small logo). Plunct applied to text only -->
+                                        <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded">
                                           <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
-                                          aL vaLe Merch
+                                          <span class="plunct text-amber-600">aL vaLe Merch</span>
                                         </a>
                                     </div>
                                 </div>
@@ -236,13 +256,13 @@
                                     <input type="checkbox" id="nails" class="mr-2">
                                     <label for="nails" class="text-sm">Nail Jewelry</label>
                                 </div>
-                                 <div class="flex items-center">
-                                    <input type="checkbox" id="aL vaLe" class="mr-2">
-                                    <label for="veerwear" class="text-sm text-Red-600">aL vaLe</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="aL_vaLe" class="mr-2">
+                                    <label for="aL_vaLe" class="text-sm"><span class="plunct">aL vaLe</span></label>
                                 </div>
                                 <div class="flex items-center">
                                     <input type="checkbox" id="veerwear" class="mr-2">
-                                    <label for="veerwear" class="text-sm text-teal-600">Veerwear</label>
+                                    <label for="veerwear" class="text-sm"><span class="veerwear">Veerwear</span></label>
                                 </div>
                                 <div class="flex items-center">
                                     <input type="checkbox" id="accessories" class="mr-2">
@@ -399,7 +419,7 @@
                         <li><a href="#" class="text-gray-400 hover:text-white text-sm">Grillz</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white text-sm">Nail Jewelry</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white text-sm">Earrings</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Veerwear</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm"><span class="veerwear">Veerwear</span></a></li>
                     </ul>
                 </div>
                 <div>

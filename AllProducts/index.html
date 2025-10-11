@@ -100,7 +100,6 @@
       overflow: visible;
     }
 
-    /* larger glow behind the button */
     .page-active::before{
       content: "";
       position: absolute;
@@ -121,7 +120,6 @@
       pointer-events: none;
     }
 
-    /* animated sparkle dot (more visible) */
     .page-active::after{
       content: "";
       position: absolute;
@@ -158,24 +156,23 @@
     .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; }
 
     /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
-    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu will be moved to body */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
     .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
-    .menu-label{ display:inline-block; } /* used for positioning calculation */
+    .menu-label{ display:inline-block; }
 
-    /* dropdown will be positioned as fixed (moved to document.body by JS),
-       but keep default styles here — position + display controlled by JS */
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
     .dropdown-menu{
-      position: fixed;      /* JS will compute and set left/top */
+      position: fixed;
       background: #fff;
       color: var(--black);
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-      padding: 6px 10px;
-      z-index: 9999;        /* ensure it sits above everything */
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
       display: none;
       white-space: nowrap;
       pointer-events: auto;
-      min-width: 160px;
+      min-width: 120px;
     }
     .dropdown-menu.open { display: block; }
 
@@ -189,7 +186,6 @@
     }
     .dropdown-menu a:hover{ background: #f7f7f7; }
 
-    /* ensure veerwear link uses the same veer color */
     .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
 
     /* filter toggle style */
@@ -206,20 +202,18 @@
     }
     .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
 
-    /* add buffer below price body so Apply Filters has breathing room */
     #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
 
     /* mobile hamburger styling (visible on small screens) */
     #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
     @media (max-width:767px){
       #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
-      .hidden.md\\:flex { display:none !important; } /* ensure nav links are hidden on small screens */
+      .hidden.md\\:flex { display:none !important; }
       .header-actions{ width:120px; }
       .dropdown-menu{ min-width: 180px; }
       .filter-toggle{ padding:6px 0; }
     }
 
-    /* small accessibility helper for focus visible */
     .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
   </style>
 </head>
@@ -338,7 +332,7 @@
     </div>
   </section>
 
-  <!-- CONTENT (unchanged layout) -->
+  <!-- CONTENT -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
@@ -378,7 +372,7 @@
               </div>
             </div>
 
-            <!-- other filters (unchanged) -->
+            <!-- other filters -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="material-body">
                 <span style="color:var(--black);">Material</span>
@@ -530,34 +524,38 @@
           document.body.appendChild(menu);
           menu.dataset.moved = "true";
           menu.style.position = 'fixed';
-          menu.style.willChange = 'top, left';
+          menu.style.willChange = 'top, left, width';
+          menu.style.zIndex = 9999;
         }
 
         // function to compute width & position
         function positionMenu(){
           // make visible offscreen to measure items width
-          menu.classList.add('open');
-          menu.style.visibility = 'hidden';
           menu.style.display = 'block';
+          menu.style.visibility = 'hidden';
 
-          // measure widest item
+          // measure widest item text width (bounding box)
           let maxItemWidth = 0;
           menu.querySelectorAll('a').forEach(a=>{
-            const w = a.scrollWidth;
-            if(w > maxItemWidth) maxItemWidth = w;
+            const rect = a.getBoundingClientRect();
+            if(rect.width > maxItemWidth) maxItemWidth = rect.width;
           });
 
-          const horizontalPadding = 28; // left + right buffer
-          const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160);
+          // compute paddings from computed style so we size only as wide as text+buffers
+          const cs = getComputedStyle(menu);
+          const padLeft = parseFloat(cs.paddingLeft) || 10;
+          const padRight = parseFloat(cs.paddingRight) || 10;
+          const extraBuffer = 16; // breathing room on left+right beyond padding
+          const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
           menu.style.width = finalWidth + 'px';
 
-          // compute position relative to trigger's label in viewport
+          // compute left/top so the *text* left aligns with the label left
           const labelRect = label.getBoundingClientRect();
-          const navRect = trigger.getBoundingClientRect();
-          const nudge = -6; // slight left nudge so text lines up
-          const left = Math.max(8, Math.round(labelRect.left + nudge)); // don't go off screen
-          const top = Math.round(navRect.bottom + 8); // 8px gap
-          menu.style.left = left + 'px';
+          const triggerRect = trigger.getBoundingClientRect();
+          const left = Math.round(labelRect.left - padLeft);
+          const top = Math.round(triggerRect.bottom + 8); // 8px gap
+          const clampedLeft = Math.max(8, left);
+          menu.style.left = clampedLeft + 'px';
           menu.style.top = top + 'px';
 
           menu.style.visibility = '';
@@ -568,30 +566,29 @@
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
-          positionMenu();               // ensure correct position when opening
           group.classList.add('open');
           menu.classList.add('open');
+          menu.style.display = 'block';
           trigger.setAttribute('aria-expanded','true');
           menu.setAttribute('aria-hidden','false');
+          positionMenu(); // position immediately
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
           leaveTimer = setTimeout(()=> {
             group.classList.remove('open');
-            if (!group.classList.contains('open')) {
-              menu.classList.remove('open');
-              menu.style.display = 'none';
-            }
+            menu.classList.remove('open');
+            menu.style.display = 'none';
             trigger.setAttribute('aria-expanded','false');
             menu.setAttribute('aria-hidden','true');
-          }, 150);
+          }, 120);
         };
 
-        // Hover interactions (keeps open while hovering trigger or menu)
-        group.addEventListener('mouseenter', openMenu);
-        group.addEventListener('mouseleave', closeMenu);
-        menu.addEventListener('mouseenter', openMenu);
-        menu.addEventListener('mouseleave', closeMenu);
+        // Hover / pointer interactions
+        group.addEventListener('pointerenter', openMenu);
+        group.addEventListener('pointerleave', closeMenu);
+        menu.addEventListener('pointerenter', openMenu);
+        menu.addEventListener('pointerleave', closeMenu);
 
         // Focus interactions for keyboard users
         trigger.addEventListener('focus', openMenu);
@@ -614,7 +611,7 @@
           }
         });
 
-        // Click outside -> close (check both trigger and menu)
+        // Click outside -> close
         const outsideHandler = (ev) => {
           if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
             closeMenu();

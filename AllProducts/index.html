@@ -90,12 +90,13 @@
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
-    /* active page: subtle grey background, black border and glowing light from behind */
+    /* active page: stronger visible glow + black border */
     .page-active {
       background: linear-gradient(180deg,#ececec,#e0e0e0);
       color: #000;
       border: 1px solid #000;
       transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
     .page-active::before{
       content: "";
@@ -103,16 +104,18 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
-      width: 120%;
-      height: 120%;
-      border-radius: 12px;
-      z-index: -1;
-      background: radial-gradient(circle at 50% 40%,
-                  rgba(255,255,255,0.85) 0%,
-                  rgba(255,255,255,0.60) 6%,
-                  rgba(212,175,55,0.12) 22%,
-                  rgba(0,0,0,0) 60%);
-      filter: blur(12px);
+      width: 160%;
+      height: 160%;
+      border-radius: 14px;
+      z-index: -2;
+      /* stronger visible halo that still looks soft and blends with page */
+      background: radial-gradient(circle at 50% 35%,
+                  rgba(230,230,230,0.95) 0%,
+                  rgba(210,210,210,0.9) 8%,
+                  rgba(180,180,180,0.6) 20%,
+                  rgba(140,140,140,0.18) 45%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(18px);
       pointer-events: none;
     }
 
@@ -135,21 +138,21 @@
     .dropdown-menu{
       position: absolute;
       top: calc(100% + 8px);
-      left: 0;               /* will be adjusted by JS to align with label */
+      left: 0;               /* adjusted in JS to align with label left edge */
       background: #fff;
       color: var(--black);
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-      padding: 6px 8px;
+      padding: 6px 10px;    /* horizontal padding; JS computes width that includes text width + buffer */
       z-index: 80;
       display: none;        /* controlled via .open class (JS) */
-      white-space: nowrap;  /* keep items on single line so width matches widest */
+      white-space: nowrap;  /* keep items single-line so width matches content */
     }
     .group.open .dropdown-menu { display:block; }
 
     .dropdown-menu a{
       display:inline-block;
-      padding: 8px 10px;
+      padding: 8px 6px;
       color: var(--black);
       text-align: left;
       border-radius: 6px;
@@ -160,11 +163,26 @@
     /* ensure veerwear link uses the same veer color */
     .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
 
+    /* -------- filter toggle style: icon to the right -------- */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between; /* puts the chevron to the right */
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
     /* responsive */
     @media (max-width:767px){
       .select-with-icon select{ width:100%; }
       .header-actions{ width:120px; }
       .dropdown-menu{ min-width: 180px; left: 0; }
+      .filter-toggle{ padding:6px 0; }
     }
   </style>
 </head>
@@ -186,7 +204,7 @@
             </button>
 
             <!-- dropdown menu (white backing, auto width) -->
-            <div class="dropdown-menu rounded-md">
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true">
               <div class="grid grid-cols-1 gap-0">
                 <a href="/AllProducts/" class="monument">All Products</a>
                 <div style="height:1px;background:#eee;margin:4px 0;"></div>
@@ -286,7 +304,7 @@
           <div class="bg-white p-6 rounded-lg filter-panel monument">
             <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
 
-            <!-- categories and filters (unchanged) -->
+            <!-- categories and filters -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="category-body">
                 <span style="color:var(--black);">Category</span>
@@ -318,7 +336,7 @@
               </div>
             </div>
 
-            <!-- other filters (unchanged) -->
+            <!-- other filters -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="material-body">
                 <span style="color:var(--black);">Material</span>
@@ -440,7 +458,7 @@
     mobileBtn?.addEventListener('click', ()=> mobileNav.style.display='block');
     mobileClose?.addEventListener('click', ()=> mobileNav.style.display='none');
 
-    // Filter collapse behavior
+    // Filter collapse behavior (chevrons stay to the right now via CSS)
     document.querySelectorAll('.filter-toggle').forEach(btn=>{
       const target = document.getElementById(btn.getAttribute('data-target'));
       const chev = btn.querySelector('.chev');
@@ -455,7 +473,8 @@
     });
 
     /* --------------------------
-       Dropdown: keep open when hovering menu, auto width, align to label
+       Dropdown: keep open when hovering menu, auto width to widest item (VEERWEAR),
+       align left edge of menu text directly with the left of the "All Products" label.
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -465,31 +484,51 @@
 
         if(!menu || !label) return;
 
-        // ensure menu width is auto so it only fits widest content
-        menu.style.width = 'auto';
-        menu.style.whiteSpace = 'nowrap';
+        // temporarily show menu (hidden) invisibly to measure widths
+        const prevDisplay = menu.style.display;
+        const prevVisibility = menu.style.visibility;
+        menu.style.display = 'block';
+        menu.style.visibility = 'hidden';
 
-        // calculate left offset so dropdown text lines up with label text
-        const groupRect = group.getBoundingClientRect();
-        const labelRect = label.getBoundingClientRect();
-        const leftOffset = Math.max(0, labelRect.left - groupRect.left);
-        menu.style.left = `${leftOffset}px`;
+        // find width of the widest item (text width)
+        let maxItemWidth = 0;
+        menu.querySelectorAll('a').forEach(a=>{
+          // offsetWidth includes padding; but we want text width, so measure scrollWidth
+          const w = a.scrollWidth;
+          if(w > maxItemWidth) maxItemWidth = w;
+        });
 
-        // make sure dropdown stays open when cursor is over it:
+        // compute final width with buffer: padding already in CSS; add some extra buffer
+        const horizontalPadding = 20; // accounts for left+right padding & breathing room
+        const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160); // minimum width safeguard
+        menu.style.width = finalWidth + 'px';
+
+        // Align left edge of the menu's text with the label's left:
+        // label.offsetLeft gives label left inside the group; menu padding-left is already included,
+        // so set menu left to label.offsetLeft minus small nudge so texts align visually
+        const labelLeftInsideGroup = label.offsetLeft;
+        const nudge = -6; // move a few px further left; adjust if you'd like different spacing
+        menu.style.left = (labelLeftInsideGroup + nudge) + 'px';
+
+        // restore visibility state (menu still hidden visually)
+        menu.style.display = 'none';
+        menu.style.visibility = prevVisibility || '';
+
+        // open/close behavior with small delay so moving between trigger and menu keeps it open
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
           group.classList.add('open');
           trigger.setAttribute('aria-expanded','true');
+          menu.setAttribute('aria-hidden','false');
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
-          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); }, 140);
+          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }, 160);
         };
 
         group.addEventListener('mouseenter', openMenu);
         group.addEventListener('mouseleave', closeMenu);
-        // also allow keyboard focus interactions
         trigger.addEventListener('focus', openMenu);
         trigger.addEventListener('blur', closeMenu);
         menu.addEventListener('mouseenter', openMenu);
@@ -510,8 +549,8 @@
     });
 
     /* --------------------------
-       Product data generator + renderer (demo)
-       (unchanged except left here for completeness)
+       Product generator / renderer (unchanged)
+       kept for completeness
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];

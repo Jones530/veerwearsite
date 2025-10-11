@@ -97,24 +97,22 @@
       border: 1px solid #000;
       transform: translateY(-4px) scale(1.02);
     }
-    /* glowing light behind active page: pseudo-element so it looks like a light source behind the button */
     .page-active::before{
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
-      width: 120%;            /* make the glow extend beyond the button */
+      width: 120%;
       height: 120%;
       border-radius: 12px;
       z-index: -1;
-      /* radial gradient: bright center fading to a gentle tinted halo */
       background: radial-gradient(circle at 50% 40%,
                   rgba(255,255,255,0.85) 0%,
                   rgba(255,255,255,0.60) 6%,
                   rgba(212,175,55,0.12) 22%,
                   rgba(0,0,0,0) 60%);
-      filter: blur(12px); /* soften the glow */
+      filter: blur(12px);
       pointer-events: none;
     }
 
@@ -131,28 +129,36 @@
     .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; }
 
     /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
-    .group{ position: relative; } /* ensure parent is positioned */
+    .group{ position: relative; display: inline-block; } /* ensure parent is positioned and shrink-wrapped */
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .menu-label{ display:inline-block; } /* used for positioning calculation */
     .dropdown-menu{
       position: absolute;
-      left: 0; /* aligns left edge of menu with left edge of the "All Products" group container */
       top: calc(100% + 8px);
+      left: 0;               /* will be adjusted by JS to align with label */
       background: #fff;
       color: var(--black);
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-      padding: 0.5rem;
-      min-width: 220px;
+      padding: 6px 8px;
       z-index: 80;
+      display: none;        /* controlled via .open class (JS) */
+      white-space: nowrap;  /* keep items on single line so width matches widest */
     }
-    .dropdown-menu .grid{ gap: 0.25rem; }
+    .group.open .dropdown-menu { display:block; }
+
     .dropdown-menu a{
-      display:block;
-      padding: 0.5rem 0.75rem;
+      display:inline-block;
+      padding: 8px 10px;
       color: var(--black);
-      text-align: left;   /* left align the text */
+      text-align: left;
       border-radius: 6px;
+      width: 100%;
     }
     .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    /* ensure veerwear link uses the same veer color */
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
 
     /* responsive */
     @media (max-width:767px){
@@ -172,15 +178,16 @@
         </a>
 
         <div class="hidden md:flex space-x-8">
-          <div class="relative group">
-            <button class="flex items-center space-x-1 monument text-black">
-              <span>All Products</span>
+          <div class="group">
+            <!-- trigger -->
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true">
+              <span class="menu-label">All Products</span>
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
-            <!-- dropdown-menu now has white background, left aligned content -->
-            <div class="absolute hidden group-hover:block dropdown-menu rounded-md p-2 w-64">
-              <div class="grid grid-cols-1 gap-2">
+            <!-- dropdown menu (white backing, auto width) -->
+            <div class="dropdown-menu rounded-md">
+              <div class="grid grid-cols-1 gap-0">
                 <a href="/AllProducts/" class="monument">All Products</a>
                 <div style="height:1px;background:#eee;margin:4px 0;"></div>
                 <a href="/Grillz/" class="monument">Grillz</a>
@@ -271,7 +278,7 @@
     </div>
   </section>
 
-  <!-- CONTENT -->
+  <!-- CONTENT (rest of page left unchanged) -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
@@ -279,7 +286,7 @@
           <div class="bg-white p-6 rounded-lg filter-panel monument">
             <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
 
-            <!-- Category -->
+            <!-- categories and filters (unchanged) -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="category-body">
                 <span style="color:var(--black);">Category</span>
@@ -311,7 +318,7 @@
               </div>
             </div>
 
-            <!-- Material -->
+            <!-- other filters (unchanged) -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="material-body">
                 <span style="color:var(--black);">Material</span>
@@ -335,7 +342,6 @@
               </div>
             </div>
 
-            <!-- Price -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="price-body">
                 <span style="color:var(--black);">Price Range</span>
@@ -396,6 +402,9 @@
             <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
             <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
             <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
+            <!-- added Veerwear + aL vaLe in footer with correct styling -->
+            <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
+            <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
           </ul>
         </div>
         <div>
@@ -418,7 +427,7 @@
     </div>
   </footer>
 
-  <!-- Snipcart root: replace YOUR_SNIPCART_API_KEY with your actual key -->
+  <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
   <script>
@@ -446,11 +455,63 @@
     });
 
     /* --------------------------
+       Dropdown: keep open when hovering menu, auto width, align to label
+    -------------------------- */
+    function positionAndBindDropdowns(){
+      document.querySelectorAll('.group').forEach(group=>{
+        const label = group.querySelector('.menu-label');
+        const menu = group.querySelector('.dropdown-menu');
+        const trigger = group.querySelector('.menu-trigger');
+
+        if(!menu || !label) return;
+
+        // ensure menu width is auto so it only fits widest content
+        menu.style.width = 'auto';
+        menu.style.whiteSpace = 'nowrap';
+
+        // calculate left offset so dropdown text lines up with label text
+        const groupRect = group.getBoundingClientRect();
+        const labelRect = label.getBoundingClientRect();
+        const leftOffset = Math.max(0, labelRect.left - groupRect.left);
+        menu.style.left = `${leftOffset}px`;
+
+        // make sure dropdown stays open when cursor is over it:
+        let leaveTimer = null;
+        const openMenu = ()=> {
+          clearTimeout(leaveTimer);
+          group.classList.add('open');
+          trigger.setAttribute('aria-expanded','true');
+        };
+        const closeMenu = ()=> {
+          clearTimeout(leaveTimer);
+          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); }, 140);
+        };
+
+        group.addEventListener('mouseenter', openMenu);
+        group.addEventListener('mouseleave', closeMenu);
+        // also allow keyboard focus interactions
+        trigger.addEventListener('focus', openMenu);
+        trigger.addEventListener('blur', closeMenu);
+        menu.addEventListener('mouseenter', openMenu);
+        menu.addEventListener('mouseleave', closeMenu);
+      });
+    }
+
+    // Call on load and resize
+    window.addEventListener('resize', ()=> positionAndBindDropdowns());
+    document.addEventListener('DOMContentLoaded', ()=>{
+      feather.replace();
+      positionAndBindDropdowns();
+
+      // rest of your initialization (filters/products/pagination) happens below
+      readFiltersFromUI();
+      currentSort = document.getElementById('sortSelect').value || 'featured';
+      renderProducts();
+    });
+
+    /* --------------------------
        Product data generator + renderer (demo)
-       - favorites stored in localStorage key: 'sb_favorites'
-       - Snipcart-ready buy buttons added (static site)
-       - Pagination glow + click reactions
-       - Cart icon toggles Snipcart open/close
+       (unchanged except left here for completeness)
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
@@ -467,26 +528,16 @@
       products.push({ id:i, title:`${cat} Item ${i}`, description:`${mat} · ${cat}`, image:`/images/placeholder-${(i%10)+1}.jpg`, price, category:cat, material:mat, soldCount:sold, featured, date });
     }
 
-    // State
+    // State (pagination / filters / sort)
     let currentPage = 1;
     const pageSize = 24;
     let currentFilters = { categories:[], materials:[], price:'all' };
     let currentSort = 'featured';
 
     // favorites - localStorage
-    function readFavorites(){
-      try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); }
-    }
-    function writeFavorites(set){
-      const arr = Array.from(set);
-      localStorage.setItem('sb_favorites', JSON.stringify(arr));
-    }
-    function toggleFavorite(id){
-      const s = readFavorites();
-      if(s.has(id)){ s.delete(id); } else { s.add(id); }
-      writeFavorites(s);
-      renderProducts(); // re-render to update heart state
-    }
+    function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
+    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
+    function toggleFavorite(id){ const s = readFavorites(); if(s.has(id)) s.delete(id); else s.add(id); writeFavorites(s); renderProducts(); }
 
     function priceMatch(price, filterKey){
       if(!filterKey||filterKey==='all') return true;
@@ -518,7 +569,6 @@
       const start = (currentPage-1)*pageSize;
       const pageItems = filtered.slice(start, start + pageSize);
       document.getElementById('showingText').textContent = `Showing ${pageItems.length} of ${total} products`;
-
       const favSet = readFavorites();
 
       for(const p of pageItems){
@@ -544,7 +594,6 @@
             <div class="flex justify-between items-center">
               <span class="${fontClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
 
-              <!-- Snipcart add-to-cart button -->
               <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
                 data-item-id="${p.id}"
                 data-item-name="${p.title}"
@@ -576,7 +625,6 @@
       const pagination = document.getElementById('pagination'); pagination.innerHTML='';
       const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
 
-      // helper to create nav button (arrow)
       function makeNavButton(iconName, onClick, disabled=false){
         const b = document.createElement('button');
         b.className = 'nav-btn';
@@ -650,7 +698,7 @@
     document.getElementById('sortSelect').addEventListener('change', e => { currentSort = e.target.value; currentPage = 1; renderProducts(); });
 
     /* --------------------------
-       Cart toggle behavior
+       Cart toggle behavior (unchanged)
     -------------------------- */
     const headerCartToggle = document.getElementById('headerCartToggle');
     let cartOpen = false;
@@ -670,14 +718,6 @@
         const anchor = document.querySelector('a.snipcart-checkout');
         if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
       }
-    });
-
-    // initial render
-    document.addEventListener('DOMContentLoaded', ()=>{
-      feather.replace();
-      readFiltersFromUI();
-      currentSort = document.getElementById('sortSelect').value || 'featured';
-      renderProducts();
     });
   </script>
 </body>

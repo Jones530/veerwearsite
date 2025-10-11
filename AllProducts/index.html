@@ -52,7 +52,7 @@
       background-position: center;
       background-repeat: no-repeat;
       color:#fff;
-      overflow:hidden;
+      overflow:visible; /* ensure dropdown can overlap if needed */
       padding-top:8rem;
       padding-bottom:8rem;
       min-height:60vh;
@@ -84,63 +84,65 @@
       font-weight:700;
       background-clip: padding-box;
       position: relative; /* required for glow pseudo element */
-      z-index: 1;
-      overflow: visible;
+      z-index: 2;
+      overflow: visible; /* allow pseudo elements to be visible */
     }
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
-    /* active page: slightly darker grey (foreground) but keep/brighten glow; add sparkle */
+    /* active page: stronger glow & sparkle */
     .page-active {
-      /* darker grey foreground */
-      background: linear-gradient(180deg,#d6d6d6,#c9c9c9);
+      background: linear-gradient(180deg,#fff9e6,#f7e5b8);
       color: #000;
-      border: 1px solid #000;
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.10);
+      border: 1px solid rgba(0,0,0,0.18);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.12);
       overflow: visible;
     }
-    /* glow behind (keep but slightly shinier) */
+
+    /* larger glow behind the button */
     .page-active::before{
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
-      width: 180%;
-      height: 180%;
-      border-radius: 14px;
+      width: 220%;
+      height: 220%;
+      border-radius: 16px;
       z-index: -2;
-      background: radial-gradient(circle at 50% 35%,
+      background: radial-gradient(circle at 50% 30%,
                   rgba(255,255,255,0.95) 0%,
-                  rgba(240,240,240,0.85) 6%,
-                  rgba(212,175,55,0.16) 22%,
-                  rgba(0,0,0,0) 65%);
-      filter: blur(20px);
+                  rgba(250,250,240,0.9) 6%,
+                  rgba(212,175,55,0.28) 20%,
+                  rgba(212,175,55,0.14) 30%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(28px);
       pointer-events: none;
     }
-    /* sparkle dot/pulse: sits on top */
+
+    /* animated sparkle dot (more visible) */
     .page-active::after{
       content: "";
       position: absolute;
       right: 8px;
       top: 6px;
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       z-index: 3;
       pointer-events: none;
-      background: radial-gradient(circle, rgba(255,255,255,0.95) 0 30%, rgba(255,255,255,0.6) 31% 60%, rgba(255,255,255,0) 61%);
-      filter: blur(0.6px);
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 20%, rgba(255,255,255,0.8) 21% 45%, rgba(255,255,255,0) 46%);
+      box-shadow: 0 0 12px rgba(212,175,55,0.75), 0 0 2px rgba(255,255,255,0.9);
       transform-origin: center;
-      animation: sparkle 1.8s infinite ease-in-out;
-      opacity: 0.95;
+      animation: sparkle 1.6s infinite ease-in-out;
+      opacity: 1;
     }
     @keyframes sparkle {
-      0%   { transform: translateY(-2px) scale(0.8) rotate(0deg); opacity:0.0; }
-      30%  { transform: translateY(-4px) scale(1.1) rotate(12deg); opacity:1; }
-      60%  { transform: translateY(-6px) scale(0.9) rotate(-8deg); opacity:0.85; }
-      100% { transform: translateY(-2px) scale(0.8) rotate(0deg); opacity:0; }
+      0%   { transform: translateY(0) scale(0.6) rotate(0deg); opacity:0; }
+      25%  { transform: translateY(-4px) scale(1.15) rotate(18deg); opacity:1; }
+      55%  { transform: translateY(-6px) scale(0.95) rotate(-10deg); opacity:0.9; }
+      100% { transform: translateY(0) scale(0.7) rotate(0deg); opacity:0; }
     }
 
     /* nav arrow buttons */
@@ -156,23 +158,26 @@
     .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; }
 
     /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
-    .group{ position: relative; display: inline-block; } /* ensure parent is positioned and shrink-wrapped */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu will be moved to body */
     .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
     .menu-label{ display:inline-block; } /* used for positioning calculation */
+
+    /* dropdown will be positioned as fixed (moved to document.body by JS),
+       but keep default styles here — position + display controlled by JS */
     .dropdown-menu{
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;               /* adjusted in JS to align with label left edge */
+      position: fixed;      /* JS will compute and set left/top */
       background: #fff;
       color: var(--black);
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-      padding: 6px 10px;    /* horizontal padding; JS computes width that includes text width + buffer */
-      z-index: 120;         /* larger z so it's above other elements */
-      display: none;        /* controlled via .open class (JS) */
-      white-space: nowrap;  /* keep items single-line so width matches content */
+      padding: 6px 10px;
+      z-index: 9999;        /* ensure it sits above everything */
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 160px;
     }
-    .group.open .dropdown-menu { display:block; }
+    .dropdown-menu.open { display: block; }
 
     .dropdown-menu a{
       display:inline-block;
@@ -187,11 +192,11 @@
     /* ensure veerwear link uses the same veer color */
     .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
 
-    /* -------- filter toggle style: icon to the right -------- */
+    /* filter toggle style */
     .filter-toggle{
       display:flex;
       align-items:center;
-      justify-content:space-between; /* puts the chevron to the right */
+      justify-content:space-between;
       width:100%;
       background:transparent;
       border:none;
@@ -210,9 +215,12 @@
       #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
       .hidden.md\\:flex { display:none !important; } /* ensure nav links are hidden on small screens */
       .header-actions{ width:120px; }
-      .dropdown-menu{ min-width: 180px; left: 0; }
+      .dropdown-menu{ min-width: 180px; }
       .filter-toggle{ padding:6px 0; }
     }
+
+    /* small accessibility helper for focus visible */
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
   </style>
 </head>
 <body class="monument">
@@ -330,7 +338,7 @@
     </div>
   </section>
 
-  <!-- CONTENT -->
+  <!-- CONTENT (unchanged layout) -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
@@ -454,7 +462,6 @@
             <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
             <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
             <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
-            <!-- added Veerwear + aL vaLe in footer with correct styling -->
             <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
             <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
           </ul>
@@ -507,78 +514,96 @@
     });
 
     /* --------------------------
-       Dropdown: measurement + robust open/close
-       - keeps menu open while hovering menu
-       - toggles on click for pointer devices
-       - aligns left edge of menu text with label left
-       - avoids duplicate binding on resize by marking bound groups
+       Dropdown: attach menu to body (fixed) and robust open/close
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
-        if(group.dataset.dropdownBound === "true") return; // don't bind twice
+        if(group.dataset.dropdownBound === "true") return;
         const label = group.querySelector('.menu-label');
         const menu = group.querySelector('.dropdown-menu');
         const trigger = group.querySelector('.menu-trigger');
 
         if(!menu || !label || !trigger) return;
 
-        // measure widest item: temporarily show invisibly
-        const prevDisplay = menu.style.display;
-        const prevVisibility = menu.style.visibility;
-        menu.style.display = 'block';
-        menu.style.visibility = 'hidden';
+        // Move menu to body to escape stacking contexts and allow overlay
+        if (!menu.dataset.moved) {
+          document.body.appendChild(menu);
+          menu.dataset.moved = "true";
+          menu.style.position = 'fixed';
+          menu.style.willChange = 'top, left';
+        }
 
-        let maxItemWidth = 0;
-        menu.querySelectorAll('a').forEach(a=>{
-          const w = a.scrollWidth;
-          if(w > maxItemWidth) maxItemWidth = w;
-        });
+        // function to compute width & position
+        function positionMenu(){
+          // make visible offscreen to measure items width
+          menu.classList.add('open');
+          menu.style.visibility = 'hidden';
+          menu.style.display = 'block';
 
-        const horizontalPadding = 28; // breathing room left+right (covers menu padding)
-        const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160);
-        menu.style.width = finalWidth + 'px';
+          // measure widest item
+          let maxItemWidth = 0;
+          menu.querySelectorAll('a').forEach(a=>{
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
+          });
 
-        // Align text left edge with label's left inside group
-        const labelLeftInsideGroup = label.offsetLeft;
-        const nudge = -6;
-        menu.style.left = (labelLeftInsideGroup + nudge) + 'px';
+          const horizontalPadding = 28; // left + right buffer
+          const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160);
+          menu.style.width = finalWidth + 'px';
 
-        // restore display state
-        menu.style.display = prevDisplay || 'none';
-        menu.style.visibility = prevVisibility || '';
+          // compute position relative to trigger's label in viewport
+          const labelRect = label.getBoundingClientRect();
+          const navRect = trigger.getBoundingClientRect();
+          const nudge = -6; // slight left nudge so text lines up
+          const left = Math.max(8, Math.round(labelRect.left + nudge)); // don't go off screen
+          const top = Math.round(navRect.bottom + 8); // 8px gap
+          menu.style.left = left + 'px';
+          menu.style.top = top + 'px';
 
-        // open/close helpers with a small delay to avoid flicker
+          menu.style.visibility = '';
+          menu.style.display = group.classList.contains('open') ? 'block' : 'none';
+        }
+
+        // open/close helpers with small delay
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
+          positionMenu();               // ensure correct position when opening
           group.classList.add('open');
+          menu.classList.add('open');
           trigger.setAttribute('aria-expanded','true');
           menu.setAttribute('aria-hidden','false');
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
-          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }, 150);
+          leaveTimer = setTimeout(()=> {
+            group.classList.remove('open');
+            if (!group.classList.contains('open')) {
+              menu.classList.remove('open');
+              menu.style.display = 'none';
+            }
+            trigger.setAttribute('aria-expanded','false');
+            menu.setAttribute('aria-hidden','true');
+          }, 150);
         };
 
-        // Hover interactions
+        // Hover interactions (keeps open while hovering trigger or menu)
         group.addEventListener('mouseenter', openMenu);
         group.addEventListener('mouseleave', closeMenu);
+        menu.addEventListener('mouseenter', openMenu);
+        menu.addEventListener('mouseleave', closeMenu);
 
-        // keep open while menu or trigger are focused/hovered
+        // Focus interactions for keyboard users
         trigger.addEventListener('focus', openMenu);
         trigger.addEventListener('blur', ()=>{
-          // small timeout to allow focus to move into menu
           leaveTimer = setTimeout(()=> {
             const active = document.activeElement;
             if(menu.contains(active)) return;
             closeMenu();
-          }, 140);
+          }, 120);
         });
 
-        menu.addEventListener('mouseenter', openMenu);
-        menu.addEventListener('mouseleave', closeMenu);
-
-        // Click toggle (for touch/pointer)
+        // Click toggle (touch/pointer)
         trigger.addEventListener('click', (e)=>{
           e.preventDefault();
           e.stopPropagation();
@@ -589,17 +614,24 @@
           }
         });
 
-        // Close when clicking outside (one global handler per-bound-group is OK)
-        document.addEventListener('click', (ev)=>{
-          if(!group.contains(ev.target)) closeMenu();
-        });
+        // Click outside -> close (check both trigger and menu)
+        const outsideHandler = (ev) => {
+          if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
+            closeMenu();
+          }
+        };
+        document.addEventListener('click', outsideHandler);
 
-        // Close on Escape
+        // reposition on resize & scroll so menu stays aligned
+        const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
+        window.addEventListener('resize', repositionOnResize);
+        window.addEventListener('scroll', repositionOnResize, { passive: true });
+
+        // close on Escape
         document.addEventListener('keydown', (ev)=> {
           if(ev.key === 'Escape') closeMenu();
         });
 
-        // Mark bound so we don't rebind on resize
         group.dataset.dropdownBound = "true";
       });
     }

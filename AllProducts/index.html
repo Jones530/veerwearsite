@@ -90,33 +90,57 @@
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
-    /* active page: stronger visible glow + black border */
+    /* active page: slightly darker grey (foreground) but keep/brighten glow; add sparkle */
     .page-active {
-      background: linear-gradient(180deg,#ececec,#e0e0e0);
+      /* darker grey foreground */
+      background: linear-gradient(180deg,#d6d6d6,#c9c9c9);
       color: #000;
       border: 1px solid #000;
       transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.10);
+      overflow: visible;
     }
+    /* glow behind (keep but slightly shinier) */
     .page-active::before{
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
-      width: 160%;
-      height: 160%;
+      width: 180%;
+      height: 180%;
       border-radius: 14px;
       z-index: -2;
-      /* stronger visible halo that still looks soft and blends with page */
       background: radial-gradient(circle at 50% 35%,
-                  rgba(230,230,230,0.95) 0%,
-                  rgba(210,210,210,0.9) 8%,
-                  rgba(180,180,180,0.6) 20%,
-                  rgba(140,140,140,0.18) 45%,
-                  rgba(0,0,0,0) 70%);
-      filter: blur(18px);
+                  rgba(255,255,255,0.95) 0%,
+                  rgba(240,240,240,0.85) 6%,
+                  rgba(212,175,55,0.16) 22%,
+                  rgba(0,0,0,0) 65%);
+      filter: blur(20px);
       pointer-events: none;
+    }
+    /* sparkle dot/pulse: sits on top */
+    .page-active::after{
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0 30%, rgba(255,255,255,0.6) 31% 60%, rgba(255,255,255,0) 61%);
+      filter: blur(0.6px);
+      transform-origin: center;
+      animation: sparkle 1.8s infinite ease-in-out;
+      opacity: 0.95;
+    }
+    @keyframes sparkle {
+      0%   { transform: translateY(-2px) scale(0.8) rotate(0deg); opacity:0.0; }
+      30%  { transform: translateY(-4px) scale(1.1) rotate(12deg); opacity:1; }
+      60%  { transform: translateY(-6px) scale(0.9) rotate(-8deg); opacity:0.85; }
+      100% { transform: translateY(-2px) scale(0.8) rotate(0deg); opacity:0; }
     }
 
     /* nav arrow buttons */
@@ -196,15 +220,15 @@
         </a>
 
         <div class="hidden md:flex space-x-8">
-          <div class="group">
+          <div class="group" id="all-products-group">
             <!-- trigger -->
-            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true">
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
               <span class="menu-label">All Products</span>
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
             <!-- dropdown menu (white backing, auto width) -->
-            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true">
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
               <div class="grid grid-cols-1 gap-0">
                 <a href="/AllProducts/" class="monument">All Products</a>
                 <div style="height:1px;background:#eee;margin:4px 0;"></div>
@@ -245,7 +269,7 @@
       </div>
     </div>
 
-    <!-- mobile nav -->
+    <!-- mobile nav (unchanged) -->
     <div id="mobileNav" class="md:hidden" style="display:none;">
       <div class="flex items-center justify-between mb-4 px-4">
         <div class="flex items-center gap-3">
@@ -296,7 +320,7 @@
     </div>
   </section>
 
-  <!-- CONTENT (rest of page left unchanged) -->
+  <!-- CONTENT -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
@@ -336,7 +360,7 @@
               </div>
             </div>
 
-            <!-- other filters -->
+            <!-- other filters (unchanged) -->
             <div class="filter-section">
               <button class="filter-toggle" data-target="material-body">
                 <span style="color:var(--black);">Material</span>
@@ -475,6 +499,7 @@
     /* --------------------------
        Dropdown: keep open when hovering menu, auto width to widest item (VEERWEAR),
        align left edge of menu text directly with the left of the "All Products" label.
+       Also add click toggle and "click outside to close".
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -482,39 +507,34 @@
         const menu = group.querySelector('.dropdown-menu');
         const trigger = group.querySelector('.menu-trigger');
 
-        if(!menu || !label) return;
+        if(!menu || !label || !trigger) return;
 
-        // temporarily show menu (hidden) invisibly to measure widths
+        // measure widest item: temporarily show invisibly
         const prevDisplay = menu.style.display;
         const prevVisibility = menu.style.visibility;
         menu.style.display = 'block';
         menu.style.visibility = 'hidden';
 
-        // find width of the widest item (text width)
         let maxItemWidth = 0;
         menu.querySelectorAll('a').forEach(a=>{
-          // offsetWidth includes padding; but we want text width, so measure scrollWidth
           const w = a.scrollWidth;
           if(w > maxItemWidth) maxItemWidth = w;
         });
 
-        // compute final width with buffer: padding already in CSS; add some extra buffer
-        const horizontalPadding = 20; // accounts for left+right padding & breathing room
-        const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160); // minimum width safeguard
+        const horizontalPadding = 24; // a bit more breathing room
+        const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160);
         menu.style.width = finalWidth + 'px';
 
-        // Align left edge of the menu's text with the label's left:
-        // label.offsetLeft gives label left inside the group; menu padding-left is already included,
-        // so set menu left to label.offsetLeft minus small nudge so texts align visually
+        // align left of menu text with label's left inside group
         const labelLeftInsideGroup = label.offsetLeft;
-        const nudge = -6; // move a few px further left; adjust if you'd like different spacing
+        const nudge = -6;
         menu.style.left = (labelLeftInsideGroup + nudge) + 'px';
 
-        // restore visibility state (menu still hidden visually)
+        // restore
         menu.style.display = 'none';
         menu.style.visibility = prevVisibility || '';
 
-        // open/close behavior with small delay so moving between trigger and menu keeps it open
+        // Open/close helpers
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
@@ -527,12 +547,49 @@
           leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }, 160);
         };
 
+        // Hover
         group.addEventListener('mouseenter', openMenu);
         group.addEventListener('mouseleave', closeMenu);
+
+        // Focus (keyboard)
         trigger.addEventListener('focus', openMenu);
-        trigger.addEventListener('blur', closeMenu);
+        // don't close on blur right away because user might tab into menu
+        trigger.addEventListener('blur', ()=>{
+          leaveTimer = setTimeout(()=> {
+            if(!group.classList.contains('open')) return;
+            // if focus moves into menu, keep open; otherwise close
+            const active = document.activeElement;
+            if(menu.contains(active)) return;
+            closeMenu();
+          }, 120);
+        });
+
+        // Keep open while hovering the menu itself
         menu.addEventListener('mouseenter', openMenu);
         menu.addEventListener('mouseleave', closeMenu);
+
+        // Click toggle (helpful for pointer-only devices)
+        trigger.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(group.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (ev)=>{
+          if(!group.contains(ev.target)) {
+            closeMenu();
+          }
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', (ev)=> {
+          if(ev.key === 'Escape') closeMenu();
+        });
       });
     }
 
@@ -550,7 +607,6 @@
 
     /* --------------------------
        Product generator / renderer (unchanged)
-       kept for completeness
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];

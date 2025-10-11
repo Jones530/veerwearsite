@@ -168,7 +168,7 @@
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
       padding: 6px 10px;    /* horizontal padding; JS computes width that includes text width + buffer */
-      z-index: 80;
+      z-index: 120;         /* larger z so it's above other elements */
       display: none;        /* controlled via .open class (JS) */
       white-space: nowrap;  /* keep items single-line so width matches content */
     }
@@ -201,9 +201,14 @@
     }
     .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
 
-    /* responsive */
+    /* add buffer below price body so Apply Filters has breathing room */
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
     @media (max-width:767px){
-      .select-with-icon select{ width:100%; }
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\\:flex { display:none !important; } /* ensure nav links are hidden on small screens */
       .header-actions{ width:120px; }
       .dropdown-menu{ min-width: 180px; left: 0; }
       .filter-toggle{ padding:6px 0; }
@@ -215,6 +220,11 @@
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
+        </button>
+
         <a href="/Home/" class="flex items-center">
           <span class="monument text-2xl" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
         </a>
@@ -269,7 +279,7 @@
       </div>
     </div>
 
-    <!-- mobile nav (unchanged) -->
+    <!-- mobile nav -->
     <div id="mobileNav" class="md:hidden" style="display:none;">
       <div class="flex items-center justify-between mb-4 px-4">
         <div class="flex items-center gap-3">
@@ -482,7 +492,7 @@
     mobileBtn?.addEventListener('click', ()=> mobileNav.style.display='block');
     mobileClose?.addEventListener('click', ()=> mobileNav.style.display='none');
 
-    // Filter collapse behavior (chevrons stay to the right now via CSS)
+    // Filter collapse behavior (chevrons to the right)
     document.querySelectorAll('.filter-toggle').forEach(btn=>{
       const target = document.getElementById(btn.getAttribute('data-target'));
       const chev = btn.querySelector('.chev');
@@ -497,12 +507,15 @@
     });
 
     /* --------------------------
-       Dropdown: keep open when hovering menu, auto width to widest item (VEERWEAR),
-       align left edge of menu text directly with the left of the "All Products" label.
-       Also add click toggle and "click outside to close".
+       Dropdown: measurement + robust open/close
+       - keeps menu open while hovering menu
+       - toggles on click for pointer devices
+       - aligns left edge of menu text with label left
+       - avoids duplicate binding on resize by marking bound groups
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
+        if(group.dataset.dropdownBound === "true") return; // don't bind twice
         const label = group.querySelector('.menu-label');
         const menu = group.querySelector('.dropdown-menu');
         const trigger = group.querySelector('.menu-trigger');
@@ -521,20 +534,20 @@
           if(w > maxItemWidth) maxItemWidth = w;
         });
 
-        const horizontalPadding = 24; // a bit more breathing room
+        const horizontalPadding = 28; // breathing room left+right (covers menu padding)
         const finalWidth = Math.max(maxItemWidth + horizontalPadding, 160);
         menu.style.width = finalWidth + 'px';
 
-        // align left of menu text with label's left inside group
+        // Align text left edge with label's left inside group
         const labelLeftInsideGroup = label.offsetLeft;
         const nudge = -6;
         menu.style.left = (labelLeftInsideGroup + nudge) + 'px';
 
-        // restore
-        menu.style.display = 'none';
+        // restore display state
+        menu.style.display = prevDisplay || 'none';
         menu.style.visibility = prevVisibility || '';
 
-        // Open/close helpers
+        // open/close helpers with a small delay to avoid flicker
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
@@ -544,31 +557,28 @@
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
-          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }, 160);
+          leaveTimer = setTimeout(()=>{ group.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }, 150);
         };
 
-        // Hover
+        // Hover interactions
         group.addEventListener('mouseenter', openMenu);
         group.addEventListener('mouseleave', closeMenu);
 
-        // Focus (keyboard)
+        // keep open while menu or trigger are focused/hovered
         trigger.addEventListener('focus', openMenu);
-        // don't close on blur right away because user might tab into menu
         trigger.addEventListener('blur', ()=>{
+          // small timeout to allow focus to move into menu
           leaveTimer = setTimeout(()=> {
-            if(!group.classList.contains('open')) return;
-            // if focus moves into menu, keep open; otherwise close
             const active = document.activeElement;
             if(menu.contains(active)) return;
             closeMenu();
-          }, 120);
+          }, 140);
         });
 
-        // Keep open while hovering the menu itself
         menu.addEventListener('mouseenter', openMenu);
         menu.addEventListener('mouseleave', closeMenu);
 
-        // Click toggle (helpful for pointer-only devices)
+        // Click toggle (for touch/pointer)
         trigger.addEventListener('click', (e)=>{
           e.preventDefault();
           e.stopPropagation();
@@ -579,27 +589,28 @@
           }
         });
 
-        // Close when clicking outside
+        // Close when clicking outside (one global handler per-bound-group is OK)
         document.addEventListener('click', (ev)=>{
-          if(!group.contains(ev.target)) {
-            closeMenu();
-          }
+          if(!group.contains(ev.target)) closeMenu();
         });
 
-        // Close on escape
+        // Close on Escape
         document.addEventListener('keydown', (ev)=> {
           if(ev.key === 'Escape') closeMenu();
         });
+
+        // Mark bound so we don't rebind on resize
+        group.dataset.dropdownBound = "true";
       });
     }
 
-    // Call on load and resize
+    // Call on load and resize (binding only happens once per group)
     window.addEventListener('resize', ()=> positionAndBindDropdowns());
     document.addEventListener('DOMContentLoaded', ()=>{
       feather.replace();
       positionAndBindDropdowns();
 
-      // rest of your initialization (filters/products/pagination) happens below
+      // rest of your initialization (filters/products/pagination)
       readFiltersFromUI();
       currentSort = document.getElementById('sortSelect').value || 'featured';
       renderProducts();

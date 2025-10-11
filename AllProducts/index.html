@@ -153,7 +153,7 @@
     .heart-active{ background:var(--gold); color:#000 !important; }
 
     /* header icons container */
-    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; }
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
 
     /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
     .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
@@ -214,22 +214,26 @@
       .filter-toggle{ padding:6px 0; }
 
       /* Hide desktop inline search on mobile */
-      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; }
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
     }
 
-    /* menu-trigger focus outline */
     .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
 
     /* ----------------------------
        Header search UI
        - expands to the left on desktop
        - small, unobtrusive
+       - input is positioned absolutely (so other icons never move)
     ---------------------------- */
-    .search-wrap { display:flex; align-items:center; position:relative; gap:8px; }
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
     .search-form { display:flex; align-items:center; }
+
+    /* Make the input absolute so it doesn't affect layout; anchor to right of the search button */
     .search-input {
-      width:0;
-      opacity:0;
+      position: absolute;
+      right: 44px; /* leave space for the search button (36px) + small gap */
+      width: 0;
+      opacity: 0;
       transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
       border:1px solid rgba(0,0,0,0.08);
       padding:8px 10px;
@@ -238,14 +242,15 @@
       outline:none;
       background:#fff;
       color:var(--black);
-      margin-right:6px;
       transform-origin: right center; /* expands from right */
       box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60; /* sit above nav items */
+      white-space:nowrap;
     }
     /* visible state */
     .search-wrap.open .search-input {
-      width:220px;
-      opacity:1;
+      width: 220px;
+      opacity: 1;
     }
     /* search button smaller look */
     .search-btn {
@@ -259,6 +264,7 @@
       border:none;
       cursor:pointer;
       padding:0;
+      z-index: 65; /* above input so icon remains clickable */
     }
     .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
 
@@ -958,7 +964,7 @@
 
     /* --------------------------
        SEARCH UI: desktop & mobile behavior
-       - desktop: inline expanding search that expands left
+       - desktop: inline expanding search that expands left (absolute so other icons never move)
        - mobile: shows search input inside mobile nav
        - submit navigates to /search.html?q=...
        - desktop auto-closes & clears after submitting
@@ -975,7 +981,6 @@
       function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
 
       // Clicking the submit button on desktop when collapsed should open the input (not submit)
-      // We'll rely on submit event to handle navigation.
       btn.addEventListener('click', (ev) => {
         // If mobile screen, let mobile search handle it (mobile search uses a separate form)
         if (isMobile()) {
@@ -993,7 +998,7 @@
           setTimeout(()=> input.focus(), 80);
           return;
         }
-        // else: allow form submit to proceed
+        // else: allow form submit to proceed (submit handler below handles navigation)
       });
 
       // Submit handler: navigate only if query has content
@@ -1010,14 +1015,15 @@
         wrap.classList.remove('open');
         const valueToSend = q;
         input.value = '';
-        // give a tiny delay so UI clears (optional) then navigate
+        // give a tiny delay so UI clears then navigate
         setTimeout(()=> {
           window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
         }, 40);
       });
 
-      // Click outside closes the search
+      // Click outside closes the search input
       document.addEventListener('click', (ev) => {
+        // if click is outside the wrap entirely -> close
         if(!wrap.contains(ev.target)) {
           wrap.classList.remove('open');
           input.value = '';
@@ -1031,8 +1037,6 @@
           input.value = '';
         }
       });
-
-      // Prevent pointer events on icon from re-focusing repeatedly; (handled above)
     }
 
     // Mobile search: show mobile nav and focus the mobile input.
@@ -1055,6 +1059,9 @@
           }, 60);
         });
       }
+
+      // Also clicking the desktop search button on small screens will call:
+      // openMobileSearchAndFocus() (handled in the header click listener)
     }
 
     // helper: open mobile nav and focus mobile search input

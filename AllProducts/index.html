@@ -509,6 +509,7 @@
 
     /* --------------------------
        Dropdown: attach menu to body (fixed) and robust open/close
+       Fix: measure intrinsic width with width:auto offscreen to avoid repeated growing.
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -530,15 +531,27 @@
 
         // function to compute width & position
         function positionMenu(){
-          // make visible offscreen to measure items width
+          // --- Make sure we measure the intrinsic content width ---
+          // Put the menu offscreen and set width:auto so items measure their natural width
+          const prevDisplay = menu.style.display;
+          const prevVisibility = menu.style.visibility;
+          const prevLeft = menu.style.left;
+          const prevTop = menu.style.top;
+          const prevWidth = menu.style.width;
+
           menu.style.display = 'block';
           menu.style.visibility = 'hidden';
+          menu.style.left = '-9999px';
+          menu.style.top = '-9999px';
+          menu.style.width = 'auto';
+          // ensure nowrap for correct measurement
+          menu.style.whiteSpace = 'nowrap';
 
-          // measure widest item text width (bounding box)
+          // measure widest item using scrollWidth (intrinsic content width)
           let maxItemWidth = 0;
           menu.querySelectorAll('a').forEach(a=>{
-            const rect = a.getBoundingClientRect();
-            if(rect.width > maxItemWidth) maxItemWidth = rect.width;
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
           });
 
           // compute paddings from computed style so we size only as wide as text+buffers
@@ -552,14 +565,17 @@
           // compute left/top so the *text* left aligns with the label left
           const labelRect = label.getBoundingClientRect();
           const triggerRect = trigger.getBoundingClientRect();
+          // menu left should be label.left - paddingLeft (so the text lines up)
           const left = Math.round(labelRect.left - padLeft);
           const top = Math.round(triggerRect.bottom + 8); // 8px gap
           const clampedLeft = Math.max(8, left);
           menu.style.left = clampedLeft + 'px';
           menu.style.top = top + 'px';
 
+          // restore visibility and display according to open state
           menu.style.visibility = '';
           menu.style.display = group.classList.contains('open') ? 'block' : 'none';
+          // (we keep the computed width in place)
         }
 
         // open/close helpers with small delay
@@ -571,7 +587,7 @@
           menu.style.display = 'block';
           trigger.setAttribute('aria-expanded','true');
           menu.setAttribute('aria-hidden','false');
-          positionMenu(); // position immediately
+          positionMenu(); // position immediately (measures intrinsic width)
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
@@ -584,7 +600,7 @@
           }, 120);
         };
 
-        // Hover / pointer interactions
+        // Hover / pointer interactions - use pointer events for consistent behavior
         group.addEventListener('pointerenter', openMenu);
         group.addEventListener('pointerleave', closeMenu);
         menu.addEventListener('pointerenter', openMenu);

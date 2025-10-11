@@ -6,7 +6,7 @@
   <title>Grin & Glisten — All Products</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
-  <!-- Google font preload (user-provided) -->
+  <!-- Google font preload -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
@@ -17,50 +17,34 @@
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
 
-  <!-- Snipcart (static ecommerce) -->
+  <!-- Snipcart -->
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
-  <!-- TODO: Replace with your Snipcart public API key in the snipcart div at the end -->
 
   <style>
     /* ---------- fonts, variables and base ---------- */
-    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
-    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight: 900; font-style: normal; font-display: swap; }
-    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
+    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
 
     :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
 
-    html { font-size:112.5%; }
-    html,body { font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    html{ font-size:112.5%; }
+    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
     .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
     .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
     .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
 
-    .bag-count{ font-family:"Monument Extended Ultrabold", "Monument Extended", sans-serif; font-weight:900; font-size:11px; line-height:1; }
+    .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
 
     /* ---- select-with-icon: hide native arrow and position custom icon ---- */
-    .select-with-icon { position: relative; display: inline-flex; align-items: center; vertical-align: middle; }
-    .select-with-icon i,
-    .select-with-icon svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 2; width:18px; height:18px; display:block; }
-    .select-with-icon select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background-image: none;
-      padding-left: 12px;
-      padding-right: 44px; /* space for the custom icon */
-      height: 38px;
-      line-height: 1;
-      border-radius: 6px;
-      border: 1px solid var(--black);
-      color: var(--black);
-      background: white;
-      z-index: 1;
-    }
+    .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero: doubled vertical real estate */
+    /* Hero */
     .shop-hero {
       position: relative;
       background-image: url('/images/fantasmagorie.gif');
@@ -69,14 +53,11 @@
       background-repeat: no-repeat;
       color:#fff;
       overflow:hidden;
-      padding-top:8rem;     /* doubled vertical space */
+      padding-top:8rem;
       padding-bottom:8rem;
-      min-height: 60vh;
+      min-height:60vh;
       display:flex;
       align-items:center;
-    }
-    @media (max-width:767px){
-      .shop-hero{ padding-top:6rem; padding-bottom:6rem; min-height:45vh; }
     }
     .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
     .shop-hero .hero-inner{ position:relative; z-index:2; }
@@ -96,26 +77,48 @@
       transition: all .16s ease;
       background: transparent;
       border: 1px solid rgba(0,0,0,0.12);
-      width: 40px; height: 40px;
+      width: 40px; height:40px;
       display:flex; align-items:center; justify-content:center;
       border-radius:8px;
       cursor:pointer;
       font-weight:700;
       background-clip: padding-box;
+      position: relative; /* required for glow pseudo element */
+      z-index: 1;
+      overflow: visible;
     }
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
-    /* active / glowing page — grey glow, black border */
+    /* active page: subtle grey background, black border and glowing light from behind */
     .page-active {
       background: linear-gradient(180deg,#ececec,#e0e0e0);
       color: #000;
       border: 1px solid #000;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0 16px rgba(0,0,0,0.06);
       transform: translateY(-4px) scale(1.02);
     }
+    /* glowing light behind active page: pseudo-element so it looks like a light source behind the button */
+    .page-active::before{
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 120%;            /* make the glow extend beyond the button */
+      height: 120%;
+      border-radius: 12px;
+      z-index: -1;
+      /* radial gradient: bright center fading to a gentle tinted halo */
+      background: radial-gradient(circle at 50% 40%,
+                  rgba(255,255,255,0.85) 0%,
+                  rgba(255,255,255,0.60) 6%,
+                  rgba(212,175,55,0.12) 22%,
+                  rgba(0,0,0,0) 60%);
+      filter: blur(12px); /* soften the glow */
+      pointer-events: none;
+    }
 
-    /* arrow/nav buttons */
+    /* nav arrow buttons */
     .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
     .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .nav-btn.clicked { transform: scale(.96); opacity:.95; }
@@ -124,13 +127,38 @@
     .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
     .heart-active{ background:var(--gold); color:#000 !important; }
 
-    /* header icons container to make spacing consistent */
-    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; } /* adjust width if you want tighter/looser spacing */
+    /* header icons container */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; }
+
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; } /* ensure parent is positioned */
+    .dropdown-menu{
+      position: absolute;
+      left: 0; /* aligns left edge of menu with left edge of the "All Products" group container */
+      top: calc(100% + 8px);
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 0.5rem;
+      min-width: 220px;
+      z-index: 80;
+    }
+    .dropdown-menu .grid{ gap: 0.25rem; }
+    .dropdown-menu a{
+      display:block;
+      padding: 0.5rem 0.75rem;
+      color: var(--black);
+      text-align: left;   /* left align the text */
+      border-radius: 6px;
+    }
+    .dropdown-menu a:hover{ background: #f7f7f7; }
 
     /* responsive */
     @media (max-width:767px){
       .select-with-icon select{ width:100%; }
       .header-actions{ width:120px; }
+      .dropdown-menu{ min-width: 180px; left: 0; }
     }
   </style>
 </head>
@@ -149,22 +177,22 @@
               <span>All Products</span>
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
-            <div class="absolute hidden group-hover:block dropdown-menu shadow-lg rounded-md p-4 w-64">
+
+            <!-- dropdown-menu now has white background, left aligned content -->
+            <div class="absolute hidden group-hover:block dropdown-menu rounded-md p-2 w-64">
               <div class="grid grid-cols-1 gap-2">
-                <a href="/AllProducts/" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">All Products</a>
-                <div class="border-t border-gray-200 my-1"></div>
-                <a href="/Grillz/" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Grillz</a>
-                <a href="/NailJewelry/" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Nail Jewelry</a>
-                <a href="/Earrings/" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Earrings</a>
-                <div class="border-t border-gray-200 pt-2 mt-1">
-                  <a href="/VEERWEAR/" class="px-2 py-1 hover:bg-gray-100 rounded"><span class="veerwear">Veerwear</span></a>
-                </div>
-                <div class="border-t border-gray-200 pt-2 mt-1 flex items-center">
-                  <a href="/aLvaLemerCh/" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded">
-                    <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
-                    <span class="plunct in-dropdown">aL vaLe merCh</span>
-                  </a>
-                </div>
+                <a href="/AllProducts/" class="monument">All Products</a>
+                <div style="height:1px;background:#eee;margin:4px 0;"></div>
+                <a href="/Grillz/" class="monument">Grillz</a>
+                <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
+                <a href="/Earrings/" class="monument">Earrings</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/VEERWEAR/" class="veerwear">Veerwear</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/aLvaLemerCh/" class="flex items-center pl-0">
+                  <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                  <span class="plunct">aL vaLe merCh</span>
+                </a>
               </div>
             </div>
           </div>
@@ -175,16 +203,14 @@
         </div>
       </div>
 
-      <!-- header actions: search, heart, cart — evenly spaced -->
+      <!-- header icons: search, heart, cart -->
       <div class="header-actions">
         <a href="#" class="text-black" aria-label="Search"><i data-feather="search" class="w-5 h-5"></i></a>
 
-        <!-- Header heart icon (NO text) — visible on all breakpoints, same level as search & cart -->
         <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
           <i data-feather="heart" class="w-5 h-5"></i>
         </a>
 
-        <!-- Snipcart-powered cart icon (toggle behavior implemented) -->
         <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
           <i data-feather="shopping-bag" class="w-5 h-5"></i>
           <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
@@ -222,13 +248,13 @@
         <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
 
-        <!-- keep a textual Favorites link inside the mobile menu for clarity -->
+        <!-- mobile favorites link -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO (doubled vertical real estate) -->
+  <!-- HERO -->
   <section class="shop-hero text-white">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
@@ -336,7 +362,6 @@
             <div class="flex items-baseline sort-row">
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
               <div class="select-with-icon">
-                <!-- custom chevron (only this icon shows; native arrow hidden by CSS) -->
                 <i data-feather="chevron-down" class="w-4 h-4"></i>
                 <select id="sortSelect" class="text-black rounded-md text-sm">
                   <option value="featured">Featured</option>
@@ -574,7 +599,6 @@
         if(page === currentPage) b.classList.add('page-active');
         b.addEventListener('click', ()=>{
           if(page === currentPage) {
-            // small press feedback if clicking the active page
             b.classList.add('clicked');
             setTimeout(()=>b.classList.remove('clicked'),120);
             return;
@@ -584,7 +608,6 @@
           currentPage = page;
           renderProducts();
         });
-        // press feedback for touch/mouse
         ['mousedown','touchstart'].forEach(ev => b.addEventListener(ev, ()=> b.classList.add('clicked')));
         ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => b.addEventListener(ev, ()=> b.classList.remove('clicked')));
         pagination.appendChild(b);
@@ -613,7 +636,6 @@
         if(currentPage < Math.ceil(totalFiltered / pageSize)){ currentPage++; renderProducts(); }
       }, currentPage === Math.ceil(totalFiltered / pageSize));
 
-      // feather icons need to be replaced after adding buttons
       feather.replace();
     }
 
@@ -629,34 +651,24 @@
 
     /* --------------------------
        Cart toggle behavior
-       - Uses Snipcart events if Snipcart is present.
-       - Clicking the cart icon toggles open/close.
     -------------------------- */
     const headerCartToggle = document.getElementById('headerCartToggle');
     let cartOpen = false;
-    // Listen to Snipcart events to keep cartOpen in sync when Snipcart opens/closes
     document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
     document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
     document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
 
     headerCartToggle?.addEventListener('click', (e)=>{
       e.preventDefault();
-      // provide quick visual feedback
       headerCartToggle.classList.add('clicked');
       setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
 
       if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
         if(cartOpen) window.Snipcart.api.modal.close();
         else window.Snipcart.api.modal.open();
-        // Snipcart events will flip cartOpen accordingly.
       } else {
-        // Snipcart not ready yet — attempt to open via the built-in checkout trigger
         const anchor = document.querySelector('a.snipcart-checkout');
-        if(anchor){
-          anchor.click();
-        } else {
-          console.warn('Snipcart not initialized yet.');
-        }
+        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
       }
     });
 

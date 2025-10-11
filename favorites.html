@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Your Favorites — Grin & Glisten</title>
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <style>
+    body{ font-family:"Pirata One","Monument Extended",system-ui; margin:0; color:#000; padding:2rem; }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+    .card{ border:1px solid rgba(0,0,0,.06); border-radius:8px; overflow:hidden; background:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+    .card img{ width:100%; height:180px; object-fit:cover; display:block; }
+    .card .body{ padding:0.75rem; }
+    .empty{ text-align:center; padding:4rem 0; color:#666; }
+  </style>
+</head>
+<body>
+  <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <a href="/Home/" style="font-weight:900; font-family:'Monument Extended',sans-serif; font-size:1.25rem;">Grin & Glisten</a>
+    <nav><a href="/AllProducts/" style="margin-right:1rem;">All Products</a><a href="/favorites.html">Favorites</a></nav>
+  </header>
+
+  <main>
+    <h1 style="font-size:1.75rem; margin-bottom:1rem;">Your Favorites</h1>
+    <div id="favGrid" class="grid"></div>
+    <div id="emptyMsg" class="empty" style="display:none;">You haven't saved any favorites yet.</div>
+  </main>
+
+  <!-- Snipcart root: replace YOUR_SNIPCART_API_KEY with your actual key -->
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
+
+  <script>
+    // same demo product data shape as AllProducts — ensure these match so ids map correctly
+    const products = [];
+    const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
+    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
+    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    for(let i=1;i<=86;i++){
+      const cat = categories[i % categories.length];
+      const mat = materials[i % materials.length];
+      const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
+      products.push({ id:i, title:`${cat} Item ${i}`, description:`${mat} · ${cat}`, image:`/images/placeholder-${(i%10)+1}.jpg`, price, category:cat });
+    }
+
+    function readFavorites(){
+      try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); }
+    }
+
+    function renderFavorites(){
+      const favSet = readFavorites();
+      const arr = Array.from(favSet);
+      const grid = document.getElementById('favGrid');
+      grid.innerHTML = '';
+      if(arr.length === 0){ document.getElementById('emptyMsg').style.display='block'; return; }
+      document.getElementById('emptyMsg').style.display='none';
+
+      for(const id of arr){
+        const p = products.find(x=>x.id === id);
+        if(!p) continue;
+        const el = document.createElement('div'); el.className='card';
+        el.innerHTML = `
+          <img src="${p.image}" alt="${p.title}">
+          <div class="body">
+            <h3 style="margin:0 0 .25rem;">${p.title}</h3>
+            <p style="margin:0 0 .5rem; color:#666;">${p.description}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong>$${p.price.toLocaleString()}</strong>
+              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
+                data-item-id="${p.id}"
+                data-item-name="${p.title}"
+                data-item-price="${p.price}"
+                data-item-url="/favorites.html"
+                data-item-description="${p.description}"
+                data-item-image="${p.image}">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(el);
+      }
+      feather.replace();
+    }
+
+    document.addEventListener('DOMContentLoaded', renderFavorites);
+  </script>
+</body>
+</html>

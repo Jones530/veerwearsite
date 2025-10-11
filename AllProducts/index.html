@@ -20,10 +20,10 @@
   <!-- Snipcart (static ecommerce) -->
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
-  <!-- TODO: Replace with your real Snipcart API key in the snipcart div at the end of the body -->
+  <!-- TODO: Replace with your Snipcart public API key in the snipcart div at the end -->
 
   <style>
-    /* ---------- fonts, variables and base (kept from your file) ---------- */
+    /* ---------- fonts, variables and base ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight: 900; font-style: normal; font-display: swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
@@ -51,9 +51,9 @@
       background-repeat: no-repeat;
       color:#fff;
       overflow:hidden;
-      padding-top:8rem;     /* was ~4rem — doubled to ~8rem */
+      padding-top:8rem;     /* doubled vertical space */
       padding-bottom:8rem;
-      min-height: 60vh;     /* force a big visual footprint */
+      min-height: 60vh;
       display:flex;
       align-items:center;
     }
@@ -130,15 +130,21 @@
           <i data-feather="menu" class="text-black"></i>
         </button>
 
-        <a href="/favorites.html" class="hidden md:inline monument text-black flex items-center gap-1">
-          <i data-feather="heart" class="w-5 h-5"></i><span class="text-sm">Favorites</span>
+        <!-- search icon (kept as-is) -->
+        <a href="#" class="hidden md:inline text-black" aria-label="Search"><i data-feather="search" class="w-5 h-5"></i></a>
+
+        <!-- Header heart icon (NO text) — visible on all breakpoints, same level as search & cart -->
+        <a href="/favorites.html" class="text-black flex items-center" id="headerFavorites" aria-label="Favorites">
+          <i data-feather="heart" class="w-5 h-5"></i>
         </a>
 
-        <a href="#" class="hidden md:inline text-black"><i data-feather="search" class="w-5 h-5"></i></a>
-
-        <a href="#" class="relative text-black">
+        <!-- Snipcart-powered cart icon — keeps site ready for checkout on static hosting.
+             Remove this anchor if you want no cart at all. -->
+        <a href="#" class="relative snipcart-checkout text-black" aria-label="Cart">
           <i data-feather="shopping-bag" class="w-5 h-5"></i>
-          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">0</span>
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
+            <span class="snipcart-items-count">0</span>
+          </span>
         </a>
       </div>
     </div>
@@ -171,6 +177,7 @@
         <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
 
+        <!-- keep a textual Favorites link inside the mobile menu for clarity -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
@@ -395,9 +402,7 @@
 
     // favorites - localStorage
     function readFavorites(){
-      try{
-        return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]'));
-      }catch(e){ return new Set(); }
+      try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); }
     }
     function writeFavorites(set){
       const arr = Array.from(set);

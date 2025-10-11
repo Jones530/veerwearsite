@@ -1,1 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop All | BlingBound</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
+  <!-- Google font preload (user-provided) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    /* ---------------------------
+       Fonts
+    --------------------------- */
+    /* Monument Extended regular (fallback) */
+    @font-face {
+      font-family: "Monument Extended";
+      src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"),
+           url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Monument Extended ultrabold (explicit OTF provided by user) */
+    @font-face {
+      font-family: "Monument Extended Ultrabold";
+      src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype");
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Plunct (vaLe) - special-case */
+    @font-face {
+      font-family: "Plunct";
+      src: url("/fonts/Plunct(1).woff2") format("woff2");
+      font-weight: 400 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Pirata One: local file fallback + Google hosted fallback */
+    @font-face {
+      font-family: 'Pirata One';
+      src: url('/fonts/PirataOne-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ---------------------------
+       Variables & base
+    --------------------------- */
+    :root {
+      --gold: #D4AF37;
+      --gold-dark: #B58826;
+      --black: #000000;
+      --white: #ffffff;
+      --veer-deep: #B30000;
+    }
+
+    /* Increase root font-size slightly */
+    html { font-size: 112.5%; }
+
+    /* Default body font: Pirata One (as requested for select) */
+    html, body {
+      font-family: "Pirata One", "Monument Extended", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--white);
+      color: var(--black);
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* ---------- Utility font classes ---------- */
+    .plunct { font-family: "Plunct", "Pirata One", "Monument Extended", sans-serif; font-weight:700; font-size:inherit; }
+    .veerwear { font-family: "Monument Extended Ultrabold", "Monument Extended", "Pirata One", sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument { font-family: "Monument Extended", "Pirata One", sans-serif; font-weight:700; }
+
+    /* Badge for shopping bag count: Monument Extended */
+    .bag-count {
+      font-family: "Monument Extended Ultrabold", "Monument Extended", sans-serif;
+      font-weight: 900;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    /* Ensure the Sort select uses Pirata One explicitly */
+    .select-with-icon select, #sortSelect {
+      font-family: "Pirata One", "Monument Extended", system-ui, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Tidy select appearance */
+    .select-with-icon{ position:relative; display:inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i,
+    .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select{
+      position:relative;
+      z-index:1;
+      -webkit-appearance:none; -moz-appearance:none; appearance:none;
+      background:white; border:1px solid var(--black); color:var(--black);
+      padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px;
+      display:inline-block;
+      vertical-align:middle;
+      background-image:none;
+      min-width:150px;
+    }
+
+    /* Filter panel: sticky and scrollable within viewport */
+    .filter-panel {
+      position: sticky;
+      top: 96px; /* adjust if header height changes */
+      max-height: calc(100vh - 110px); /* leaves space for header/footer */
+      overflow: auto;
+      padding-right: 8px; /* allow scrollbar without covering content */
+    }
+    /* nicer scrollbar for desktop (optional) */
+    .filter-panel::-webkit-scrollbar { width: 8px; }
+    .filter-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
+
+    /* small utility overrides */
+    .bg-amber-600 { background-color: var(--gold) !important; }
+    .bg-amber-700 { background-color: var(--gold-dark) !important; }
+    .text-amber-600, .text-yellow-600, .text-teal-600 { color: var(--gold) !important; }
+    .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F9D423 100%); }
+    .hover\:scale-105:hover { transform: scale(1.05); }
+    .transition-all { transition: all 0.3s ease; }
+    [x-cloak]{ display:none !important; }
+    svg { color:inherit; stroke:currentColor; }
+
+    /* NAV header stacking */
+    nav .container{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    nav .container > div:first-child{ display:flex; align-items:center; gap:1.5rem; flex:1 1 auto; min-width:0; }
+    nav .container > div:last-child{ display:flex; align-items:center; gap:1rem; flex-shrink:0; }
+    @media (min-width:768px){
+      nav .container{ flex-wrap:nowrap; }
+      nav .container .hidden.md\:flex{ display:flex; }
+    }
+
+    /* mobile nav (header inverted too) */
+    #mobileNav{ display:none; }
+    #mobileNav.open{ display:block; position:fixed; inset:0; background:var(--white); color:var(--black); z-index:70; overflow:auto; padding:1.25rem; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .shop-banner{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+
+    /* shop hero with gif background */
+    .shop-hero {
+      position: relative;
+      background-image: url('images/fantasmagorie.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #ffffff;
+      overflow: hidden;
+    }
+    .shop-hero .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      pointer-events: none;
+    }
+    .shop-hero .hero-inner { position: relative; z-index: 2; }
+
+    /* filter collapse */
+    .filter-section{ border-bottom:1px solid #eee; padding-bottom:0.75rem; margin-bottom:0.75rem; }
+    .filter-toggle{ display:flex; align-items:center; justify-content:space-between; width:100%; cursor:pointer; background:transparent; border:none; padding:0; }
+    .chev{ transition: transform .22s ease; }
+    .chev.open{ transform: rotate(180deg); }
+
+    /* product */
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    .page-active{ background:#000; color:#fff; border-color:rgba(0,0,0,0.6); }
+
+    /* footer defaults */
+    footer{ background:transparent; color:var(--black); }
+    footer a, footer p, footer li{ color:var(--black) !important; }
+
+    /* dropdown menu in header: match header inverted style */
+    .group .dropdown-menu { background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.06); }
+    .group .plunct.in-dropdown { color: var(--black) !important; }
+
+    /* Responsive tweaks */
+    @media (max-width: 767px) {
+      .select-with-icon { display:block; width:100%; }
+      .select-with-icon select { width:100%; min-width:0; }
+      .sort-row { display:flex; flex-direction:column; align-items:flex-start; gap:0.5rem; }
+      .select-with-icon svg, .select-with-icon i { right:12px; }
+      .veerwear { font-size: 1.05rem; }
+      .filter-panel { position: static; max-height: none; overflow: visible; top: auto; }
+    }
+  </style>
+</head>
+<body class="monument">
+  <!-- Navigation (inverted header: white background, black text/icons) -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6 min-w-0">
+        <a href="index.html" class="flex items-center">
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">BlingBound</span>
+        </a>
+
+        <div class="hidden md:flex space-x-8">
+          <div class="relative group">
+            <button class="flex items-center space-x-1 monument text-black">
+              <span>All Products</span>
+              <i data-feather="chevron-down" class="w-4 h-4"></i>
+            </button>
+
+            <div class="absolute hidden group-hover:block dropdown-menu shadow-lg rounded-md p-4 w-64">
+              <div class="grid grid-cols-1 gap-2">
+                <a href="shop.html" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">All Products</a>
+                <div class="border-t border-gray-200 my-1"></div>
+
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Grillz</a>
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Nail Jewelry</a>
+                <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded monument text-black">Earrings</a>
+
+                <div class="border-t border-gray-200 pt-2 mt-1">
+                  <a href="#" class="px-2 py-1 hover:bg-gray-100 rounded"><span class="veerwear">Veerwear</span></a>
+                </div>
+
+                <div class="border-t border-gray-200 pt-2 mt-1 flex items-center">
+                  <a href="#" class="flex items-center px-2 py-1 hover:bg-gray-100 rounded">
+                    <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                    <span class="plunct in-dropdown">aL vaLe merCh</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a href="#" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="#" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="#" class="monument hover:text-amber-600 text-black">Gallery</a>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- USD removed as requested -->
+        <button class="md:hidden p-2" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileNav" title="Open menu">
+          <i data-feather="menu" class="text-black"></i>
+        </button>
+
+        <a href="#" class="hidden md:inline text-black"><i data-feather="search" class="w-5 h-5"></i></a>
+        <a href="#" class="hidden md:inline text-black"><i data-feather="user" class="w-5 h-5"></i></a>
+        <a href="#" class="relative text-black">
+          <i data-feather="shopping-bag" class="w-5 h-5"></i>
+          <!-- bag count uses Monument Extended Ultrabold -->
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">0</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile nav (inverted style to match header) -->
+    <div id="mobileNav" class="md:hidden">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">BlingBound</span>
+        </div>
+        <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
+      </div>
+
+      <div class="space-y-3 monument">
+        <a href="/HOME/" class="block py-2 px-1 border-b">HOME</a>
+        <div class="pt-2 pb-2 border-b">
+          <div class="font-medium mb-2">All Products</div>
+          <a href="shop.html" class="block py-1">Jewelry Collection</a>
+          <a href="#" class="block py-1">Grillz</a>
+          <a href="#" class="block py-1">Nail Jewelry</a>
+          <a href="#" class="block py-1">Earrings</a>
+          <a href="#" class="block py-1"><span class="veerwear">Veerwear Drops</span></a>
+          <a href="#" class="block py-1 flex items-center">
+            <img src="/images/vale-logo-removebg-preview.png" class="merch-inline-img" alt="vaLe"/>
+            <span class="plunct">aL vaLe Merch</span>
+          </a>
+        </div>
+
+        <a href="#" class="block py-2 border-b">How to Order</a>
+        <a href="#" class="block py-2 border-b">Impression Kit</a>
+        <a href="#" class="block py-2 border-b">Gallery</a>
+
+        <div class="pt-2">
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span>Account</span>
+            <div class="flex gap-2">
+              <i data-feather="user" class="w-5 h-5"></i>
+              <i data-feather="search" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <a href="#" class="inline-flex items-center px-3 py-2 bg-amber-600 text-black rounded monument">Shop Now</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Shop Header: GIF background -->
+  <section class="shop-hero text-white py-16">
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="container mx-auto px-6 hero-inner">
+      <div class="shop-banner">
+        <div>
+          <h1 class="monument text-4xl md:text-5xl mb-2" style="font-weight:900;">Shop All Products</h1>
+          <div class="flex items-center text-gray-200 text-sm monument">
+            <a href="index.html" class="hover:text-white text-gray-200">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span>All Products</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop Content -->
+  <section class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Filters -->
+        <aside class="md:w-1/4">
+          <!-- added filter-panel: sticky + independent scrolling -->
+          <div class="bg-white p-6 rounded-lg filter-panel monument">
+            <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
+
+            <!-- Category Filter -->
+            <div class="filter-section">
+              <button class="filter-toggle" data-target="category-body">
+                <span style="color:var(--black);">Category</span>
+                <i data-feather="chevron-down" class="chev" id="chev-category"></i>
+              </button>
+              <div id="category-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="grillz" value="Grillz" class="filter-cat mr-2">
+                    <label for="grillz" class="text-sm" style="color:var(--black);">Grillz</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2">
+                    <label for="earrings" class="text-sm" style="color:var(--black);">Earrings</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="nails" value="Nail Jewelry" class="filter-cat mr-2">
+                    <label for="nails" class="text-sm" style="color:var(--black);">Nail Jewelry</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="aL_vaLe" value="aL vaLe" class="filter-cat mr-2">
+                    <label for="aL_vaLe" class="text-sm"><span class="plunct" style="color:var(--black);">aL vaLe</span></label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="veerwear" value="Veerwear" class="filter-cat mr-2">
+                    <label for="veerwear" class="text-sm"><span class="veerwear">Veerwear</span></label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="accessories" value="Accessories" class="filter-cat mr-2">
+                    <label for="accessories" class="text-sm" style="color:var(--black);">Accessories</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Material Filter -->
+            <div class="filter-section">
+              <button class="filter-toggle" data-target="material-body">
+                <span style="color:var(--black);">Material</span>
+                <i data-feather="chevron-down" class="chev" id="chev-material"></i>
+              </button>
+              <div id="material-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="gold" value="Gold" class="filter-material mr-2">
+                    <label for="gold" class="text-sm" style="color:var(--black);">Gold</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="silver" value="Silver" class="filter-material mr-2">
+                    <label for="silver" class="text-sm" style="color:var(--black);">Silver</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="platinum" value="Platinum" class="filter-material mr-2">
+                    <label for="platinum" class="text-sm" style="color:var(--black);">Platinum</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="diamonds" value="With Diamonds" class="filter-material mr-2">
+                    <label for="diamonds" class="text-sm" style="color:var(--black);">With Diamonds</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="resin" value="Resin" class="filter-material mr-2">
+                    <label for="resin" class="text-sm" style="color:var(--black);">Resin</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Filter -->
+            <div class="filter-section">
+              <button class="filter-toggle" data-target="price-body">
+                <span style="color:var(--black);">Price Range</span>
+                <i data-feather="chevron-down" class="chev" id="chev-price"></i>
+              </button>
+              <div id="price-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="radio" id="price-all" name="price" value="all" class="filter-price mr-2" checked>
+                    <label for="price-all" class="text-sm" style="color:var(--black);">All Prices</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="radio" id="price-1" name="price" value="under200" class="filter-price mr-2">
+                    <label for="price-1" class="text-sm" style="color:var(--black);">Under $200</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="radio" id="price-2" name="price" value="200-500" class="filter-price mr-2">
+                    <label for="price-2" class="text-sm" style="color:var(--black);">$200 - $500</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="radio" id="price-3" name="price" value="500-1000" class="filter-price mr-2">
+                    <label for="price-3" class="text-sm" style="color:var(--black);">$500 - $1,000</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="radio" id="price-4" name="price" value="over1000" class="filter-price mr-2">
+                    <label for="price-4" class="text-sm" style="color:var(--black);">Over $1,000</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button id="applyFiltersBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 rounded-md transition-all monument">
+              Apply Filters
+            </button>
+          </div>
+        </aside>
+
+        <!-- Products -->
+        <main class="md:w-3/4 monument">
+          <div class="flex justify-between items-center mb-8">
+            <div>
+              <span id="showingText" class="text-gray-600" style="color:var(--black);">Showing 0 of 0 products</span>
+            </div>
+            <!-- USE items-baseline so "Sort by:" text and the select align on baseline -->
+            <div class="flex items-baseline sort-row">
+              <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
+
+              <div class="select-with-icon">
+                <!-- feather icon sits above the select via absolute positioning -->
+                <i data-feather="chevron-down" class="w-4 h-4"></i>
+                <select id="sortSelect" class="text-black rounded-md text-sm">
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="newest">Newest Arrivals</option>
+                  <option value="best-selling">Best Selling</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- products are rendered dynamically by JS -->
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex justify-center mt-12">
+            <nav id="pagination" class="flex items-center space-x-2"></nav>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (unchanged) -->
+  <footer class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="monument text-xl mb-4" style="font-weight:900; color:var(--black);">BlingBound</h3>
+          <p class="mb-4" style="color:var(--black);">Custom grillz and street jewelry crafted with precision and attitude.</p>
+          <div class="flex space-x-4 mt-4">
+            <a href="#" style="color:var(--black);"><i data-feather="instagram"></i></a>
+            <a href="#" style="color:var(--black);"><i data-feather="twitter"></i></a>
+            <a href="#" style="color:var(--black);"><i data-feather="facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4" style="color:var(--black);">Shop</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-sm" style="color:var(--black);">All Jewelry</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Grillz</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Nail Jewelry</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Earrings</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);"><span class="veerwear">Veerwear</span></a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);"><span class="plunct">aL vaLe</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4" style="color:var(--black);">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-sm" style="color:var(--black);">How to Order</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Impression Kit</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">FAQs</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Contact Us</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Book a Fitting</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4" style="color:var(--black);">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-sm" style="color:var(--black);">Terms & Conditions</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Shipping Policy</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Returns & Warranty</a></li>
+            <li><a href="#" class="text-sm" style="color:var(--black);">Hygiene Standards</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t mt-12 pt-8 text-center text-sm" style="border-color:#111;">
+        <p style="color:var(--black);">© 2023 BlingBound. All rights reserved. <span class="plunct">aL vaLe</span> music subsidiary.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // replace icons once DOM is ready and after dynamic inserts
+    document.addEventListener('DOMContentLoaded', () => {
+      feather.replace();
+    });
+
+    // Mobile nav toggle
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+
+    function openMobile() {
+      if (!mobileNav) return;
+      mobileNav.classList.add('open');
+      mobileBtn?.setAttribute('aria-expanded','true');
+    }
+    function closeMobile() {
+      if (!mobileNav) return;
+      mobileNav.classList.remove('open');
+      mobileBtn?.setAttribute('aria-expanded','false');
+    }
+    mobileBtn?.addEventListener('click', (e) => { e.stopPropagation(); openMobile(); });
+    mobileClose?.addEventListener('click', closeMobile);
+    document.addEventListener('click', (e) => {
+      if (!mobileNav) return;
+      if (!mobileNav.classList.contains('open')) return;
+      const within = mobileNav.contains(e.target) || (mobileBtn && mobileBtn.contains(e.target));
+      if (!within) closeMobile();
+    });
+
+    // Filter collapse toggles
+    document.querySelectorAll('.filter-toggle').forEach(btn => {
+      const target = document.getElementById(btn.getAttribute('data-target'));
+      const chev = btn.querySelector('.chev');
+      // start open
+      if (target) target.style.display = 'block';
+      if (chev) chev.classList.add('open');
+      btn.addEventListener('click', () => {
+        if (!target || !chev) return;
+        if (target.style.display === 'none') {
+          target.style.display = 'block';
+          chev.classList.add('open');
+        } else {
+          target.style.display = 'none';
+          chev.classList.remove('open');
+        }
+      });
+    });
+
+    /* --------------------------
+       Product data generator + renderer (demo)
+    -------------------------- */
+    const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
+    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
+    const products = [];
+    const TOTAL_ITEMS = 86;
+    function rand(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+    for (let i=1;i<=TOTAL_ITEMS;i++){
+      const cat = categories[i % categories.length];
+      const mat = materials[i % materials.length];
+      const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
+      const sold = rand(0,2000);
+      const featured = i % 7 === 0;
+      const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
+      products.push({
+        id: i,
+        title: `${cat} Item ${i}`,
+        description: `${mat} · ${cat}`,
+        image: `http://static.photos/jewelry/640x360/${(i%40)+1}`,
+        price: price,
+        category: cat,
+        material: mat,
+        soldCount: sold,
+        featured: featured,
+        date: date
+      });
+    }
+
+    // Pagination + render state
+    let currentPage = 1;
+    const pageSize = 24;
+    let currentFilters = { categories: [], materials: [], price: 'all' };
+    let currentSort = 'featured';
+
+    function priceMatch(price, filterKey) {
+      if (!filterKey || filterKey === 'all') return true;
+      if (filterKey === 'under200') return price < 200;
+      if (filterKey === '200-500') return price >= 200 && price <= 500;
+      if (filterKey === '500-1000') return price > 500 && price <= 1000;
+      if (filterKey === 'over1000') return price > 1000;
+      return true;
+    }
+
+    function applyFiltersAndSort() {
+      let out = products.slice();
+      if (currentFilters.categories.length > 0) out = out.filter(p => currentFilters.categories.includes(p.category));
+      if (currentFilters.materials.length > 0) out = out.filter(p => currentFilters.materials.includes(p.material));
+      if (currentFilters.price && currentFilters.price !== 'all') out = out.filter(p => priceMatch(p.price, currentFilters.price));
+
+      if (currentSort === 'price-asc') out.sort((a,b) => a.price - b.price);
+      else if (currentSort === 'price-desc') out.sort((a,b) => b.price - a.price);
+      else if (currentSort === 'newest') out.sort((a,b) => new Date(b.date) - new Date(a.date));
+      else if (currentSort === 'best-selling') out.sort((a,b) => b.soldCount - a.soldCount);
+      else out.sort((a,b) => (b.featured?1:0) - (a.featured?1:0));
+
+      return out;
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      const filtered = applyFiltersAndSort();
+
+      const total = filtered.length;
+      const start = (currentPage-1)*pageSize;
+      const pageItems = filtered.slice(start, start + pageSize);
+
+      const showingText = document.getElementById('showingText');
+      showingText.textContent = `Showing ${pageItems.length} of ${total} products`;
+
+      for (const p of pageItems) {
+        // determine font class for this product: Veerwear -> Monument Extended Ultrabold; aL vaLe -> Plunct; otherwise default monument
+        let titleClass = 'monument';
+        if (p.category === 'Veerwear') titleClass = 'veerwear';
+        else if (p.category === 'aL vaLe') titleClass = 'plunct';
+
+        // priceClass follows the same rule as titleClass so prices match product font
+        let priceClass = titleClass;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg overflow-hidden product-card';
+        card.innerHTML = `
+          <div class="relative overflow-hidden h-64">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
+            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white rounded-full p-2">
+              <i data-feather="heart" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="font-medium mb-1 ${titleClass}" style="color:var(--black);">${p.title}</h3>
+            <p class="${titleClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
+            <div class="flex justify-between items-center">
+              <span class="${priceClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
+              <button class="text-amber-600 hover:text-amber-700">
+                <i data-feather="shopping-bag" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      feather.replace(); // re-bind icons in new nodes
+      renderPagination(filtered.length);
+    }
+
+    function renderPagination(totalFiltered) {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'w-10 h-10 flex items-center justify-center rounded-md border';
+      prevBtn.innerHTML = '<i data-feather="chevron-left" class="w-4 h-4"></i>';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.addEventListener('click', () => { if (currentPage>1) { currentPage--; renderProducts(); }});
+      pagination.appendChild(prevBtn);
+
+      function pageBtn(page) {
+        const b = document.createElement('button');
+        b.className = 'w-10 h-10 flex items-center justify-center rounded-md border';
+        if (page === currentPage) b.classList.add('page-active');
+        b.textContent = String(page);
+        b.addEventListener('click', () => { currentPage = page; renderProducts(); });
+        pagination.appendChild(b);
+      }
+
+      if (totalPages <= 8) {
+        for (let p=1;p<=totalPages;p++) pageBtn(p);
+      } else {
+        pageBtn(1);
+        pageBtn(2);
+        if (currentPage > 4) {
+          const dots = document.createElement('span'); dots.className='px-2'; dots.textContent='...';
+          pagination.appendChild(dots);
+        }
+        const start = Math.max(3, Math.min(currentPage-1, totalPages-4));
+        const end = Math.min(totalPages-2, start + 2);
+        for (let p = start; p <= end; p++) pageBtn(p);
+        if (end < totalPages-2) {
+          const dots2 = document.createElement('span'); dots2.className='px-2'; dots2.textContent='...';
+          pagination.appendChild(dots2);
+        }
+        pageBtn(totalPages-1);
+        pageBtn(totalPages);
+      }
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'w-10 h-10 flex items-center justify-center rounded-md border';
+      nextBtn.innerHTML = '<i data-feather="chevron-right" class="w-4 h-4"></i>';
+      nextBtn.disabled = currentPage === Math.max(1, Math.ceil(totalFiltered / pageSize));
+      nextBtn.addEventListener('click', () => { if (currentPage < Math.ceil(totalFiltered / pageSize)) { currentPage++; renderProducts(); }});
+      pagination.appendChild(nextBtn);
+
+      feather.replace();
+    }
+
+    function readFiltersFromUI() {
+      currentFilters.categories = Array.from(document.querySelectorAll('.filter-cat:checked')).map(i => i.value);
+      currentFilters.materials = Array.from(document.querySelectorAll('.filter-material:checked')).map(i => i.value);
+      const priceRadio = document.querySelector('.filter-price:checked');
+      currentFilters.price = priceRadio ? priceRadio.value : 'all';
+    }
+
+    document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+      readFiltersFromUI();
+      currentPage = 1;
+      renderProducts();
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      currentPage = 1;
+      renderProducts();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // replace feather icons after DOM is loaded
+      feather.replace();
+      // initial state
+      readFiltersFromUI();
+      currentSort = document.getElementById('sortSelect').value || 'featured';
+      renderProducts();
+    });
+  </script>
+</body>
+</html>

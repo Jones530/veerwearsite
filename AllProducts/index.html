@@ -40,7 +40,25 @@
 
     .bag-count{ font-family:"Monument Extended Ultrabold", "Monument Extended", sans-serif; font-weight:900; font-size:11px; line-height:1; }
 
-    .select-with-icon select, #sortSelect { font-family:"Pirata One","Monument Extended",system-ui,sans-serif; }
+    /* ---- select-with-icon: hide native arrow and position custom icon ---- */
+    .select-with-icon { position: relative; display: inline-flex; align-items: center; vertical-align: middle; }
+    .select-with-icon i,
+    .select-with-icon svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 2; width:18px; height:18px; display:block; }
+    .select-with-icon select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: none;
+      padding-left: 12px;
+      padding-right: 44px; /* space for the custom icon */
+      height: 38px;
+      line-height: 1;
+      border-radius: 6px;
+      border: 1px solid var(--black);
+      color: var(--black);
+      background: white;
+      z-index: 1;
+    }
 
     /* Hero: doubled vertical real estate */
     .shop-hero {
@@ -83,16 +101,18 @@
       border-radius:8px;
       cursor:pointer;
       font-weight:700;
+      background-clip: padding-box;
     }
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
-    /* active / glowing page */
+
+    /* active / glowing page — grey glow, black border */
     .page-active {
-      background: linear-gradient(90deg, rgba(212,175,55,1) 0%, rgba(249,212,35,0.98) 100%);
+      background: linear-gradient(180deg,#ececec,#e0e0e0);
       color: #000;
-      border-color: rgba(212,175,55,0.9);
-      box-shadow: 0 6px 30px rgba(212,175,55,0.22), 0 0 18px rgba(212,175,55,0.45);
-      transform: translateY(-4px) scale(1.04);
+      border: 1px solid #000;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0 16px rgba(0,0,0,0.06);
+      transform: translateY(-4px) scale(1.02);
     }
 
     /* arrow/nav buttons */
@@ -104,9 +124,13 @@
     .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
     .heart-active{ background:var(--gold); color:#000 !important; }
 
+    /* header icons container to make spacing consistent */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; } /* adjust width if you want tighter/looser spacing */
+
     /* responsive */
     @media (max-width:767px){
       .select-with-icon select{ width:100%; }
+      .header-actions{ width:120px; }
     }
   </style>
 </head>
@@ -151,17 +175,12 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4">
-        <!-- mobile menu -->
-        <button class="md:hidden p-2" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileNav" title="Open menu">
-          <i data-feather="menu" class="text-black"></i>
-        </button>
-
-        <!-- search icon (kept as-is) -->
-        <a href="#" class="hidden md:inline text-black" aria-label="Search"><i data-feather="search" class="w-5 h-5"></i></a>
+      <!-- header actions: search, heart, cart — evenly spaced -->
+      <div class="header-actions">
+        <a href="#" class="text-black" aria-label="Search"><i data-feather="search" class="w-5 h-5"></i></a>
 
         <!-- Header heart icon (NO text) — visible on all breakpoints, same level as search & cart -->
-        <a href="/favorites.html" class="text-black flex items-center" id="headerFavorites" aria-label="Favorites">
+        <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
           <i data-feather="heart" class="w-5 h-5"></i>
         </a>
 
@@ -317,6 +336,7 @@
             <div class="flex items-baseline sort-row">
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
               <div class="select-with-icon">
+                <!-- custom chevron (only this icon shows; native arrow hidden by CSS) -->
                 <i data-feather="chevron-down" class="w-4 h-4"></i>
                 <select id="sortSelect" class="text-black rounded-md text-sm">
                   <option value="featured">Featured</option>
@@ -631,8 +651,6 @@
         // Snipcart events will flip cartOpen accordingly.
       } else {
         // Snipcart not ready yet — attempt to open via the built-in checkout trigger
-        // The built-in behavior would be to follow the anchor with class "snipcart-checkout".
-        // We already prevented default; do a best-effort fallback:
         const anchor = document.querySelector('a.snipcart-checkout');
         if(anchor){
           anchor.click();

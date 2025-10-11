@@ -73,6 +73,33 @@
     .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
     .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
 
+    /* pagination buttons styling */
+    .page-btn {
+      transition: all .16s ease;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      width: 40px; height: 40px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .page-btn.clicked { transform: scale(.98); }
+    /* active / glowing page */
+    .page-active {
+      background: linear-gradient(90deg, rgba(212,175,55,1) 0%, rgba(249,212,35,0.98) 100%);
+      color: #000;
+      border-color: rgba(212,175,55,0.9);
+      box-shadow: 0 6px 30px rgba(212,175,55,0.22), 0 0 18px rgba(212,175,55,0.45);
+      transform: translateY(-4px) scale(1.04);
+    }
+
+    /* arrow/nav buttons */
+    .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .nav-btn.clicked { transform: scale(.96); opacity:.95; }
+
     /* heart styling */
     .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
     .heart-active{ background:var(--gold); color:#000 !important; }
@@ -138,9 +165,8 @@
           <i data-feather="heart" class="w-5 h-5"></i>
         </a>
 
-        <!-- Snipcart-powered cart icon — keeps site ready for checkout on static hosting.
-             Remove this anchor if you want no cart at all. -->
-        <a href="#" class="relative snipcart-checkout text-black" aria-label="Cart">
+        <!-- Snipcart-powered cart icon (toggle behavior implemented) -->
+        <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
           <i data-feather="shopping-bag" class="w-5 h-5"></i>
           <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
             <span class="snipcart-items-count">0</span>
@@ -378,6 +404,8 @@
        Product data generator + renderer (demo)
        - favorites stored in localStorage key: 'sb_favorites'
        - Snipcart-ready buy buttons added (static site)
+       - Pagination glow + click reactions
+       - Cart icon toggles Snipcart open/close
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
@@ -502,27 +530,70 @@
     function renderPagination(totalFiltered){
       const pagination = document.getElementById('pagination'); pagination.innerHTML='';
       const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
-      const prevBtn = document.createElement('button'); prevBtn.className='w-10 h-10 flex items-center justify-center rounded-md border'; prevBtn.innerHTML='<i data-feather="chevron-left" class="w-4 h-4"></i>'; prevBtn.disabled = currentPage === 1;
-      prevBtn.addEventListener('click', ()=>{ if(currentPage>1){ currentPage--; renderProducts(); }});
-      pagination.appendChild(prevBtn);
 
-      function pageBtn(page){ const b = document.createElement('button'); b.className='w-10 h-10 flex items-center justify-center rounded-md border'; if(page===currentPage) b.classList.add('page-active'); b.textContent=String(page); b.addEventListener('click', ()=>{ currentPage = page; renderProducts(); }); pagination.appendChild(b); }
-
-      if(totalPages <= 8) for(let p=1;p<=totalPages;p++) pageBtn(p);
-      else {
-        pageBtn(1); pageBtn(2);
-        if(currentPage>4){ const dots=document.createElement('span'); dots.className='px-2'; dots.textContent='...'; pagination.appendChild(dots); }
-        const start = Math.max(3, Math.min(currentPage-1, totalPages-4));
-        const end = Math.min(totalPages-2, start+2);
-        for(let p=start;p<=end;p++) pageBtn(p);
-        if(end < totalPages-2){ const dots2=document.createElement('span'); dots2.className='px-2'; dots2.textContent='...'; pagination.appendChild(dots2); }
-        pageBtn(totalPages-1); pageBtn(totalPages);
+      // helper to create nav button (arrow)
+      function makeNavButton(iconName, onClick, disabled=false){
+        const b = document.createElement('button');
+        b.className = 'nav-btn';
+        if(disabled) b.setAttribute('disabled','true');
+        b.innerHTML = `<i data-feather="${iconName}" class="w-4 h-4"></i>`;
+        b.addEventListener('click', (e)=>{ if(disabled) return; b.classList.add('clicked'); setTimeout(()=>b.classList.remove('clicked'),140); onClick(e); });
+        pagination.appendChild(b);
+        return b;
       }
 
-      const nextBtn = document.createElement('button'); nextBtn.className='w-10 h-10 flex items-center justify-center rounded-md border'; nextBtn.innerHTML = '<i data-feather="chevron-right" class="w-4 h-4"></i>'; nextBtn.disabled = currentPage === Math.max(1, Math.ceil(totalFiltered / pageSize));
-      nextBtn.addEventListener('click', ()=>{ if(currentPage < Math.ceil(totalFiltered / pageSize)){ currentPage++; renderProducts(); }});
-      pagination.appendChild(nextBtn);
+      // prev
+      makeNavButton('chevron-left', ()=>{
+        if(currentPage > 1){ currentPage--; renderProducts(); }
+      }, currentPage === 1);
 
+      function pageBtn(page){
+        const b = document.createElement('button');
+        b.className = 'page-btn';
+        b.textContent = String(page);
+        if(page === currentPage) b.classList.add('page-active');
+        b.addEventListener('click', ()=>{
+          if(page === currentPage) {
+            // small press feedback if clicking the active page
+            b.classList.add('clicked');
+            setTimeout(()=>b.classList.remove('clicked'),120);
+            return;
+          }
+          b.classList.add('clicked');
+          setTimeout(()=>b.classList.remove('clicked'),120);
+          currentPage = page;
+          renderProducts();
+        });
+        // press feedback for touch/mouse
+        ['mousedown','touchstart'].forEach(ev => b.addEventListener(ev, ()=> b.classList.add('clicked')));
+        ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => b.addEventListener(ev, ()=> b.classList.remove('clicked')));
+        pagination.appendChild(b);
+      }
+
+      if(totalPages <= 8){
+        for(let p=1;p<=totalPages;p++) pageBtn(p);
+      } else {
+        pageBtn(1);
+        pageBtn(2);
+        if(currentPage > 4){
+          const dots = document.createElement('span'); dots.className='px-2'; dots.textContent='...'; pagination.appendChild(dots);
+        }
+        const start = Math.max(3, Math.min(currentPage-1, totalPages-4));
+        const end = Math.min(totalPages-2, start + 2);
+        for(let p=start;p<=end;p++) pageBtn(p);
+        if(end < totalPages-2){
+          const dots2 = document.createElement('span'); dots2.className='px-2'; dots2.textContent='...'; pagination.appendChild(dots2);
+        }
+        pageBtn(totalPages-1);
+        pageBtn(totalPages);
+      }
+
+      // next
+      makeNavButton('chevron-right', ()=>{
+        if(currentPage < Math.ceil(totalFiltered / pageSize)){ currentPage++; renderProducts(); }
+      }, currentPage === Math.ceil(totalFiltered / pageSize));
+
+      // feather icons need to be replaced after adding buttons
       feather.replace();
     }
 
@@ -536,6 +607,42 @@
     document.getElementById('applyFiltersBtn').addEventListener('click', ()=>{ readFiltersFromUI(); currentPage = 1; renderProducts(); });
     document.getElementById('sortSelect').addEventListener('change', e => { currentSort = e.target.value; currentPage = 1; renderProducts(); });
 
+    /* --------------------------
+       Cart toggle behavior
+       - Uses Snipcart events if Snipcart is present.
+       - Clicking the cart icon toggles open/close.
+    -------------------------- */
+    const headerCartToggle = document.getElementById('headerCartToggle');
+    let cartOpen = false;
+    // Listen to Snipcart events to keep cartOpen in sync when Snipcart opens/closes
+    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
+    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
+    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
+
+    headerCartToggle?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      // provide quick visual feedback
+      headerCartToggle.classList.add('clicked');
+      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
+
+      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
+        if(cartOpen) window.Snipcart.api.modal.close();
+        else window.Snipcart.api.modal.open();
+        // Snipcart events will flip cartOpen accordingly.
+      } else {
+        // Snipcart not ready yet — attempt to open via the built-in checkout trigger
+        // The built-in behavior would be to follow the anchor with class "snipcart-checkout".
+        // We already prevented default; do a best-effort fallback:
+        const anchor = document.querySelector('a.snipcart-checkout');
+        if(anchor){
+          anchor.click();
+        } else {
+          console.warn('Snipcart not initialized yet.');
+        }
+      }
+    });
+
+    // initial render
     document.addEventListener('DOMContentLoaded', ()=>{
       feather.replace();
       readFiltersFromUI();

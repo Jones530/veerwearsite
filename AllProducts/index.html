@@ -282,6 +282,32 @@
     .subtype-group { font-size:0.85rem; margin-bottom:0.5rem; display:block; color:var(--black); }
     .subtype-heading { font-weight:700; margin-top:0.5rem; margin-bottom:0.25rem; font-size:0.85rem; color:rgba(0,0,0,0.9); }
 
+    /* ================== NEW: Applied filters pill ================== */
+    .applied-pill {
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(255,255,255,0.9));
+      border:1px solid rgba(212,175,55,0.18);
+      color:var(--black);
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:0.9rem;
+      box-shadow:0 6px 18px rgba(0,0,0,0.04);
+    }
+    .applied-pill .pill-close {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background:transparent;
+      border: none;
+      cursor:pointer;
+      font-size:14px;
+    }
   </style>
 </head>
 <body class="monument">
@@ -565,7 +591,11 @@
 
         <main class="md:w-3/4 monument">
           <div class="flex justify-between items-center mb-8">
-            <div><span id="showingText" style="color:var(--black);">Showing 0 of 0 products</span></div>
+            <div>
+              <span id="showingText" style="color:var(--black);">Showing 0 of 0 products</span>
+              <!-- Applied filters pill will be injected here -->
+              <div id="appliedFiltersWrap" style="display:inline-block; margin-left:12px; vertical-align:middle;"></div>
+            </div>
 
             <div class="flex items-baseline sort-row">
               <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
@@ -666,6 +696,7 @@
 
     /* --------------------------
        Subtype map & enhancements to products
+       + slug normalization tables (canonical slug: style=full-cover-sets)
     -------------------------- */
     const subtypesMap = {
       'Earrings': ['Hoops','Studs','Dangles'],
@@ -673,6 +704,56 @@
       'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
       'aL vaLe': ['Merch'],
       'Veerwear': ['Apparel']
+    };
+
+    // canonical slug for each displayed subtype (use these in your category pages when building links)
+    const displayToSlug = {
+      'Full-Cover Sets': 'full-cover-sets',
+      'Half-Cover / Open-Face': 'half-cover-open-face',
+      'Top Sets': 'top-sets',
+      'Bottom Sets': 'bottom-sets',
+      'Single-Tooth / Cap': 'single-tooth-cap',
+      'Resin-Embedded Specials': 'resin-embedded-specials',
+
+      'Hoops': 'hoops',
+      'Studs': 'studs',
+      'Dangles': 'dangles',
+
+      'Full-Cover Press-Ons': 'full-cover-press-ons',
+      'Accent Tips': 'accent-tips',
+      'Resin-Embedded Nails': 'resin-embedded-nails'
+    };
+
+    // normalization mapping: keys are normalized slugs; values are display text matching the checkbox values
+    // we include many possible alias forms so odd links still work
+    const slugToDisplay = {
+      // grillz aliases
+      'full-cover-sets':'Full-Cover Sets',
+      'fullcoversets':'Full-Cover Sets',
+      'full-cover-sets':'Full-Cover Sets',
+      'full-cover_sets':'Full-Cover Sets',
+      'full_cover_sets':'Full-Cover Sets',
+      'fullcoverset':'Full-Cover Sets',
+
+      'half-cover-open-face':'Half-Cover / Open-Face',
+      'half-cover_open-face':'Half-Cover / Open-Face',
+      'halfcoveropenface':'Half-Cover / Open-Face',
+      'halfcoversets':'Half-Cover / Open-Face',
+
+      'top-sets':'Top Sets','topsets':'Top Sets','tops':'Top Sets',
+      'bottom-sets':'Bottom Sets','bottomsets':'Bottom Sets','bottoms':'Bottom Sets',
+
+      'single-tooth-cap':'Single-Tooth / Cap','single-tooth':'Single-Tooth / Cap','cap':'Single-Tooth / Cap','singletoothcap':'Single-Tooth / Cap',
+
+      'resin-embedded-specials':'Resin-Embedded Specials','resin-embedded':'Resin-Embedded Specials','resinembeddedspecials':'Resin-Embedded Specials','resin-embedded-special':'Resin-Embedded Specials',
+
+      // earrings
+      'hoops':'Hoops','studs':'Studs','dangles':'Dangles',
+
+      // nails
+      'full-cover-press-ons':'Full-Cover Press-Ons','full-cover-pressons':'Full-Cover Press-Ons','full-cover-press_on':'Full-Cover Press-Ons','fullcoverpressons':'Full-Cover Press-Ons',
+      'accent-tips':'Accent Tips','accenttips':'Accent Tips',
+      'resin-embedded-nails':'Resin-Embedded Nails','resin-embedded':'Resin-Embedded Nails','resinnails':'Resin-Embedded Nails'
     };
 
     // Helper to derive a technique from subtype name (simple heuristic)
@@ -684,6 +765,27 @@
       if(s.includes('accent') || s.includes('single')) return 'Accent';
       if(s.includes('3d') || s.includes('sculpt')) return '3D Sculpt';
       return '';
+    }
+
+    // normalize a slug-ish input into canonical lowercase hyphen form
+    function normalizeSlugInput(raw){
+      if(!raw) return '';
+      let s = String(raw).trim().toLowerCase();
+      s = s.replace(/[%20\+_]+/g,'-');       // spaces, plus, underscores -> hyphen
+      s = s.replace(/[^\w-]+/g,'-');         // non-word -> hyphen
+      s = s.replace(/-+/g,'-');              // collapse multiple hyphens
+      s = s.replace(/^-|-$/g,'');            // trim leading/trailing hyphens
+      return s;
+    }
+
+    // Given a slug supplied via URL, return the human label (matching checkbox values) or null
+    function slugToLabel(rawSlug){
+      const norm = normalizeSlugInput(rawSlug);
+      if(!norm) return null;
+      // direct lookup
+      if(slugToDisplay[norm]) return slugToDisplay[norm];
+      // try a relaxed match by removing vowels? (not necessary now)
+      return null;
     }
 
     /* --------------------------
@@ -826,6 +928,9 @@
 
       // build products (now with subtype + technique)
       buildDemoProducts();
+
+      // apply URL-driven filters BEFORE reading filters so UI reflects URL state
+      applyUrlDrivenFiltersFromUrl();
 
       // rest of your initialization (filters/products/pagination)
       readFiltersFromUI();
@@ -1059,6 +1164,9 @@
       currentFilters.techniques = Array.from(document.querySelectorAll('.filter-tech:checked')).map(i=>i.value);
       const priceRadio = document.querySelector('.filter-price:checked');
       currentFilters.price = priceRadio ? priceRadio.value : 'all';
+
+      // update applied filters pill if any were applied via URL (we will store that state on window._urlAppliedFilters)
+      updateAppliedFiltersPill();
     }
 
     document.getElementById('applyFiltersBtn').addEventListener('click', ()=>{ readFiltersFromUI(); currentPage = 1; renderProducts(); });
@@ -1176,6 +1284,188 @@
       setTimeout(()=> {
         if(mobileInput) mobileInput.focus();
       }, 60);
+    }
+
+    /* --------------------------
+       ========== URL-driven filters glue ==========
+       - Reads ?category=...&style=... and auto-applies (also supports comma-separated styles)
+       - Normalizes many slug variants to the checkbox label
+       - Shows an "Applied filters" pill with clear button
+    -------------------------- */
+    // store what URL-driven filters were applied (for showing the pill)
+    window._urlAppliedFilters = { category: null, subtypes: [] };
+
+    function applyUrlDrivenFiltersFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category');
+      const styleParam = params.get('style'); // e.g. "full-cover-sets" or "half-cover_open-face"
+
+      if(!catParam && !styleParam) return; // nothing to do
+
+      // Normalize category -- match by case-insensitive value on checkboxes
+      if(catParam){
+        const catNorm = catParam.trim().toLowerCase();
+        const catInputs = Array.from(document.querySelectorAll('.filter-cat'));
+        const matched = catInputs.find(i => i.value && i.value.toLowerCase() === catNorm);
+        if(matched){
+          matched.checked = true;
+          window._urlAppliedFilters.category = matched.value;
+          // open category filter block for clarity
+          openFilterSection('category-body');
+        } else {
+          // attempt looser match (replace hyphens/underscores)
+          const catCandidate = catNorm.replace(/[-_]+/g,' ');
+          const matched2 = catInputs.find(i => i.value && i.value.toLowerCase() === catCandidate);
+          if(matched2){
+            matched2.checked = true;
+            window._urlAppliedFilters.category = matched2.value;
+            openFilterSection('category-body');
+          }
+        }
+      }
+
+      // style may be comma-separated. handle multiple styles
+      if(styleParam){
+        const styleParts = styleParam.split(',').map(s => s.trim()).filter(Boolean);
+        for(const raw of styleParts){
+          const label = slugToLabel(raw);
+          if(label){
+            // check matching subtype checkbox (exact value match)
+            const subInputs = Array.from(document.querySelectorAll('.filter-subtype'));
+            const match = subInputs.find(i => i.value === label);
+            if(match){
+              match.checked = true;
+              window._urlAppliedFilters.subtypes.push(label);
+              // open subtype filter block
+              openFilterSection('subtype-body');
+              // try also to enable technique if derivable
+              const tech = techniqueFromSubtype(label);
+              if(tech){
+                const techInput = Array.from(document.querySelectorAll('.filter-tech')).find(i => i.value === tech);
+                if(techInput){
+                  techInput.checked = true;
+                  // ensure feature-body open
+                  openFilterSection('feature-body');
+                }
+              }
+            } else {
+              // attempt case-insensitive compare if exact doesn't match
+              const match2 = Array.from(document.querySelectorAll('.filter-subtype')).find(i => i.value.toLowerCase() === label.toLowerCase());
+              if(match2){
+                match2.checked = true;
+                window._urlAppliedFilters.subtypes.push(match2.value);
+                openFilterSection('subtype-body');
+              }
+            }
+          } else {
+            // If slug didn't resolve, attempt to treat raw as decoded label
+            const decoded = decodeURIComponent(raw).replace(/[-_]+/g,' ').trim();
+            const match3 = Array.from(document.querySelectorAll('.filter-subtype')).find(i => i.value.toLowerCase() === decoded.toLowerCase());
+            if(match3){
+              match3.checked = true;
+              window._urlAppliedFilters.subtypes.push(match3.value);
+              openFilterSection('subtype-body');
+            }
+          }
+        } // for parts
+      } // if styleParam
+
+      // If any URL-driven filters were set, update UI state & pill immediately
+      if(window._urlAppliedFilters.category || (window._urlAppliedFilters.subtypes && window._urlAppliedFilters.subtypes.length)){
+        // read filters into state and renderProducts will apply them
+        readFiltersFromUI();
+      }
+    }
+
+    // opens a filter panel by ID and toggles its chevron to "open"
+    function openFilterSection(sectionId){
+      const el = document.getElementById(sectionId);
+      if(!el) return;
+      el.style.display = 'block';
+      // find the toggle button that points to this target
+      const btn = document.querySelector(`.filter-toggle[data-target="${sectionId}"]`);
+      if(btn){
+        const chev = btn.querySelector('.chev');
+        if(chev) chev.classList.add('open');
+      } else {
+        // fallback: try to locate a button with matching data-target attribute (older markup)
+        const maybe = Array.from(document.querySelectorAll('.filter-toggle')).find(b => b.getAttribute('data-target') === sectionId);
+        if(maybe) maybe.querySelector('.chev')?.classList.add('open');
+      }
+    }
+
+    // build the pill text and show it in the appliedFiltersWrap
+    function updateAppliedFiltersPill(){
+      const wrap = document.getElementById('appliedFiltersWrap');
+      if(!wrap) return;
+      // If pill was created by URL application, reflect it
+      const cat = window._urlAppliedFilters.category;
+      const subs = window._urlAppliedFilters.subtypes || [];
+
+      // If there are no URL-applied filters, remove pill area
+      if(!cat && (!subs || subs.length === 0)){
+        wrap.innerHTML = '';
+        return;
+      }
+
+      // Build pill content: show primary category then first subtype if present
+      const parts = [];
+      if(cat) parts.push(cat);
+      if(subs.length) parts.push(subs.join(' • ')); // show multiple subtypes separated with dot
+      const pillText = parts.join(' › ');
+
+      wrap.innerHTML = `<span class="applied-pill" role="status" aria-live="polite">
+        Filters applied: ${escapeHtml(pillText)}
+        <button class="pill-close" title="Clear URL filters" aria-label="Clear filters">&times;</button>
+      </span>`;
+
+      // wire the clear button
+      const btn = wrap.querySelector('.pill-close');
+      if(btn){
+        btn.addEventListener('click', ()=> {
+          clearUrlDrivenFilters();
+        });
+      }
+    }
+
+    // clear the URL-driven filters: uncheck those that were set and remove query params
+    function clearUrlDrivenFilters(){
+      // uncheck category if set
+      if(window._urlAppliedFilters.category){
+        const catInput = Array.from(document.querySelectorAll('.filter-cat')).find(i => i.value === window._urlAppliedFilters.category);
+        if(catInput) catInput.checked = false;
+      }
+      // uncheck subtype inputs that were set
+      (window._urlAppliedFilters.subtypes || []).forEach(lbl => {
+        const inpt = Array.from(document.querySelectorAll('.filter-subtype')).find(i => i.value === lbl);
+        if(inpt) inpt.checked = false;
+      });
+
+      // uncheck technique derived checkboxes (best-effort)
+      const allTechInputs = Array.from(document.querySelectorAll('.filter-tech'));
+      allTechInputs.forEach(i => { i.checked = false; });
+
+      // reset our memory
+      window._urlAppliedFilters = { category:null, subtypes:[] };
+
+      // update current filters and UI
+      readFiltersFromUI();
+      currentPage = 1;
+      renderProducts();
+
+      // remove 'category' and 'style' from URL (preserve other params) using replaceState
+      const url = new URL(window.location.href);
+      url.searchParams.delete('category');
+      url.searchParams.delete('style');
+      history.replaceState(null, '', url.toString());
+    }
+
+    /* --------------------------
+       small helpers
+    -------------------------- */
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
     }
 
   </script>

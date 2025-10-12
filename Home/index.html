@@ -1,1 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grin & Glisten — Home</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+
+  <!-- Google font preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- Snipcart -->
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+
+  <style>
+    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
+    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
+    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+
+    :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
+
+    html{ font-size:112.5%; }
+    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
+    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
+
+    .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
+
+    /* ---- select-with-icon: hide native arrow and position custom icon ---- */
+    .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
+
+    /* Hero */
+    .homepage-hero {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color:#fff;
+      overflow:visible;
+      padding-top:5rem; /* visual spacing relative to header */
+      padding-bottom:5rem;
+      min-height:56vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .homepage-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.25); pointer-events:none; }
+    .homepage-hero .hero-inner{ position:relative; z-index:2; max-width:1200px; width:100%; padding:2rem; }
+
+    /* full-bleed image block that sits directly under header (fills empty white space) */
+    .hero-image-block{
+      width:100%;
+      display:block;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-image-block img{ width:100%; height:auto; display:block; object-fit:cover; min-height:36vh; max-height:72vh; }
+
+    .hero-cta{
+      position:absolute;
+      left:50%;
+      top:60%;
+      transform:translate(-50%, -50%);
+      z-index:3;
+      text-align:center;
+    }
+    .hero-cta a{
+      display:inline-block;
+      padding:12px 22px;
+      border-radius:8px;
+      background:#fff;
+      color:var(--black);
+      font-weight:800;
+      text-decoration:none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    }
+
+    /* filter panel sticky */
+    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
+    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    /* curated-grid responsiveness */
+    .collections-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    @media (max-width:1024px){ .collections-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .collections-grid { grid-template-columns: 1fr; } }
+
+    /* small utilities */
+    .section-card { background:#fff; border-radius:12px; overflow:hidden; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 8px 18px rgba(0,0,0,0.04); }
+    .section-card img{ width:100%; height:220px; object-fit:cover; display:block; }
+    .section-card .pad{ padding:1rem; }
+
+    /* social strip */
+    .social-strip { display:flex; gap:12px; align-items:center; justify-content:center; padding:16px 0; border-top:1px solid rgba(0,0,0,0.04); border-bottom:1px solid rgba(0,0,0,0.04); margin-top:2rem; }
+
+    /* share toast minimal */
+    .share-toast { position:fixed; bottom:18px; right:18px; background:#111; color:#fff; padding:8px 12px; border-radius:8px; font-size:13px; opacity:0.92; z-index:99999; }
+
+    /* keep other existing styles from Grillz template as needed... */
+  </style>
+</head>
+<body class="monument">
+
+  <!-- ========== Header (verbatim from Grillz file — DO NOT MODIFY) ========== -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
+        </button>
+
+        <a href="/Home/" class="flex items-center">
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </a>
+
+        <div class="hidden md:flex space-x-8">
+          <div class="group" id="all-products-group">
+            <!-- trigger -->
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
+              <span class="menu-label">All Products</span>
+              <i data-feather="chevron-down" class="w-4 h-4"></i>
+            </button>
+
+            <!-- dropdown menu (white backing, auto width) -->
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
+              <div class="grid grid-cols-1 gap-0">
+                <a href="/AllProducts/" class="monument">All Products</a>
+                <div style="height:1px;background:#eee;margin:4px 0;"></div>
+                <a href="/Grillz/" class="monument">Grillz</a>
+                <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
+                <a href="/Earrings/" class="monument">Earrings</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/VEERWEAR/" class="veerwear">Veerwear</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/aLvaLemerCh/" class="flex items-center pl-0">
+                  <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                  <span class="plunct">aL vaLe merCh</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="/HowToOrder/" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="/ImpressionKit/" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="/Gallery/" class="monument hover:text-amber-600 text-black">Gallery</a>
+        </div>
+      </div>
+
+      <!-- header icons: search, heart, cart -->
+      <div class="header-actions">
+        <!-- SEARCH WRAP: desktop expands left. On mobile the icon will open mobile nav & focus mobile search. -->
+        <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
+          <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
+            <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
+            <!-- search button: when collapsed clicking it opens input; when open form submit -->
+            <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
+              <i data-feather="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
+          <i data-feather="heart" class="w-5 h-5"></i>
+        </a>
+
+        <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
+          <i data-feather="shopping-bag" class="w-5 h-5"></i>
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
+            <span class="snipcart-items-count">0</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- mobile nav -->
+    <div id="mobileNav" class="md:hidden" style="display:none;">
+      <div class="flex items-center justify-between mb-4 px-4">
+        <div class="flex items-center gap-3">
+          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </div>
+        <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
+      </div>
+
+      <!-- Mobile search area (toggled by header search icon on small screens) -->
+      <div id="mobileSearchBar" aria-hidden="true">
+        <form id="mobileSearchForm" action="/search.html" method="get" role="search">
+          <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
+          <button type="submit" class="bg-amber-600 text-black px-3 py-2 rounded monument">Search</button>
+        </form>
+      </div>
+
+      <div class="space-y-3 monument px-4">
+        <a href="/Home/" class="block py-2 border-b">HOME</a>
+        <div class="pt-2 pb-2 border-b">
+          <div class="font-medium mb-2">All Products</div>
+          <a href="/Grillz/" class="block py-1">Grillz</a>
+          <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
+          <a href="/Earrings/" class="block py-1">Earrings</a>
+          <a href="/VEERWEAR/" class="block py-1"><span class="veerwear">Veerwear</span></a>
+          <a href="/aLvaLemerCh/" class="block py-1 flex items-center">
+            <img src="/images/vale-logo-removebg-preview.png" class="merch-inline-img" alt="vaLe"/>
+            <span class="plunct">aL vaLe merCh</span>
+          </a>
+        </div>
+
+        <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
+        <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
+        <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
+
+        <!-- mobile favorites link -->
+        <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== HERO / top image block (fills the white space under header) ========== -->
+  <section class="hero-image-block" aria-hidden="false" style="background:#000;">
+    <!-- placeholder full-bleed image - swap /images/home-banner.jpg with your asset -->
+    <img src="/images/home-banner.jpg" alt="Home banner placeholder" />
+    <!-- CTA positioned over the image -->
+    <div class="hero-cta">
+      <a href="/AllProducts/" class="monument">Explore Collection</a>
+    </div>
+  </section>
+
+  <!-- ========== MAIN: sections inspired by PDF layout (placeholders) ========== -->
+  <main class="py-12">
+    <div class="container mx-auto px-6">
+      <!-- Intro / two-column hero-like (placeholder) -->
+      <section class="mb-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-4xl monument mb-4" style="font-weight:900;">Featured Collections</h2>
+            <p class="text-lg text-gray-700 mb-4">A curated selection of standout pieces and limited drops. These are placeholders — replace with real images and links.</p>
+            <a href="/AllProducts/" class="monument bg-amber-600 text-black inline-block px-4 py-2 rounded-md">Explore Collection</a>
+          </div>
+          <div>
+            <div class="section-card">
+              <img src="/images/placeholder-1.jpg" alt="Placeholder">
+              <div class="pad">
+                <h3 class="monument text-xl mb-2">New Drop — Placeholder</h3>
+                <p class="text-sm text-gray-600">Short blurb about the drop, fabrics, or limited run.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Collections grid (three cards) -->
+      <section class="mb-12">
+        <h3 class="monument text-2xl mb-4">Collections</h3>
+        <div class="collections-grid">
+          <div class="section-card">
+            <img src="/images/placeholder-2.jpg" alt="Collection 1">
+            <div class="pad">
+              <h4 class="monument mb-1">Collection One</h4>
+              <p class="text-sm text-gray-600 mb-3">Placeholder description for collection one.</p>
+              <a href="/AllProducts/" class="text-sm monument">View collection →</a>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <img src="/images/placeholder-3.jpg" alt="Collection 2">
+            <div class="pad">
+              <h4 class="monument mb-1">Collection Two</h4>
+              <p class="text-sm text-gray-600 mb-3">Placeholder description for collection two.</p>
+              <a href="/AllProducts/" class="text-sm monument">View collection →</a>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <img src="/images/placeholder-4.jpg" alt="Collection 3">
+            <div class="pad">
+              <h4 class="monument mb-1">Collection Three</h4>
+              <p class="text-sm text-gray-600 mb-3">Placeholder description for collection three.</p>
+              <a href="/AllProducts/" class="text-sm monument">View collection →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Brand ethos / more info -->
+      <section class="mb-12">
+        <div class="bg-white p-8 rounded-lg section-card">
+          <h3 class="monument text-2xl mb-3">Our Ethos</h3>
+          <p class="text-gray-700">Placeholder brand copy: handcrafted, small-batch, and made with attention to detail. Replace with your real mission statement, manufacturing notes, or sizing/care highlights.</p>
+        </div>
+      </section>
+
+      <!-- Social / follow strip -->
+      <div class="social-strip">
+        <a href="#" class="monument">Instagram</a>
+        <a href="#" class="monument">TikTok</a>
+        <a href="#" class="monument">Twitter</a>
+        <a href="#" class="monument">Facebook</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== Footer (verbatim from Grillz file — DO NOT MODIFY) ========== -->
+  <footer class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="monument text-xl mb-4" style="font-weight:900;">Grin & Glisten</h3>
+          <p class="mb-4">Custom grillz and street jewelry crafted with precision and attitude.</p>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Shop</h4>
+          <ul class="space-y-2">
+            <li><a href="/AllProducts/" class="text-sm">All Products</a></li>
+            <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
+            <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
+            <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
+            <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
+            <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="/HowToOrder/" class="text-sm">How to Order</a></li>
+            <li><a href="/ImpressionKit/" class="text-sm">Impression Kit</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="/TermsandConditions/" class="text-sm">Terms & Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t mt-12 pt-8 text-center text-sm" style="border-color:#111;">
+        <p>© 2025 Grin & Glisten. All rights reserved. <span class="plunct">aL vaLe</span> music subsidiary.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Snipcart root -->
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
+
+  <!-- ========== Scripts (behavior copied from Grillz file) ========== -->
+  <script>
+    feather.replace();
+
+    // Mobile nav toggle (verbatim)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+    mobileBtn?.addEventListener('click', ()=> {
+      mobileNav.style.display='block';
+      document.body.classList.remove('mobile-search-open');
+    });
+    mobileClose?.addEventListener('click', ()=> {
+      mobileNav.style.display='none';
+      const mIn = document.getElementById('mobileSearchInput');
+      if(mIn) mIn.value = '';
+      document.body.classList.remove('mobile-search-open');
+    });
+
+    // Dropdown: attach menu to body and robust open/close (same behavior as Grillz)
+    function positionAndBindDropdowns(){
+      document.querySelectorAll('.group').forEach(group=>{
+        if(group.dataset.dropdownBound === "true") return;
+        const label = group.querySelector('.menu-label');
+        const menu = group.querySelector('.dropdown-menu');
+        const trigger = group.querySelector('.menu-trigger');
+
+        if(!menu || !label || !trigger) return;
+
+        if (!menu.dataset.moved) {
+          document.body.appendChild(menu);
+          menu.dataset.moved = "true";
+          menu.style.position = 'fixed';
+          menu.style.willChange = 'top, left, width';
+          menu.style.zIndex = 9999;
+        }
+
+        function positionMenu(){
+          menu.style.display = 'block';
+          menu.style.visibility = 'hidden';
+          menu.style.left = '-9999px';
+          menu.style.top = '-9999px';
+          menu.style.width = 'auto';
+          menu.style.whiteSpace = 'nowrap';
+
+          let maxItemWidth = 0;
+          menu.querySelectorAll('a').forEach(a=>{
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
+          });
+
+          const cs = getComputedStyle(menu);
+          const padLeft = parseFloat(cs.paddingLeft) || 10;
+          const padRight = parseFloat(cs.paddingRight) || 10;
+          const extraBuffer = 16;
+          const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
+          menu.style.width = finalWidth + 'px';
+
+          const labelRect = label.getBoundingClientRect();
+          const triggerRect = trigger.getBoundingClientRect();
+          const left = Math.round(labelRect.left - padLeft);
+          const top = Math.round(triggerRect.bottom + 8);
+          const clampedLeft = Math.max(8, left);
+          menu.style.left = clampedLeft + 'px';
+          menu.style.top = top + 'px';
+
+          menu.style.visibility = '';
+          menu.style.display = group.classList.contains('open') ? 'block' : 'none';
+        }
+
+        let leaveTimer = null;
+        const openMenu = ()=> {
+          clearTimeout(leaveTimer);
+          group.classList.add('open');
+          menu.classList.add('open');
+          menu.style.display = 'block';
+          trigger.setAttribute('aria-expanded','true');
+          menu.setAttribute('aria-hidden','false');
+          positionMenu();
+        };
+        const closeMenu = ()=> {
+          clearTimeout(leaveTimer);
+          leaveTimer = setTimeout(()=> {
+            group.classList.remove('open');
+            menu.classList.remove('open');
+            menu.style.display = 'none';
+            trigger.setAttribute('aria-expanded','false');
+            menu.setAttribute('aria-hidden','true');
+          }, 120);
+        };
+
+        group.addEventListener('pointerenter', openMenu);
+        group.addEventListener('pointerleave', closeMenu);
+        menu.addEventListener('pointerenter', openMenu);
+        menu.addEventListener('pointerleave', closeMenu);
+
+        trigger.addEventListener('focus', openMenu);
+        trigger.addEventListener('blur', ()=>{
+          leaveTimer = setTimeout(()=> {
+            const active = document.activeElement;
+            if(menu.contains(active)) return;
+            closeMenu();
+          }, 120);
+        });
+
+        trigger.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(group.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        const outsideHandler = (ev) => {
+          if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
+            closeMenu();
+          }
+        };
+        document.addEventListener('click', outsideHandler);
+
+        const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
+        window.addEventListener('resize', repositionOnResize);
+        window.addEventListener('scroll', repositionOnResize, { passive: true });
+
+        document.addEventListener('keydown', (ev)=> {
+          if(ev.key === 'Escape') closeMenu();
+        });
+
+        group.dataset.dropdownBound = "true";
+      });
+    }
+
+    window.addEventListener('resize', ()=> positionAndBindDropdowns());
+    document.addEventListener('DOMContentLoaded', ()=>{
+      try {
+        positionAndBindDropdowns();
+        feather.replace();
+      } catch (err) {
+        console.error('Error initializing homepage:', err);
+      }
+    });
+
+    // small helper: show toast (used elsewhere if needed)
+    function showShareToast(msg){
+      const id = 'share-toast';
+      if(document.getElementById(id)) return;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'share-toast';
+      div.textContent = msg;
+      document.body.appendChild(div);
+      setTimeout(()=> {
+        div.style.transition = 'opacity .3s ease';
+        div.style.opacity = '0';
+        setTimeout(()=> { div.remove(); }, 350);
+      }, 1400);
+    }
+  </script>
+</body>
+</html>
 

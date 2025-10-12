@@ -1,1 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grin & Glisten — Veerwear</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+
+  <!-- Google font preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- Snipcart -->
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+
+  <style>
+    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
+    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
+    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+
+    :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
+
+    html{ font-size:112.5%; }
+    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
+    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
+
+    .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
+
+    /* ---- select-with-icon: hide native arrow and position custom icon ---- */
+    .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
+
+    /* Hero (small tweak: no hard-coded background here — will be set inline) */
+    .shop-hero {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color:#fff;
+      overflow:visible; /* ensure dropdown can overlap if needed */
+      padding-top:8rem;
+      padding-bottom:8rem;
+      min-height:60vh;
+      display:flex;
+      align-items:center;
+    }
+    .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
+    .shop-hero .hero-inner{ position:relative; z-index:2; }
+
+    /* filter panel sticky */
+    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
+    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    /* pagination buttons styling */
+    .page-btn {
+      transition: all .16s ease;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      width: 40px; height:40px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      background-clip: padding-box;
+      position: relative; /* required for glow pseudo element */
+      z-index: 2;
+      overflow: visible; /* allow pseudo elements to be visible */
+    }
+    .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .page-btn.clicked { transform: scale(.98); }
+
+    /* active page: stronger glow & sparkle */
+    .page-active {
+      background: linear-gradient(180deg,#fff9e6,#f7e5b8);
+      color: #000;
+      border: 1px solid rgba(0,0,0,0.18);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.12);
+      overflow: visible;
+    }
+
+    .page-active::before{
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 220%;
+      height: 220%;
+      border-radius: 16px;
+      z-index: -2;
+      background: radial-gradient(circle at 50% 30%,
+                  rgba(255,255,255,0.95) 0%,
+                  rgba(250,250,240,0.9) 6%,
+                  rgba(212,175,55,0.28) 20%,
+                  rgba(212,175,55,0.14) 30%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(28px);
+      pointer-events: none;
+    }
+
+    .page-active::after{
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 20%, rgba(255,255,255,0.8) 21% 45%, rgba(255,255,255,0) 46%);
+      box-shadow: 0 0 12px rgba(212,175,55,0.75), 0 0 2px rgba(255,255,255,0.9);
+      transform-origin: center;
+      animation: sparkle 1.6s infinite ease-in-out;
+      opacity: 1;
+    }
+    @keyframes sparkle {
+      0%   { transform: translateY(0) scale(0.6) rotate(0deg); opacity:0; }
+      25%  { transform: translateY(-4px) scale(1.15) rotate(18deg); opacity:1; }
+      55%  { transform: translateY(-6px) scale(0.95) rotate(-10deg); opacity:0.9; }
+      100% { transform: translateY(0) scale(0.7) rotate(0deg); opacity:0; }
+    }
+
+    /* nav arrow buttons */
+    .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .nav-btn.clicked { transform: scale(.96); opacity:.95; }
+
+    /* heart styling */
+    .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .heart-active{ background:var(--gold); color:#000 !important; }
+
+    /* header icons container */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
+
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .menu-label{ display:inline-block; }
+
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
+    .dropdown-menu{
+      position: fixed;
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 120px;
+    }
+    .dropdown-menu.open { display: block; }
+
+    .dropdown-menu a{
+      display:inline-block;
+      padding: 8px 6px;
+      color: var(--black);
+      text-align: left;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
+
+    /* filter toggle style */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
+    @media (max-width:767px){
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\\:flex { display:none !important; }
+      .header-actions{ width:120px; }
+      .dropdown-menu{ min-width: 180px; }
+      .filter-toggle{ padding:6px 0; }
+
+      /* Hide desktop inline search on mobile */
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
+    }
+
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
+
+    /* ----------------------------
+       Header search UI
+    ---------------------------- */
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
+    .search-form { display:flex; align-items:center; }
+    .search-input {
+      position: absolute;
+      right: 44px;
+      width: 0;
+      opacity: 0;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:0.95rem;
+      outline:none;
+      background:#fff;
+      color:var(--black);
+      transform-origin: right center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60;
+      white-space:nowrap;
+    }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
+    .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
+
+    /* Mobile search inside mobileNav */
+    #mobileSearchBar { display:none; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.04); }
+    #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
+    #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
+    .mobile-search-open #mobileSearchBar { display:block; }
+
+    /* curated-grid responsiveness */
+    .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
+
+    /* subtype link style / count badge */
+    .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
+    .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
+
+    /* share button (tiny) */
+    .share-btn {
+      margin-left:8px;
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      width:28px;
+      height:28px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:6px;
+    }
+    .share-toast {
+      position:fixed;
+      bottom:18px;
+      right:18px;
+      background:#111;
+      color:#fff;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:13px;
+      opacity:0.92;
+      z-index:99999;
+    }
+  </style>
+</head>
+<body class="monument">
+
+  <!-- ========== CONFIG: edit these for each category page ========== -->
+  <script>
+    // Page config for Veerwear
+    const CATEGORY_NAME = 'Veerwear';
+    const CATEGORY_SLUG = 'Veerwear';
+    const CATEGORY_TAGLINE = 'Soft goods & apparel — Veerwear collection.';
+    const BANNER_URL = '/images/veerwear-hero.gif'; // hero banner
+    const BODY_GIF = '/images/veerwear-body-loop.gif'; // the gif to show in the page body
+
+    // Optional curated product IDs (example). Replace with real IDs from your product dataset.
+    const CURATED_IDS = [6,13,25,31];
+
+    // SUBTYPES: keep canonical display names
+    const SUBTYPES = ['Apparel'];
+  </script>
+
+  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
+        </button>
+
+        <a href="/Home/" class="flex items-center">
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </a>
+
+        <div class="hidden md:flex space-x-8">
+          <div class="group" id="all-products-group">
+            <!-- trigger -->
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
+              <span class="menu-label">All Products</span>
+              <i data-feather="chevron-down" class="w-4 h-4"></i>
+            </button>
+
+            <!-- dropdown menu (white backing, auto width) -->
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
+              <div class="grid grid-cols-1 gap-0">
+                <a href="/AllProducts/" class="monument">All Products</a>
+                <div style="height:1px;background:#eee;margin:4px 0;"></div>
+                <a href="/Grillz/" class="monument">Grillz</a>
+                <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
+                <a href="/Earrings/" class="monument">Earrings</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/VEERWEAR/" class="veerwear">Veerwear</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/aLvaLemerCh/" class="flex items-center pl-0">
+                  <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                  <span class="plunct">aL vaLe merCh</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="/HowToOrder/" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="/ImpressionKit/" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="/Gallery/" class="monument hover:text-amber-600 text-black">Gallery</a>
+        </div>
+      </div>
+
+      <!-- header icons: search, heart, cart -->
+      <div class="header-actions">
+        <!-- SEARCH WRAP: desktop expands left. On mobile the icon will open mobile nav & focus mobile search. -->
+        <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
+          <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
+            <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
+            <!-- search button: when collapsed clicking it opens input; when open form submit -->
+            <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
+              <i data-feather="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
+          <i data-feather="heart" class="w-5 h-5"></i>
+        </a>
+
+        <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
+          <i data-feather="shopping-bag" class="w-5 h-5"></i>
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
+            <span class="snipcart-items-count">0</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- mobile nav -->
+    <div id="mobileNav" class="md:hidden" style="display:none;">
+      <div class="flex items-center justify-between mb-4 px-4">
+        <div class="flex items-center gap-3">
+          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </div>
+        <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
+      </div>
+
+      <!-- Mobile search area (toggled by header search icon on small screens) -->
+      <div id="mobileSearchBar" aria-hidden="true">
+        <form id="mobileSearchForm" action="/search.html" method="get" role="search">
+          <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
+          <button type="submit" class="bg-amber-600 text-black px-3 py-2 rounded monument">Search</button>
+        </form>
+      </div>
+
+      <div class="space-y-3 monument px-4">
+        <a href="/Home/" class="block py-2 border-b">HOME</a>
+        <div class="pt-2 pb-2 border-b">
+          <div class="font-medium mb-2">All Products</div>
+          <a href="/Grillz/" class="block py-1">Grillz</a>
+          <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
+          <a href="/Earrings/" class="block py-1">Earrings</a>
+          <a href="/VEERWEAR/" class="block py-1"><span class="veerwear">Veerwear</span></a>
+          <a href="/aLvaLemerCh/" class="block py-1 flex items-center">
+            <img src="/images/vale-logo-removebg-preview.png" class="merch-inline-img" alt="vaLe"/>
+            <span class="plunct">aL vaLe merCh</span>
+          </a>
+        </div>
+
+        <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
+        <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
+        <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
+
+        <!-- mobile favorites link -->
+        <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO (curated landing hero; retains style/UX) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/veerwear-hero.gif');">
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="container mx-auto px-6 hero-inner">
+      <div class="shop-banner">
+        <div>
+          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">Veerwear</h1>
+          <div class="flex items-center text-gray-200 text-sm monument">
+            <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span id="categoryBreadcrumb">Veerwear</span>
+          </div>
+          <p id="categoryTagline" class="mt-4 text-lg opacity-90">Soft goods & apparel — Veerwear collection.</p>
+          <div class="mt-6">
+            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENT: curated landing (keeps container/grid sizes & general layout consistent with All Products) -->
+  <section class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row gap-8">
+        <aside class="md:w-1/4">
+          <div class="bg-white p-6 rounded-lg filter-panel monument">
+            <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Explore</h3>
+
+            <div class="space-y-3">
+              <a id="linkViewAll" href="/AllProducts/?category=CATEGORY_SLUG" class="block py-2 px-3 border rounded-md text-sm monument">View all Veerwear</a>
+
+              <div class="mt-4">
+                <h4 class="monument font-medium mb-2">By style</h4>
+                <div id="subtypeLinks" class="space-y-2"></div>
+              </div>
+
+              <div class="mt-6">
+                <h4 class="monument font-medium mb-2">Quick info</h4>
+                <p class="text-sm">Limited runs & merch drops. Care info on each product page. Free shipping over $150.</p>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+
+        <main class="md:w-3/4 monument">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h2 class="text-2xl font-bold" id="featuredTitle">Featured Veerwear</h2>
+              <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Limited drops, tees, hoodies & more.</p>
+            </div>
+            <div>
+              <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
+            </div>
+          </div>
+
+          <!-- BODY GIF: full-width, responsive, non-blocking (keeps UX) -->
+          <div class="mb-8">
+            <img src="/images/veerwear-body-loop.gif" alt="Veerwear loop" class="w-full rounded-lg object-cover" loading="lazy" aria-hidden="false">
+          </div>
+
+          <div id="curatedGrid" class="curated-grid"></div>
+
+          <div class="mt-8 text-center">
+            <a id="viewAllBottom" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">See every Veerwear item</a>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
+  <footer class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="monument text-xl mb-4" style="font-weight:900;">Grin & Glisten</h3>
+          <p class="mb-4">Custom grillz and street jewelry crafted with precision and attitude.</p>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Shop</h4>
+          <ul class="space-y-2">
+            <li><a href="/AllProducts/" class="text-sm">All Products</a></li>
+            <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
+            <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
+            <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
+            <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
+            <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="/HowToOrder/" class="text-sm">How to Order</a></li>
+            <li><a href="/ImpressionKit/" class="text-sm">Impression Kit</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="/TermsandConditions/" class="text-sm">Terms & Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t mt-12 pt-8 text-center text-sm" style="border-color:#111;">
+        <p>© 2025 Grin & Glisten. All rights reserved. <span class="plunct">aL vaLe</span> music subsidiary.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Snipcart root -->
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
+
+  <!-- SCRIPTS: patched + Veerwear-specific init -->
+  <script>
+    // tiny safe helpers
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    }
+    function escapeAttr(s){ return escapeHtml(String(s)); }
+
+    feather.replace();
+
+    // Mobile nav toggle (verbatim)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+    mobileBtn?.addEventListener('click', ()=> {
+      mobileNav.style.display='block';
+      document.body.classList.remove('mobile-search-open'); // don't auto-open mobile search here
+    });
+    mobileClose?.addEventListener('click', ()=> {
+      mobileNav.style.display='none';
+      // also clear mobile search
+      const mIn = document.getElementById('mobileSearchInput');
+      if(mIn) mIn.value = '';
+      document.body.classList.remove('mobile-search-open');
+    });
+
+    // Filter collapse behavior (kept)
+    document.querySelectorAll('.filter-toggle').forEach(btn=>{
+      const target = document.getElementById(btn.getAttribute('data-target'));
+      const chev = btn.querySelector('.chev');
+      if(target) target.style.display='block';
+      if(chev) chev.classList.add('open');
+      btn.addEventListener('click', ()=>{
+        if(!target) return;
+        const none = getComputedStyle(target).display === 'none';
+        target.style.display = none ? 'block' : 'none';
+        chev?.classList.toggle('open', none);
+      });
+    });
+
+    /* --------------------------
+       Dropdown: attach menu to body (fixed) and robust open/close
+       (verbatim from AllProducts)
+    -------------------------- */
+    function positionAndBindDropdowns(){
+      document.querySelectorAll('.group').forEach(group=>{
+        if(group.dataset.dropdownBound === "true") return;
+        const label = group.querySelector('.menu-label');
+        const menu = group.querySelector('.dropdown-menu');
+        const trigger = group.querySelector('.menu-trigger');
+
+        if(!menu || !label || !trigger) return;
+
+        // Move menu to body to escape stacking contexts and allow overlay
+        if (!menu.dataset.moved) {
+          document.body.appendChild(menu);
+          menu.dataset.moved = "true";
+          menu.style.position = 'fixed';
+          menu.style.willChange = 'top, left, width';
+          menu.style.zIndex = 9999;
+        }
+
+        function positionMenu(){
+          menu.style.display = 'block';
+          menu.style.visibility = 'hidden';
+          menu.style.left = '-9999px';
+          menu.style.top = '-9999px';
+          menu.style.width = 'auto';
+          menu.style.whiteSpace = 'nowrap';
+
+          let maxItemWidth = 0;
+          menu.querySelectorAll('a').forEach(a=>{
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
+          });
+
+          const cs = getComputedStyle(menu);
+          const padLeft = parseFloat(cs.paddingLeft) || 10;
+          const padRight = parseFloat(cs.paddingRight) || 10;
+          const extraBuffer = 16;
+          const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
+          menu.style.width = finalWidth + 'px';
+
+          const labelRect = label.getBoundingClientRect();
+          const triggerRect = trigger.getBoundingClientRect();
+          const left = Math.round(labelRect.left - padLeft);
+          const top = Math.round(triggerRect.bottom + 8);
+          const clampedLeft = Math.max(8, left);
+          menu.style.left = clampedLeft + 'px';
+          menu.style.top = top + 'px';
+
+          menu.style.visibility = '';
+          menu.style.display = group.classList.contains('open') ? 'block' : 'none';
+        }
+
+        let leaveTimer = null;
+        const openMenu = ()=> {
+          clearTimeout(leaveTimer);
+          group.classList.add('open');
+          menu.classList.add('open');
+          menu.style.display = 'block';
+          trigger.setAttribute('aria-expanded','true');
+          menu.setAttribute('aria-hidden','false');
+          positionMenu();
+        };
+        const closeMenu = ()=> {
+          clearTimeout(leaveTimer);
+          leaveTimer = setTimeout(()=> {
+            group.classList.remove('open');
+            menu.classList.remove('open');
+            menu.style.display = 'none';
+            trigger.setAttribute('aria-expanded','false');
+            menu.setAttribute('aria-hidden','true');
+          }, 120);
+        };
+
+        group.addEventListener('pointerenter', openMenu);
+        group.addEventListener('pointerleave', closeMenu);
+        menu.addEventListener('pointerenter', openMenu);
+        menu.addEventListener('pointerleave', closeMenu);
+
+        trigger.addEventListener('focus', openMenu);
+        trigger.addEventListener('blur', ()=>{
+          leaveTimer = setTimeout(()=> {
+            const active = document.activeElement;
+            if(menu.contains(active)) return;
+            closeMenu();
+          }, 120);
+        });
+
+        trigger.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(group.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        const outsideHandler = (ev) => {
+          if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
+            closeMenu();
+          }
+        };
+        document.addEventListener('click', outsideHandler);
+
+        const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
+        window.addEventListener('resize', repositionOnResize);
+        window.addEventListener('scroll', repositionOnResize, { passive: true });
+
+        document.addEventListener('keydown', (ev)=> {
+          if(ev.key === 'Escape') closeMenu();
+        });
+
+        group.dataset.dropdownBound = "true";
+      });
+    }
+
+    // Call on load and resize (binding only happens once per group)
+    window.addEventListener('resize', ()=> positionAndBindDropdowns());
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // optional protection so one runtime error doesn't kill init
+      try {
+        console.log('Veerwear script init');
+        feather.replace();
+        positionAndBindDropdowns();
+
+        // build demo products (includes subtype + technique so counts are usable during dev)
+        buildDemoProducts();
+
+        // initialize category hero & links, then render curated
+        initCategoryHeroAndLinks();
+        renderCuratedProducts();
+
+        // init search interactions
+        initHeaderSearch();
+        initMobileSearch();
+      } catch (err) {
+        console.error('Error initializing Veerwear page:', err);
+      }
+    });
+
+    /* --------------------------
+       Subtypes & technique helpers (shared with AllProducts)
+    -------------------------- */
+    const subtypesMap = {
+      'Earrings': ['Hoops','Studs','Dangles'],
+      'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
+      'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
+      'aL vaLe': ['Merch'],
+      'Veerwear': ['Apparel']
+    };
+
+    function techniqueFromSubtype(sub) {
+      if(!sub) return '';
+      const s = sub.toLowerCase();
+      if(s.includes('full-cover') || s.includes('full cover')) return 'Full-Cover';
+      if(s.includes('resin')) return 'Resin-Embedded';
+      if(s.includes('accent') || s.includes('single')) return 'Accent';
+      if(s.includes('3d') || s.includes('sculpt')) return '3D Sculpt';
+      return '';
+    }
+
+    /* --------------------------
+       Canonical slug map & helpers
+    -------------------------- */
+    const displayToSlug = {
+      'Full-Cover Sets': 'full-cover-sets',
+      'Half-Cover / Open-Face': 'half-cover-open-face',
+      'Top Sets': 'top-sets',
+      'Bottom Sets': 'bottom-sets',
+      'Single-Tooth / Cap': 'single-tooth-cap',
+      'Resin-Embedded Specials': 'resin-embedded-specials',
+      'Hoops': 'hoops',
+      'Studs': 'studs',
+      'Dangles': 'dangles',
+      'Full-Cover Press-Ons': 'full-cover-press-ons',
+      'Accent Tips': 'accent-tips',
+      'Resin-Embedded Nails': 'resin-embedded-nails',
+      'Apparel': 'apparel'
+    };
+
+    function normalizeSlugInput(raw){
+      if(!raw) return '';
+      let s = String(raw).trim().toLowerCase();
+      s = s.replace(/[%20\+_]+/g,'-');
+      s = s.replace(/[^\w-]+/g,'-');
+      s = s.replace(/-+/g,'-');
+      s = s.replace(/^-|-$/g,'');
+      return s;
+    }
+
+    function slugForDisplay(display){
+      if(!display) return '';
+      if(displayToSlug[display]) return displayToSlug[display];
+      return normalizeSlugInput(display);
+    }
+
+    /* --------------------------
+       Product generator: demo dataset
+    -------------------------- */
+    const categories = ['Veerwear','Grillz','Earrings','Nail Jewelry','aL vaLe','Accessories'];
+    const materials = ['Cotton','Polyester','Denim','Leather','Resin'];
+    const products = [];
+    const TOTAL_ITEMS = 86;
+    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    function buildDemoProducts(){
+      products.length = 0;
+      for(let i=1;i<=TOTAL_ITEMS;i++){
+        const cat = categories[i % categories.length];
+        const mat = materials[i % materials.length];
+        const price = (i % 10 === 0) ? rand(80,350) : rand(20,180);
+        const sold = rand(0,2000);
+        const featured = i % 7 === 0;
+        const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
+
+        const pool = subtypesMap[cat] || ['General'];
+        const subtype = pool[rand(0, pool.length-1)];
+        const technique = techniqueFromSubtype(subtype) || (Math.random() < 0.12 ? '3D Sculpt' : '');
+
+        products.push({
+          id:i,
+          title:`${subtype} ${cat} ${i}`,
+          description:`${mat} · ${cat} · ${subtype}`,
+          image:`/images/placeholder-${(i%10)+1}.jpg`,
+          price,
+          category:cat,
+          material:mat,
+          subtype,
+          technique,
+          soldCount:sold,
+          featured,
+          date
+        });
+      }
+    }
+
+    // pagination / filters state
+    let currentPage = 1;
+    const pageSize = 24;
+    let currentFilters = { categories:[], materials:[], price:'all' };
+    let currentSort = 'featured';
+
+    // favorites support (robust)
+    function readFavorites(){
+      try{
+        return new Set(JSON.parse(localStorage.getItem('sb_favorites') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+    function writeFavorites(set){
+      try {
+        const arr = Array.from(set);
+        localStorage.setItem('sb_favorites', JSON.stringify(arr));
+      } catch (e) {
+        console.warn('Could not write favorites to localStorage', e);
+      }
+    }
+
+    /* --------------------------
+       Category-specific helpers (render curated grid & subtype links)
+    -------------------------- */
+
+    function initCategoryHeroAndLinks(){
+      // set hero background, title and tagline
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
+
+      // set view all links (category slug)
+      const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
+      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = viewAllHref);
+      document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllTop')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllBottom')?.setAttribute('href', viewAllHref);
+      document.getElementById('linkViewAll')?.setAttribute('href', viewAllHref);
+
+      // render subtype links with counts
+      const container = document.getElementById('subtypeLinks');
+      if(!container) return;
+      container.innerHTML = '';
+
+      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES.slice() : (subtypesMap[CATEGORY_NAME]||[]);
+
+      subtypeList.forEach(name => {
+        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === name).length;
+        const slug = slugForDisplay(name);
+        const href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&style=${encodeURIComponent(slug)}`;
+
+        const outer = document.createElement('div');
+        outer.className = 'flex items-center justify-between gap-2';
+
+        const a = document.createElement('a');
+        a.className = 'subtype-link flex-1';
+        a.href = href;
+        a.setAttribute('title', `Open ${name}`);
+        a.innerHTML = `<span>${escapeHtml(name)}</span><span class="subtype-badge">${count}</span>`;
+
+        // share button (copy link / open in new tab)
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'share-btn';
+        shareBtn.type = 'button';
+        shareBtn.title = 'Copy direct link / Open';
+        shareBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 7h4v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7h4"></path><path d="M8 7V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"></path></svg>`;
+
+        shareBtn.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const url = window.location.origin + href;
+          try {
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(url);
+              showShareToast('Link copied to clipboard');
+            } else {
+              const ta = document.createElement('textarea');
+              ta.value = url;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              ta.remove();
+              showShareToast('Link copied to clipboard');
+            }
+          } catch (err) {
+            console.warn('Clipboard failed, opening new tab', err);
+            window.open(url, '_blank');
+          }
+        });
+        shareBtn.addEventListener('auxclick', (ev) => {
+          if(ev.button === 1){
+            ev.preventDefault();
+            const url = window.location.origin + href;
+            window.open(url, '_blank');
+          }
+        });
+
+        outer.appendChild(a);
+        const btnwrap = document.createElement('div');
+        btnwrap.style.display = 'flex';
+        btnwrap.style.alignItems = 'center';
+        btnwrap.appendChild(shareBtn);
+        outer.appendChild(btnwrap);
+
+        container.appendChild(outer);
+      });
+    }
+
+    function showShareToast(msg){
+      const id = 'share-toast';
+      if(document.getElementById(id)) return;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'share-toast';
+      div.textContent = msg;
+      document.body.appendChild(div);
+      setTimeout(()=> {
+        div.style.transition = 'opacity .3s ease';
+        div.style.opacity = '0';
+        setTimeout(()=> { div.remove(); }, 350);
+      }, 1400);
+    }
+
+    function findProductById(id){
+      if(typeof products !== 'undefined' && Array.isArray(products)){
+        return products.find(p => Number(p.id) === Number(id));
+      }
+      if(window.PRODUCTS && typeof window.PRODUCTS === 'object'){
+        return window.PRODUCTS[id] || Object.values(window.PRODUCTS).find(x => x.id == id);
+      }
+      return null;
+    }
+
+    function renderCuratedProducts(){
+      const grid = document.getElementById('curatedGrid');
+      if(!grid) return;
+      grid.innerHTML = '';
+
+      // Resolve CURATED_IDS to product objects; if they are missing, choose fallback picks
+      let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
+        ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
+        : [];
+
+      // If CURATED_IDS present but some missing, warn in console
+      if(Array.isArray(CURATED_IDS) && CURATED_IDS.length) {
+        const missing = CURATED_IDS.filter(id => !findProductById(id));
+        if(missing.length) {
+          console.warn('Some CURATED_IDS could not be resolved to products:', missing);
+        }
+      }
+
+      // Fallback: if no curated ids or none resolved, pick featured Veerwear items
+      if(productObjs.length === 0){
+        productObjs = products.filter(p => p.category === CATEGORY_NAME).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
+      }
+
+      // Final fallback to "none configured" message
+      if(productObjs.length === 0){
+        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items, or ensure your shared product dataset is loaded.</div>';
+        return;
+      }
+
+      const favSet = readFavorites();
+
+      for(const p of productObjs){
+        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        const heartActive = favSet.has(Number(p.id));
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="relative overflow-hidden h-64">
+            <img src="${escapeAttr(p.image || '/images/placeholder-1.jpg')}" alt="${escapeAttr(p.title || '')}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
+            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${escapeAttr(p.id)}" title="Save to favorites">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${escapeHtml(p.title || '')}</h3>
+            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${escapeHtml(p.description || '')}</p>
+            <div class="flex justify-between items-center">
+              <span class="${fontClass} font-bold" style="color:var(--black);">$${(Number(p.price)||0).toLocaleString()}</span>
+              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
+                data-item-id="${escapeAttr(p.id)}"
+                data-item-name="${escapeAttr(p.title || '')}"
+                data-item-price="${escapeAttr(p.price||0)}"
+                data-item-url="/AllProducts/"
+                data-item-description="${escapeAttr(p.description||'')}"
+                data-item-image="${escapeAttr(p.image||'')}">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      // bind heart toggles for curated grid
+      grid.querySelectorAll('.heart-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(btn.getAttribute('data-id'));
+          const s = readFavorites();
+          if(s.has(id)) s.delete(id); else s.add(id);
+          writeFavorites(s);
+          // refresh curated UI
+          renderCuratedProducts();
+        });
+      });
+
+      feather.replace();
+    }
+
+    /* --------------------------
+       SEARCH UI: desktop & mobile behavior (verbatim)
+    -------------------------- */
+    function initHeaderSearch(){
+      const wrap = document.getElementById('desktopSearchWrap');
+      const form = document.getElementById('headerSearchForm');
+      const input = document.getElementById('headerSearchInput');
+      const btn = document.getElementById('headerSearchBtn');
+
+      if(!wrap || !form || !input || !btn) return;
+
+      function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
+
+      btn.addEventListener('click', (ev) => {
+        if (isMobile()) {
+          openMobileSearchAndFocus();
+          ev.preventDefault();
+          return;
+        }
+        const isOpen = wrap.classList.contains('open');
+        if(!isOpen) {
+          ev.preventDefault();
+          wrap.classList.add('open');
+          setTimeout(()=> input.focus(), 80);
+          return;
+        }
+      });
+
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const q = (input.value || '').trim();
+        if(!q) {
+          wrap.classList.remove('open');
+          input.value = '';
+          return;
+        }
+        wrap.classList.remove('open');
+        const valueToSend = q;
+        input.value = '';
+        setTimeout(()=> {
+          window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
+        }, 40);
+      });
+
+      document.addEventListener('click', (ev) => {
+        if(!wrap.contains(ev.target)) {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+
+      document.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Escape') {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+    }
+
+    function initMobileSearch(){
+      const mobileForm = document.getElementById('mobileSearchForm');
+      const mobileInput = document.getElementById('mobileSearchInput');
+
+      if(mobileForm){
+        mobileForm.addEventListener('submit', (ev)=>{
+          ev.preventDefault();
+          const q = (mobileInput.value || '').trim();
+          if(!q) return;
+          mobileNav.style.display = 'none';
+          document.body.classList.remove('mobile-search-open');
+          mobileInput.value = '';
+          setTimeout(()=> {
+            window.location.href = '/search.html?q=' + encodeURIComponent(q);
+          }, 60);
+        });
+      }
+    }
+
+    function openMobileSearchAndFocus(){
+      const mobileSearchBar = document.getElementById('mobileSearchBar');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
+        mobileNav.style.display = 'block';
+      }
+      document.body.classList.add('mobile-search-open');
+      setTimeout(()=> {
+        if(mobileInput) mobileInput.focus();
+      }, 60);
+    }
+  </script>
+</body>
+</html>
 

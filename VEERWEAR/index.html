@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VEERWEAR — Apparel</title>
+  <title>Grin & Glisten — Veerwear</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
-  <!-- Google font preload (Pirata One as in original Grillz code) -->
+  <!-- Google font preload -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    /* ---------- fonts, variables and base (verbatim/close to original Grillz file) ---------- */
+    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
@@ -31,27 +31,21 @@
     :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
 
     html{ font-size:112.5%; }
-
-    /* RESTORED: default page fonts as in original Grillz code so product fonts behave unchanged */
+    /* Make Monument Extended the primary face for banner & body text by ensuring monument class is present */
     html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
-    /* Utility classes from original file */
     .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
     .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
     .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
 
     .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
 
-    /* ---------- NEW: apply Monument Extended only to banner & main page copy ---------- */
-    /* This class is intentionally not applied to product cards; it targets hero & page copy */
-    .banner-and-body { font-family: "Monument Extended", "Pirata One", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
-
     /* ---- select-with-icon: hide native arrow and position custom icon ---- */
     .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
     .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
     .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero (no hard-coded background here — set inline) */
+    /* Hero (small tweak: no hard-coded background here — will be set inline) */
     .shop-hero {
       position: relative;
       background-size: cover;
@@ -67,6 +61,12 @@
     }
     .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
     .shop-hero .hero-inner{ position:relative; z-index:2; }
+
+    /* Ensure banner text uses Monument Extended (explicitly) */
+    .shop-banner .monument, .shop-hero .monument, #categoryTagline.monument {
+      font-family: "Monument Extended", "Pirata One", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+      font-weight:700 !important;
+    }
 
     /* filter panel sticky */
     .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
@@ -89,13 +89,14 @@
       cursor:pointer;
       font-weight:700;
       background-clip: padding-box;
-      position: relative;
+      position: relative; /* required for glow pseudo element */
       z-index: 2;
-      overflow: visible;
+      overflow: visible; /* allow pseudo elements to be visible */
     }
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
+    /* active page: stronger glow & sparkle */
     .page-active {
       background: linear-gradient(180deg,#fff9e6,#f7e5b8);
       color: #000;
@@ -296,24 +297,24 @@
 </head>
 <body class="monument">
 
-  <!-- ========== CONFIG: VEERWEAR category page ========== -->
+  <!-- ========== CONFIG: edit these for each category page ========== -->
   <script>
-    // VEERWEAR page config
-    const CATEGORY_NAME = 'VEERWEAR';
-    const CATEGORY_SLUG = 'veerwear';
-    const CATEGORY_TAGLINE = 'Signature streetwear & apparel — finely crafted, limited drops.';
-    const BANNER_URL = '/images/VeerwearBanner.gif';
+    // Minimal page config — edited for VEERWEAR:
+    const CATEGORY_NAME = 'Veerwear';              // visible title (matches demo product categories)
+    const CATEGORY_SLUG = 'VEERWEAR';              // used in the ?category= link (keeps legacy uppercase slug)
+    const CATEGORY_TAGLINE = 'Streetwear & limited-run apparel — hand-printed, premium fabrics.';
+    const BANNER_URL = '/images/veerwear-banner.gif'; // banner for this category (replace with actual asset)
 
-    // Single curated style: Apparel
-    const CURATED_IDS = []; // leave empty to auto-pick featured Veerwear items
+    // Optional curated product IDs. If empty or missing, we auto-pick featured Veerwear.
+    const CURATED_IDS = []; // leave empty so curated picks are auto-selected for Veerwear
 
-    // SUBTYPES: only the canonical "Apparel"
+    // SUBTYPES: singular "Apparel" per request
     const SUBTYPES = [
       'Apparel'
     ];
   </script>
 
-  <!-- NAV (verbatim header from original Grillz file — left untouched) -->
+  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
@@ -427,29 +428,29 @@
     </div>
   </nav>
 
-  <!-- HERO (applied banner-and-body class so banner uses Monument Extended) -->
-  <section id="categoryHero" class="shop-hero text-white banner-and-body" style="background-image:url('/images/VeerwearBanner.gif');">
+  <!-- HERO (curated landing hero; retains style/UX) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/veerwear-banner.gif');">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
       <div class="shop-banner">
         <div>
-          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">VEERWEAR</h1>
+          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">Veerwear</h1>
           <div class="flex items-center text-gray-200 text-sm monument">
             <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
             <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-            <span id="categoryBreadcrumb">VEERWEAR</span>
+            <span id="categoryBreadcrumb">Veerwear</span>
           </div>
-          <p id="categoryTagline" class="mt-4 text-lg opacity-90 monument">Signature streetwear & apparel — finely crafted, limited drops.</p>
+          <p id="categoryTagline" class="mt-4 text-lg opacity-90 monument">Streetwear & limited-run apparel — hand-printed, premium fabrics.</p>
           <div class="mt-6">
-            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
+            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=VEERWEAR">View all Veerwear</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTENT: curated landing (applied banner-and-body so page copy uses Monument Extended; product cards kept unchanged) -->
-  <section class="py-12 banner-and-body">
+  <!-- CONTENT: curated landing (keeps container/grid sizes & general layout consistent with All Products) -->
+  <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
         <aside class="md:w-1/4">
@@ -457,7 +458,7 @@
             <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Explore</h3>
 
             <div class="space-y-3">
-              <a id="linkViewAll" href="/AllProducts/?category=CATEGORY_SLUG" class="block py-2 px-3 border rounded-md text-sm monument">View all Veerwear</a>
+              <a id="linkViewAll" href="/AllProducts/?category=VEERWEAR" class="block py-2 px-3 border rounded-md text-sm monument">View all Veerwear</a>
 
               <div class="mt-4">
                 <h4 class="monument font-medium mb-2">By style</h4>
@@ -466,7 +467,7 @@
 
               <div class="mt-6">
                 <h4 class="monument font-medium mb-2">Quick info</h4>
-                <p class="text-sm">Premium apparel & limited drops — size guides and care info on each product page. Free shipping over $150.</p>
+                <p class="text-sm monument">Small-batch runs, fabric & care information on each product page. Free shipping over $150.</p>
               </div>
             </div>
 
@@ -476,25 +477,25 @@
         <main class="md:w-3/4 monument">
           <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="text-2xl font-bold" id="featuredTitle">Featured VEERWEAR</h2>
-              <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Hand-picked pieces & recent drops.</p>
+              <h2 class="text-2xl font-bold" id="featuredTitle">Featured Veerwear</h2>
+              <p class="text-sm text-gray-600 mt-1 monument" id="featuredSubtitle">Hand-picked apparel & recent drops.</p>
             </div>
             <div>
-              <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
+              <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=VEERWEAR">View all Veerwear</a>
             </div>
           </div>
 
           <div id="curatedGrid" class="curated-grid"></div>
 
           <div class="mt-8 text-center">
-            <a id="viewAllBottom" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">See every Veerwear item</a>
+            <a id="viewAllBottom" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=VEERWEAR">See every Veerwear item</a>
           </div>
         </main>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER (verbatim from original Grillz file — left untouched) -->
+  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -536,7 +537,7 @@
   <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: preserved behavior, adapted for VEERWEAR (kept unchanged from original) -->
+  <!-- SCRIPTS: keep your AllProducts JS & behavior, but CALL curated render instead of full catalog render on this page -->
   <script>
     feather.replace();
 
@@ -571,7 +572,8 @@
     });
 
     /* --------------------------
-       Dropdown: attach menu to body (moved from original)
+       Dropdown: attach menu to body (fixed) and robust open/close
+       (verbatim from AllProducts)
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -693,7 +695,7 @@
     document.addEventListener('DOMContentLoaded', ()=>{
       // optional protection so one runtime error doesn't kill init
       try {
-        console.log('VEERWEAR script init');
+        console.log('Veerwear script init');
         feather.replace();
         positionAndBindDropdowns();
 
@@ -708,7 +710,7 @@
         initHeaderSearch();
         initMobileSearch();
       } catch (err) {
-        console.error('Error initializing VEERWEAR page:', err);
+        console.error('Error initializing Veerwear page:', err);
       }
     });
 
@@ -720,8 +722,7 @@
       'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
       'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
       'aL vaLe': ['Merch'],
-      'Veerwear': ['Apparel'],
-      'VEERWEAR': ['Apparel']
+      'Veerwear': ['Apparel']
     };
 
     function techniqueFromSubtype(sub) {
@@ -736,6 +737,8 @@
 
     /* --------------------------
        Canonical slug map & helpers
+       - displayToSlug: canonical slug for each human label
+       - normalizeSlugInput: safe fallback
     -------------------------- */
     const displayToSlug = {
       'Apparel': 'apparel',
@@ -745,6 +748,8 @@
       'Bottom Sets': 'bottom-sets',
       'Single-Tooth / Cap': 'single-tooth-cap',
       'Resin-Embedded Specials': 'resin-embedded-specials',
+
+      // (we include other maps for completeness if you reuse this script)
       'Hoops': 'hoops',
       'Studs': 'studs',
       'Dangles': 'dangles',
@@ -753,6 +758,7 @@
       'Resin-Embedded Nails': 'resin-embedded-nails'
     };
 
+    // normalize inputs to safe hyphenated slug
     function normalizeSlugInput(raw){
       if(!raw) return '';
       let s = String(raw).trim().toLowerCase();
@@ -771,9 +777,10 @@
 
     /* --------------------------
        Product generator: now adds subtype + technique (so this page can compute counts & pick curated items)
+       Production: you should replace this with your canonical product dataset or import from a shared file.
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
-    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
+    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin','Cotton','Poly Blend'];
     const products = [];
     const TOTAL_ITEMS = 86;
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
@@ -783,7 +790,7 @@
       for(let i=1;i<=TOTAL_ITEMS;i++){
         const cat = categories[i % categories.length];
         const mat = materials[i % materials.length];
-        const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
+        const price = (i % 10 === 0) ? rand(1200,3500) : rand(20,180);
         const sold = rand(0,2000);
         const featured = i % 7 === 0;
         const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
@@ -842,6 +849,7 @@
     /* --------------------------
        ========== Category-specific helpers ==========
        These functions render the curated grid using the existing `products` array.
+       The key change: build subtype links with canonical `style=` slugs (displayToSlug)
     -------------------------- */
 
     function initCategoryHeroAndLinks(){
@@ -993,7 +1001,9 @@
       const favSet = readFavorites();
 
       for(const p of productObjs){
-        const fontClass = (p.category === 'Veerwear' || p.category === 'VEERWEAR' || p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        // Preserve product fonts as in the original demo.
+        // Keep the product font assignment logic identical to the Grillz demo:
+        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
         const heartActive = favSet.has(Number(p.id));
         const card = document.createElement('div');
         card.className = 'product-card';

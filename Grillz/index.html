@@ -220,17 +220,12 @@
 
     /* ----------------------------
        Header search UI
-       - expands to the left on desktop
-       - small, unobtrusive
-       - input is positioned absolutely (so other icons never move)
     ---------------------------- */
     .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
     .search-form { display:flex; align-items:center; }
-
-    /* Make the input absolute so it doesn't affect layout; anchor to right of the search button */
     .search-input {
       position: absolute;
-      right: 44px; /* leave space for the search button (36px) + small gap */
+      right: 44px;
       width: 0;
       opacity: 0;
       transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
@@ -241,30 +236,13 @@
       outline:none;
       background:#fff;
       color:var(--black);
-      transform-origin: right center; /* expands from right */
+      transform-origin: right center;
       box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-      z-index: 60; /* sit above nav items */
+      z-index: 60;
       white-space:nowrap;
     }
-    /* visible state */
-    .search-wrap.open .search-input {
-      width: 220px;
-      opacity: 1;
-    }
-    /* search button smaller look */
-    .search-btn {
-      width:36px;
-      height:36px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:8px;
-      background:transparent;
-      border:none;
-      cursor:pointer;
-      padding:0;
-      z-index: 65; /* above input so icon remains clickable */
-    }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
     .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
 
     /* Mobile search inside mobileNav */
@@ -272,14 +250,16 @@
     #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
     #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
     #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
-
-    /* show mobile search area when class added */
     .mobile-search-open #mobileSearchBar { display:block; }
 
     /* curated-grid responsiveness */
     .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
     @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
+
+    /* subtype link style / count badge */
+    .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
+    .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
   </style>
 </head>
 <body class="monument">
@@ -289,15 +269,13 @@
     // Minimal page config — edit these when copying this template for each category:
     const CATEGORY_NAME = 'Grillz';              // visible title
     const CATEGORY_SLUG = 'Grillz';              // used in the ?category= link (match AllProducts)
-    const CATEGORY_TAGLINE = 'TAGLINE TBD';
-    const BANNER_URL = '/images/Grillpagegif.gif'; // absolute path to GIF banner for this category
+    const CATEGORY_TAGLINE = 'Custom metal & resin grillz — handmade in-house.';
+    const BANNER_URL = '/images/Grillpagegif.gif'; // banner for this category
 
-    // CURATED_IDS should be the numeric `id` values from your `products` array (AllProducts generator) or
-    // identifiers available in your shared product dataset. Example: [3,7,12,24,36,42]
+    // Optional curated product IDs. If empty or missing, we auto-pick featured Grillz.
     const CURATED_IDS = [2,5,8,12,15,22];
 
-    // SUBTYPES: { name, query } where query is appended to /AllProducts/?category=CATEGORY_SLUG&<query>
-    // e.g. {name:'Hoops', query:'style=hoops'} -> /AllProducts/?category=Earrings&style=hoops
+    // SUBTYPES definitions for this category (used in the sidebar).
     const SUBTYPES = [
       { name: 'Full-Cover Sets', query: 'style=full-coversets' },
       { name: 'Half-Cover / Open-Face', query: 'style=half-cover_open-face' },
@@ -436,7 +414,7 @@
           </div>
           <p id="categoryTagline" class="mt-4 text-lg opacity-90">TAGLINE TBD</p>
           <div class="mt-6">
-            <a id="viewAllBtn" class="btn-view-all" href="/AllProducts/?category=CATEGORY_SLUG">View all Grillz</a>
+            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Grillz</a>
           </div>
         </div>
       </div>
@@ -475,14 +453,14 @@
               <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Hand-picked pieces & bestsellers.</p>
             </div>
             <div>
-              <a id="viewAllTop" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">View all Grillz</a>
+              <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Grillz</a>
             </div>
           </div>
 
           <div id="curatedGrid" class="curated-grid"></div>
 
           <div class="mt-8 text-center">
-            <a id="viewAllBottom" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">See every Grillz item</a>
+            <a id="viewAllBottom" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">See every Grillz item</a>
           </div>
         </main>
       </div>
@@ -587,56 +565,39 @@
           menu.style.zIndex = 9999;
         }
 
-        // function to compute width & position
         function positionMenu(){
-          // --- Make sure we measure the intrinsic content width ---
-          // Put the menu offscreen and set width:auto so items measure their natural width
-          const prevDisplay = menu.style.display;
-          const prevVisibility = menu.style.visibility;
-          const prevLeft = menu.style.left;
-          const prevTop = menu.style.top;
-          const prevWidth = menu.style.width;
-
           menu.style.display = 'block';
           menu.style.visibility = 'hidden';
           menu.style.left = '-9999px';
           menu.style.top = '-9999px';
           menu.style.width = 'auto';
-          // ensure nowrap for correct measurement
           menu.style.whiteSpace = 'nowrap';
 
-          // measure widest item using scrollWidth (intrinsic content width)
           let maxItemWidth = 0;
           menu.querySelectorAll('a').forEach(a=>{
             const w = a.scrollWidth;
             if(w > maxItemWidth) maxItemWidth = w;
           });
 
-          // compute paddings from computed style so we size only as wide as text+buffers
           const cs = getComputedStyle(menu);
           const padLeft = parseFloat(cs.paddingLeft) || 10;
           const padRight = parseFloat(cs.paddingRight) || 10;
-          const extraBuffer = 16; // breathing room on left+right beyond padding
+          const extraBuffer = 16;
           const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
           menu.style.width = finalWidth + 'px';
 
-          // compute left/top so the *text* left aligns with the label left
           const labelRect = label.getBoundingClientRect();
           const triggerRect = trigger.getBoundingClientRect();
-          // menu left should be label.left - paddingLeft (so the text lines up)
           const left = Math.round(labelRect.left - padLeft);
-          const top = Math.round(triggerRect.bottom + 8); // 8px gap
+          const top = Math.round(triggerRect.bottom + 8);
           const clampedLeft = Math.max(8, left);
           menu.style.left = clampedLeft + 'px';
           menu.style.top = top + 'px';
 
-          // restore visibility and display according to open state
           menu.style.visibility = '';
           menu.style.display = group.classList.contains('open') ? 'block' : 'none';
-          // (we keep the computed width in place)
         }
 
-        // open/close helpers with small delay
         let leaveTimer = null;
         const openMenu = ()=> {
           clearTimeout(leaveTimer);
@@ -645,7 +606,7 @@
           menu.style.display = 'block';
           trigger.setAttribute('aria-expanded','true');
           menu.setAttribute('aria-hidden','false');
-          positionMenu(); // position immediately (measures intrinsic width)
+          positionMenu();
         };
         const closeMenu = ()=> {
           clearTimeout(leaveTimer);
@@ -658,13 +619,11 @@
           }, 120);
         };
 
-        // Hover / pointer interactions - use pointer events for consistent behavior
         group.addEventListener('pointerenter', openMenu);
         group.addEventListener('pointerleave', closeMenu);
         menu.addEventListener('pointerenter', openMenu);
         menu.addEventListener('pointerleave', closeMenu);
 
-        // Focus interactions for keyboard users
         trigger.addEventListener('focus', openMenu);
         trigger.addEventListener('blur', ()=>{
           leaveTimer = setTimeout(()=> {
@@ -674,7 +633,6 @@
           }, 120);
         });
 
-        // Click toggle (touch/pointer)
         trigger.addEventListener('click', (e)=>{
           e.preventDefault();
           e.stopPropagation();
@@ -685,7 +643,6 @@
           }
         });
 
-        // Click outside -> close
         const outsideHandler = (ev) => {
           if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
             closeMenu();
@@ -693,12 +650,10 @@
         };
         document.addEventListener('click', outsideHandler);
 
-        // reposition on resize & scroll so menu stays aligned
         const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
         window.addEventListener('resize', repositionOnResize);
         window.addEventListener('scroll', repositionOnResize, { passive: true });
 
-        // close on Escape
         document.addEventListener('keydown', (ev)=> {
           if(ev.key === 'Escape') closeMenu();
         });
@@ -713,8 +668,10 @@
       feather.replace();
       positionAndBindDropdowns();
 
-      // NOTE: on this category landing page we DO NOT call renderProducts().
-      // Instead we initialize the category hero/links and render curated items.
+      // build demo products (includes subtype + technique so counts are usable during dev)
+      buildDemoProducts();
+
+      // initialize category hero & links, then render curated
       initCategoryHeroAndLinks();
       renderCuratedProducts();
 
@@ -724,335 +681,83 @@
     });
 
     /* --------------------------
-       Product generator / renderer (unchanged — copied from AllProducts)
-       NOTE: This page expects the global `products` array to exist (like AllProducts).
-       If you maintain a shared /js/products.js, ensure it populates `window.products` or similar.
+       Subtypes & technique helpers (shared with AllProducts)
+    -------------------------- */
+    const subtypesMap = {
+      'Earrings': ['Hoops','Studs','Dangles'],
+      'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
+      'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
+      'aL vaLe': ['Merch'],
+      'Veerwear': ['Apparel']
+    };
+
+    function techniqueFromSubtype(sub) {
+      if(!sub) return '';
+      const s = sub.toLowerCase();
+      if(s.includes('full-cover') || s.includes('full cover')) return 'Full-Cover';
+      if(s.includes('resin')) return 'Resin-Embedded';
+      if(s.includes('accent') || s.includes('single')) return 'Accent';
+      if(s.includes('3d') || s.includes('sculpt')) return '3D Sculpt';
+      return '';
+    }
+
+    /* --------------------------
+       Product generator: now adds subtype + technique (so this page can compute counts & pick curated items)
+       Production: you should replace this with your canonical product dataset or import from a shared file.
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
     const products = [];
     const TOTAL_ITEMS = 86;
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    for(let i=1;i<=TOTAL_ITEMS;i++){
-      const cat = categories[i % categories.length];
-      const mat = materials[i % materials.length];
-      const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
-      const sold = rand(0,2000);
-      const featured = i % 7 === 0;
-      const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
-      products.push({ id:i, title:`${cat} Item ${i}`, description:`${mat} · ${cat}`, image:`/images/placeholder-${(i%10)+1}.jpg`, price, category:cat, material:mat, soldCount:sold, featured, date });
+
+    function buildDemoProducts(){
+      products.length = 0;
+      for(let i=1;i<=TOTAL_ITEMS;i++){
+        const cat = categories[i % categories.length];
+        const mat = materials[i % materials.length];
+        const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
+        const sold = rand(0,2000);
+        const featured = i % 7 === 0;
+        const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
+
+        const pool = subtypesMap[cat] || ['General'];
+        const subtype = pool[rand(0, pool.length-1)];
+        const technique = techniqueFromSubtype(subtype) || (Math.random() < 0.12 ? '3D Sculpt' : '');
+
+        products.push({
+          id:i,
+          title:`${subtype} ${cat} ${i}`,
+          description:`${mat} · ${cat} · ${subtype}`,
+          image:`/images/placeholder-${(i%10)+1}.jpg`,
+          price,
+          category:cat,
+          material:mat,
+          subtype,
+          technique,
+          soldCount:sold,
+          featured,
+          date
+        });
+      }
     }
 
-    // (the rest of the AllProducts logic for pagination / filters / sort is left in place)
+    // pagination / filters state (kept in case needed)
     let currentPage = 1;
     const pageSize = 24;
     let currentFilters = { categories:[], materials:[], price:'all' };
     let currentSort = 'featured';
 
-    // favorites - localStorage functions (kept)
+    // favorites support
     function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
     function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
-    function toggleFavorite(id){ const s = readFavorites(); if(s.has(id)) s.delete(id); else s.add(id); writeFavorites(s); renderProducts(); }
 
-    function priceMatch(price, filterKey){
-      if(!filterKey||filterKey==='all') return true;
-      if(filterKey==='under200') return price < 200;
-      if(filterKey==='200-500') return price >=200 && price <=500;
-      if(filterKey==='500-1000') return price >500 && price <=1000;
-      if(filterKey==='over1000') return price >1000;
-      return true;
+    // small helpers
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
     }
-
-    function applyFiltersAndSort(){
-      let out = products.slice();
-      if(currentFilters.categories.length) out = out.filter(p => currentFilters.categories.includes(p.category));
-      if(currentFilters.materials.length) out = out.filter(p => currentFilters.materials.includes(p.material));
-      if(currentFilters.price && currentFilters.price !== 'all') out = out.filter(p => priceMatch(p.price, currentFilters.price));
-      if(currentSort==='price-asc') out.sort((a,b)=>a.price-b.price);
-      else if(currentSort==='price-desc') out.sort((a,b)=>b.price-a.price);
-      else if(currentSort==='newest') out.sort((a,b)=>new Date(b.date)-new Date(a.date));
-      else if(currentSort==='best-selling') out.sort((a,b)=>b.soldCount-a.soldCount);
-      else out.sort((a,b)=> (b.featured?1:0) - (a.featured?1:0));
-      return out;
-    }
-
-    /* --------------------------
-       renderProducts() kept verbatim in case AllProducts view is needed elsewhere
-    -------------------------- */
-    function renderProducts(){
-      const grid = document.getElementById('productGrid');
-      if(!grid) return;
-      grid.innerHTML = '';
-      const filtered = applyFiltersAndSort();
-      const total = filtered.length;
-      const start = (currentPage-1)*pageSize;
-      const pageItems = filtered.slice(start, start + pageSize);
-      const txt = document.getElementById('showingText');
-      if(txt) txt.textContent = `Showing ${pageItems.length} of ${total} products`;
-      const favSet = readFavorites();
-
-      for(const p of pageItems){
-        let fontClass = 'monument';
-        if(p.category==='Veerwear') fontClass='veerwear';
-        else if(p.category==='aL vaLe') fontClass='plunct';
-        const heartActive = favSet.has(p.id);
-
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-lg overflow-hidden product-card';
-        card.innerHTML = `
-          <div class="relative overflow-hidden h-64">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
-            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${p.id}" title="Save to favorites">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ${heartActive ? '' : ''}" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </button>
-          </div>
-          <div class="p-4">
-            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${p.title}</h3>
-            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
-            <div class="flex justify-between items-center">
-              <span class="${fontClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
-
-              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
-                data-item-id="${p.id}"
-                data-item-name="${p.title}"
-                data-item-price="${p.price}"
-                data-item-url="/AllProducts/"
-                data-item-description="${p.description}"
-                data-item-image="${p.image}">
-                Add to cart
-              </button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      }
-
-      // bind heart toggles
-      document.querySelectorAll('.heart-btn').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const id = Number(btn.getAttribute('data-id'));
-          toggleFavorite(id);
-        });
-      });
-
-      feather.replace();
-      renderPagination(filtered.length);
-    }
-
-    // Pagination renderer (verbatim)
-    function renderPagination(totalFiltered){
-      const pagination = document.getElementById('pagination'); if(!pagination) return;
-      pagination.innerHTML='';
-      const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
-
-      function makeNavButton(iconName, onClick, disabled=false){
-        const b = document.createElement('button');
-        b.className = 'nav-btn';
-        if(disabled) b.setAttribute('disabled','true');
-        b.innerHTML = `<i data-feather="${iconName}" class="w-4 h-4"></i>`;
-        b.addEventListener('click', (e)=>{ if(disabled) return; b.classList.add('clicked'); setTimeout(()=>b.classList.remove('clicked'),140); onClick(e); });
-        pagination.appendChild(b);
-        return b;
-      }
-
-      // prev
-      makeNavButton('chevron-left', ()=>{
-        if(currentPage > 1){ currentPage--; renderProducts(); }
-      }, currentPage === 1);
-
-      function pageBtn(page){
-        const b = document.createElement('button');
-        b.className = 'page-btn';
-        b.textContent = String(page);
-        if(page === currentPage) b.classList.add('page-active');
-        b.addEventListener('click', ()=>{
-          if(page === currentPage) {
-            b.classList.add('clicked');
-            setTimeout(()=>b.classList.remove('clicked'),120);
-            return;
-          }
-          b.classList.add('clicked');
-          setTimeout(()=>b.classList.remove('clicked'),120);
-          currentPage = page;
-          renderProducts();
-        });
-        ['mousedown','touchstart'].forEach(ev => b.addEventListener(ev, ()=> b.classList.add('clicked')));
-        ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => b.addEventListener(ev, ()=> b.classList.remove('clicked')));
-        pagination.appendChild(b);
-      }
-
-      if(totalPages <= 8){
-        for(let p=1;p<=totalPages;p++) pageBtn(p);
-      } else {
-        pageBtn(1);
-        pageBtn(2);
-        if(currentPage > 4){
-          const dots = document.createElement('span'); dots.className='px-2'; dots.textContent='...'; pagination.appendChild(dots);
-        }
-        const start = Math.max(3, Math.min(currentPage-1, totalPages-4));
-        const end = Math.min(totalPages-2, start + 2);
-        for(let p=start;p<=end;p++) pageBtn(p);
-        if(end < totalPages-2){
-          const dots2 = document.createElement('span'); dots2.className='px-2'; dots2.textContent='...'; pagination.appendChild(dots2);
-        }
-        pageBtn(totalPages-1);
-        pageBtn(totalPages);
-      }
-
-      // next
-      makeNavButton('chevron-right', ()=>{
-        if(currentPage < Math.ceil(totalFiltered / pageSize)){ currentPage++; renderProducts(); }
-      }, currentPage === Math.ceil(totalFiltered / pageSize));
-
-      feather.replace();
-    }
-
-    function readFiltersFromUI(){
-      currentFilters.categories = Array.from(document.querySelectorAll('.filter-cat:checked')).map(i=>i.value);
-      currentFilters.materials = Array.from(document.querySelectorAll('.filter-material:checked')).map(i=>i.value);
-      const priceRadio = document.querySelector('.filter-price:checked');
-      currentFilters.price = priceRadio ? priceRadio.value : 'all';
-    }
-
-    document.getElementById('applyFiltersBtn')?.addEventListener('click', ()=>{ readFiltersFromUI(); currentPage = 1; renderProducts(); });
-    document.getElementById('sortSelect')?.addEventListener('change', e => { currentSort = e.target.value; currentPage = 1; renderProducts(); });
-
-    /* --------------------------
-       Cart toggle behavior (unchanged)
-    -------------------------- */
-    const headerCartToggle = document.getElementById('headerCartToggle');
-    let cartOpen = false;
-    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
-    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
-    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
-
-    headerCartToggle?.addEventListener('click', (e)=>{
-      e.preventDefault();
-      headerCartToggle.classList.add('clicked');
-      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
-
-      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
-        if(cartOpen) window.Snipcart.api.modal.close();
-        else window.Snipcart.api.modal.open();
-      } else {
-        const anchor = document.querySelector('a.snipcart-checkout');
-        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
-      }
-    });
-
-    /* --------------------------
-       SEARCH UI: desktop & mobile behavior (verbatim)
-    -------------------------- */
-    function initHeaderSearch(){
-      const wrap = document.getElementById('desktopSearchWrap');
-      const form = document.getElementById('headerSearchForm');
-      const input = document.getElementById('headerSearchInput');
-      const btn = document.getElementById('headerSearchBtn');
-
-      if(!wrap || !form || !input || !btn) return;
-
-      // detect small screens to handle behavior differently
-      function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
-
-      // Clicking the submit button on desktop when collapsed should open the input (not submit)
-      btn.addEventListener('click', (ev) => {
-        // If mobile screen, let mobile search handle it (mobile search uses a separate form)
-        if (isMobile()) {
-          // open mobile nav and focus mobile search input
-          openMobileSearchAndFocus();
-          ev.preventDefault();
-          return;
-        }
-
-        // On desktop: if input is not visible (wrap not open), open it and focus
-        const isOpen = wrap.classList.contains('open');
-        if(!isOpen) {
-          ev.preventDefault();
-          wrap.classList.add('open');
-          setTimeout(()=> input.focus(), 80);
-          return;
-        }
-        // else: allow form submit to proceed (submit handler below handles navigation)
-      });
-
-      // Submit handler: navigate only if query has content
-      form.addEventListener('submit', (ev) => {
-        ev.preventDefault();
-        const q = (input.value || '').trim();
-        if(!q) {
-          // if empty, just close and clear; do not navigate
-          wrap.classList.remove('open');
-          input.value = '';
-          return;
-        }
-        // close & clear, then navigate
-        wrap.classList.remove('open');
-        const valueToSend = q;
-        input.value = '';
-        // give a tiny delay so UI clears then navigate
-        setTimeout(()=> {
-          window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
-        }, 40);
-      });
-
-      // Click outside closes the search input
-      document.addEventListener('click', (ev) => {
-        // if click is outside the wrap entirely -> close
-        if(!wrap.contains(ev.target)) {
-          wrap.classList.remove('open');
-          input.value = '';
-        }
-      });
-
-      // Escape closes
-      document.addEventListener('keydown', (ev) => {
-        if(ev.key === 'Escape') {
-          wrap.classList.remove('open');
-          input.value = '';
-        }
-      });
-    }
-
-    function initMobileSearch(){
-      const mobileForm = document.getElementById('mobileSearchForm');
-      const mobileInput = document.getElementById('mobileSearchInput');
-
-      if(mobileForm){
-        mobileForm.addEventListener('submit', (ev)=>{
-          ev.preventDefault();
-          const q = (mobileInput.value || '').trim();
-          // if empty, do nothing (or optionally navigate to /search.html)
-          if(!q) return;
-          // close mobile nav, clear input, navigate
-          mobileNav.style.display = 'none';
-          document.body.classList.remove('mobile-search-open');
-          mobileInput.value = '';
-          setTimeout(()=> {
-            window.location.href = '/search.html?q=' + encodeURIComponent(q);
-          }, 60);
-        });
-      }
-
-      // Also clicking the desktop search button on small screens will call:
-      // openMobileSearchAndFocus() (handled in the header click listener)
-    }
-
-    function openMobileSearchAndFocus(){
-      const mobileSearchBar = document.getElementById('mobileSearchBar');
-      const mobileInput = document.getElementById('mobileSearchInput');
-      // open the mobile nav if not open
-      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
-        mobileNav.style.display = 'block';
-      }
-      // reveal mobile search area
-      document.body.classList.add('mobile-search-open');
-      // ensure mobile search is visible and focus input
-      setTimeout(()=> {
-        if(mobileInput) mobileInput.focus();
-      }, 60);
-    }
+    function escapeAttr(s){ return escapeHtml(String(s)); }
 
     /* --------------------------
        ========== Category-specific helpers ==========
@@ -1072,30 +777,31 @@
       document.getElementById('viewAllBtn')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
       document.getElementById('viewAllTop')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
       document.getElementById('viewAllBottom')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+      document.getElementById('linkViewAll')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
 
-      // render subtype links
+      // render subtype links with counts (counts taken from the products array if present)
       const container = document.getElementById('subtypeLinks');
       if(!container) return;
       container.innerHTML = '';
-      if(Array.isArray(SUBTYPES) && SUBTYPES.length){
-        SUBTYPES.forEach(s => {
-          const a = document.createElement('a');
-          a.className = 'block py-1 text-sm';
-          a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&${s.query}`;
-          a.textContent = s.name;
-          container.appendChild(a);
-        });
-      } else {
-        container.innerHTML = '<p class="text-sm">Browse styles and sizes in the full catalog.</p>';
-      }
+
+      // if our SUBTYPES is empty, fallback to the subtypesMap
+      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES : (subtypesMap[CATEGORY_NAME]||[]).map(s=>({name:s,query:`style=${encodeURIComponent(s.replace(/\s+/g,'-').toLowerCase())}`}));
+
+      subtypeList.forEach(s => {
+        // compute count from local products array (if available)
+        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === s.name).length;
+        const a = document.createElement('a');
+        a.className = 'subtype-link';
+        a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&${s.query}`;
+        a.innerHTML = `<span>${escapeHtml(s.name)}</span><span class="subtype-badge">${count}</span>`;
+        container.appendChild(a);
+      });
     }
 
     function findProductById(id){
-      // prefer the global numeric 'products' array if present (used by AllProducts sample)
       if(typeof products !== 'undefined' && Array.isArray(products)){
         return products.find(p => Number(p.id) === Number(id));
       }
-      // fallback to window.PRODUCTS keyed object (if you maintain a products.js)
       if(window.PRODUCTS && typeof window.PRODUCTS === 'object'){
         return window.PRODUCTS[id] || Object.values(window.PRODUCTS).find(x => x.id == id);
       }
@@ -1107,9 +813,19 @@
       if(!grid) return;
       grid.innerHTML = '';
 
-      const productObjs = CURATED_IDS.map(id => findProductById(id)).filter(Boolean);
+      // Resolve CURATED_IDS to product objects; if they are missing, choose fallback picks
+      let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
+        ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
+        : [];
+
+      // Fallback: if no curated ids or none resolved, pick featured Grillz items
       if(productObjs.length === 0){
-        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items.</div>';
+        productObjs = products.filter(p => p.category === CATEGORY_NAME).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
+      }
+
+      // Final fallback to "none configured" message
+      if(productObjs.length === 0){
+        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items, or ensure your shared product dataset is loaded.</div>';
         return;
       }
 
@@ -1122,10 +838,10 @@
         card.className = 'product-card';
         card.innerHTML = `
           <div class="relative overflow-hidden h-64">
-            <img src="${p.image || '/images/placeholder-1.jpg'}" alt="${escapeHtml(p.title || '')}" class="w-full h-full object-cover">
+            <img src="${escapeAttr(p.image || '/images/placeholder-1.jpg')}" alt="${escapeAttr(p.title || '')}" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
-            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${p.id}" title="Save to favorites">
+            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${escapeAttr(p.id)}" title="Save to favorites">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
           </div>
@@ -1153,10 +869,10 @@
       grid.querySelectorAll('.heart-btn').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           const id = Number(btn.getAttribute('data-id'));
-          // toggle in local favorites storage; we call renderCuratedProducts() to refresh UI
           const s = readFavorites();
           if(s.has(id)) s.delete(id); else s.add(id);
           writeFavorites(s);
+          // refresh curated UI
           renderCuratedProducts();
         });
       });
@@ -1164,13 +880,95 @@
       feather.replace();
     }
 
-    // small helpers
-    function escapeHtml(s) {
-      if(!s) return '';
-      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-    }
-    function escapeAttr(s){ return escapeHtml(String(s)); }
+    /* --------------------------
+       SEARCH UI: desktop & mobile behavior (verbatim)
+    -------------------------- */
+    function initHeaderSearch(){
+      const wrap = document.getElementById('desktopSearchWrap');
+      const form = document.getElementById('headerSearchForm');
+      const input = document.getElementById('headerSearchInput');
+      const btn = document.getElementById('headerSearchBtn');
 
+      if(!wrap || !form || !input || !btn) return;
+
+      function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
+
+      btn.addEventListener('click', (ev) => {
+        if (isMobile()) {
+          openMobileSearchAndFocus();
+          ev.preventDefault();
+          return;
+        }
+        const isOpen = wrap.classList.contains('open');
+        if(!isOpen) {
+          ev.preventDefault();
+          wrap.classList.add('open');
+          setTimeout(()=> input.focus(), 80);
+          return;
+        }
+      });
+
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const q = (input.value || '').trim();
+        if(!q) {
+          wrap.classList.remove('open');
+          input.value = '';
+          return;
+        }
+        wrap.classList.remove('open');
+        const valueToSend = q;
+        input.value = '';
+        setTimeout(()=> {
+          window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
+        }, 40);
+      });
+
+      document.addEventListener('click', (ev) => {
+        if(!wrap.contains(ev.target)) {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+
+      document.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Escape') {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+    }
+
+    function initMobileSearch(){
+      const mobileForm = document.getElementById('mobileSearchForm');
+      const mobileInput = document.getElementById('mobileSearchInput');
+
+      if(mobileForm){
+        mobileForm.addEventListener('submit', (ev)=>{
+          ev.preventDefault();
+          const q = (mobileInput.value || '').trim();
+          if(!q) return;
+          mobileNav.style.display = 'none';
+          document.body.classList.remove('mobile-search-open');
+          mobileInput.value = '';
+          setTimeout(()=> {
+            window.location.href = '/search.html?q=' + encodeURIComponent(q);
+          }, 60);
+        });
+      }
+    }
+
+    function openMobileSearchAndFocus(){
+      const mobileSearchBar = document.getElementById('mobileSearchBar');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
+        mobileNav.style.display = 'block';
+      }
+      document.body.classList.add('mobile-search-open');
+      setTimeout(()=> {
+        if(mobileInput) mobileInput.focus();
+      }, 60);
+    }
   </script>
 </body>
 </html>

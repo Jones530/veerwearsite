@@ -311,6 +311,12 @@
     .product-info { margin-top:18px; color:var(--black); }
     .specs { margin-top:12px; }
     .specs li { margin-bottom:8px; font-size:14px; color:#333; }
+
+    /* tiny helpers for the inline banner block */
+    .inline-banner { padding: 28px 0; border-bottom: 1px solid rgba(0,0,0,0.04); background: transparent; }
+    .inline-banner h1 { margin: 0 0 6px 0; }
+    .inline-banner .breadcrumb { color: #555; }
+    .inline-banner p { margin-top:8px; color:#444; }
   </style>
 </head>
 <body class="monument">
@@ -435,7 +441,22 @@
     </div>
   </nav>
 
-  <!-- HERO REMOVED (per request) -->
+  <!-- INLINE BANNER CONTENT (moved from the hero — no background image, placed at top of body) -->
+  <div class="inline-banner">
+    <div class="container mx-auto px-6">
+      <div class="shop-banner">
+        <div>
+          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900; color:var(--black);">HOW TO ORDER</h1>
+          <div class="flex items-center breadcrumb text-gray-700 text-sm monument">
+            <a href="/Home/" class="hover:text-gray-900 text-gray-700">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span id="categoryBreadcrumb">How to Order</span>
+          </div>
+          <p id="categoryTagline" class="mt-4 text-base opacity-90" style="color: #333;">Step-by-step guide to ordering custom pieces, taking impressions and sending them to our workshop.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ====== HOW TO ORDER MAIN CONTENT (RECREATED FROM PDF) ====== -->
   <main class="py-12">

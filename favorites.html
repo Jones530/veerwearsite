@@ -154,10 +154,114 @@
     /* header icons container */
     .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
 
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .menu-label{ display:inline-block; }
+
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
+    .dropdown-menu{
+      position: fixed;
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 120px;
+    }
+    .dropdown-menu.open { display: block; }
+
+    .dropdown-menu a{
+      display:inline-block;
+      padding: 8px 6px;
+      color: var(--black);
+      text-align: left;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
+
+    /* filter toggle style */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
+    @media (max-width:767px){
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\\:flex { display:none !important; }
+      .header-actions{ width:120px; }
+      .dropdown-menu{ min-width: 180px; }
+      .filter-toggle{ padding:6px 0; }
+
+      /* Hide desktop inline search on mobile */
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
+    }
+
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
+
+    /* ----------------------------
+       Header search UI
+    ---------------------------- */
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
+    .search-form { display:flex; align-items:center; }
+    .search-input {
+      position: absolute;
+      right: 44px;
+      width: 0;
+      opacity: 0;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:0.95rem;
+      outline:none;
+      background:#fff;
+      color:var(--black);
+      transform-origin: right center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60;
+      white-space:nowrap;
+    }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
+    .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
+
+    /* Mobile search inside mobileNav */
+    #mobileSearchBar { display:none; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.04); }
+    #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
+    #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
+    .mobile-search-open #mobileSearchBar { display:block; }
+
+    /* curated-grid responsiveness */
+    .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
+
     /* subtype link style / count badge */
     .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
     .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
 
+    /* share button (tiny) */
     .share-btn {
       margin-left:8px;
       background:transparent;
@@ -183,6 +287,32 @@
       z-index:99999;
     }
 
+    /* Undo toast */
+    .undo-toast {
+      position: fixed;
+      bottom:18px;
+      right:18px;
+      background: #111;
+      color: #fff;
+      padding:10px 12px;
+      border-radius:10px;
+      font-size:13px;
+      z-index:99999;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+    .undo-toast .undo-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding:6px 10px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
     /* Favorites page small styles */
     body{ padding:0; }
     .favorites-main { padding:2rem 0; }
@@ -194,6 +324,7 @@
 
   <!-- ========== CONFIG: edit these for each category page ========== -->
   <script>
+    // Minimal page config — kept for compatibility
     const CATEGORY_NAME = 'Grillz';
     const CATEGORY_SLUG = 'Grillz';
     const CATEGORY_TAGLINE = 'Custom metal & resin grillz — handmade in-house.';
@@ -323,7 +454,7 @@
     </div>
   </nav>
 
-  <!-- ====== Favorites main content (your original favorites UI, updated) ====== -->
+  <!-- ====== Favorites main content (replaces hero/curated landing) ====== -->
   <main class="container mx-auto px-6 favorites-main">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl monument">Your Favorites</h1>
@@ -375,10 +506,10 @@
     </div>
   </footer>
 
-  <!-- Snipcart root (kept from template) -->
+  <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: keep your AllProducts JS & behavior, but CALL favorites render on this page -->
+  <!-- SCRIPTS: AllProducts UX (verbatim) + favorites integration -->
   <script>
     feather.replace();
 
@@ -543,13 +674,16 @@
         // build demo products (includes subtype + technique so counts are usable during dev)
         buildDemoProducts();
 
-        // initialize category hero & links, then render curated (hero/render functions harmless when hero is omitted)
+        // initialize category hero & links (harmless here) and curated render
         initCategoryHeroAndLinks();
         renderCuratedProducts();
 
         // init search interactions
         initHeaderSearch();
         initMobileSearch();
+
+        // finally render favorites (after product dataset is available)
+        try { renderFavorites(); } catch(e){ console.warn('renderFavorites failed', e); }
       } catch (err) {
         console.error('Error initializing Grillz page:', err);
       }
@@ -683,16 +817,113 @@
 
     /* --------------------------
        ========== Category-specific helpers ==========
+       (kept from AllProducts; harmless on this Favorites page)
     -------------------------- */
 
     function initCategoryHeroAndLinks(){
-      // hero omitted on Favorites page — but keep link rewrites in case other code relies on them
+      // set hero background, title and tagline if present (harmless if not)
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
+
+      // set view all links (category slug)
       const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
       document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = viewAllHref);
       document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
       document.getElementById('viewAllTop')?.setAttribute('href', viewAllHref);
       document.getElementById('viewAllBottom')?.setAttribute('href', viewAllHref);
       document.getElementById('linkViewAll')?.setAttribute('href', viewAllHref);
+
+      // render subtype links with counts (counts taken from the products array if present)
+      const container = document.getElementById('subtypeLinks');
+      if(!container) return;
+      container.innerHTML = '';
+
+      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES.slice() : (subtypesMap[CATEGORY_NAME]||[]);
+
+      subtypeList.forEach(name => {
+        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === name).length;
+        const slug = slugForDisplay(name); // canonical
+        const href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&style=${encodeURIComponent(slug)}`;
+
+        const outer = document.createElement('div');
+        outer.className = 'flex items-center justify-between gap-2';
+
+        const a = document.createElement('a');
+        a.className = 'subtype-link flex-1';
+        a.href = href;
+        a.setAttribute('title', `Open ${name}`);
+        a.innerHTML = `<span>${escapeHtml(name)}</span><span class="subtype-badge">${count}</span>`;
+
+        // share button (copy link / open in new tab)
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'share-btn';
+        shareBtn.type = 'button';
+        shareBtn.title = 'Copy direct link / Open';
+        shareBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 7h4v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7h4"></path><path d="M8 7V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"></path></svg>`;
+
+        // action: copy to clipboard (primary), on shift-click open in new tab
+        shareBtn.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const url = window.location.origin + href;
+          // Copy to clipboard
+          try {
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(url);
+              showShareToast('Link copied to clipboard');
+            } else {
+              // fallback: select + execCommand (older browsers)
+              const ta = document.createElement('textarea');
+              ta.value = url;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              ta.remove();
+              showShareToast('Link copied to clipboard');
+            }
+          } catch (err) {
+            // fallback to opening a new tab if clipboard unavailable
+            console.warn('Clipboard failed, opening new tab', err);
+            window.open(url, '_blank');
+          }
+        });
+        shareBtn.addEventListener('auxclick', (ev) => {
+          // middle-click opens deep link in new tab
+          if(ev.button === 1){
+            ev.preventDefault();
+            const url = window.location.origin + href;
+            window.open(url, '_blank');
+          }
+        });
+
+        outer.appendChild(a);
+        const btnwrap = document.createElement('div');
+        btnwrap.style.display = 'flex';
+        btnwrap.style.alignItems = 'center';
+        btnwrap.appendChild(shareBtn);
+        outer.appendChild(btnwrap);
+
+        container.appendChild(outer);
+      });
+    }
+
+    function showShareToast(msg){
+      const id = 'share-toast';
+      if(document.getElementById(id)) return;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'share-toast';
+      div.textContent = msg;
+      document.body.appendChild(div);
+      setTimeout(()=> {
+        div.style.transition = 'opacity .3s ease';
+        div.style.opacity = '0';
+        setTimeout(()=> { div.remove(); }, 350);
+      }, 1400);
     }
 
     function findProductById(id){
@@ -705,12 +936,73 @@
       return null;
     }
 
-    /* --------------------------
-       Curated rendering (kept, harmless when hero is removed)
-    -------------------------- */
     function renderCuratedProducts(){
-      // No-op on Favorites page (curated grid removed) — function kept to avoid runtime errors
-      return;
+      // keep as no-op or harmless if the curated grid isn't present — left for compatibility
+      const grid = document.getElementById('curatedGrid');
+      if(!grid) return;
+      grid.innerHTML = '';
+
+      let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
+        ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
+        : [];
+
+      if(productObjs.length === 0){
+        productObjs = products.filter(p => p.category === CATEGORY_NAME).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
+      }
+      if(productObjs.length === 0){
+        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured.</div>';
+        return;
+      }
+
+      const favSet = readFavorites();
+
+      for(const p of productObjs){
+        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        const heartActive = favSet.has(Number(p.id));
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="relative overflow-hidden h-64">
+            <img src="${escapeAttr(p.image || '/images/placeholder-1.jpg')}" alt="${escapeAttr(p.title || '')}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
+            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${escapeAttr(p.id)}" title="Save to favorites">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${escapeHtml(p.title || '')}</h3>
+            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${escapeHtml(p.description || '')}</p>
+            <div class="flex justify-between items-center">
+              <span class="${fontClass} font-bold" style="color:var(--black);">$${(Number(p.price)||0).toLocaleString()}</span>
+              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
+                data-item-id="${escapeAttr(p.id)}"
+                data-item-name="${escapeAttr(p.title || '')}"
+                data-item-price="${escapeAttr(p.price||0)}"
+                data-item-url="/AllProducts/"
+                data-item-description="${escapeAttr(p.description||'')}"
+                data-item-image="${escapeAttr(p.image||'')}">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      // bind heart toggles for curated grid
+      grid.querySelectorAll('.heart-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(btn.getAttribute('data-id'));
+          const s = readFavorites();
+          if(s.has(id)) s.delete(id); else s.add(id);
+          writeFavorites(s);
+          // refresh curated UI
+          renderCuratedProducts();
+        });
+      });
+
+      feather.replace();
     }
 
     /* --------------------------
@@ -873,35 +1165,77 @@
         });
       });
 
-      // ensure feather icons in header get replaced (we used inline SVGs for hearts)
       feather.replace();
     }
 
-    // Clear favorites button handler
+    // Undo toast helpers
+    let _undoTimeout = null;
+    function showUndoToast(prevArray){
+      const existing = document.getElementById('undo-toast');
+      if(existing) existing.remove();
+
+      const div = document.createElement('div');
+      div.id = 'undo-toast';
+      div.className = 'undo-toast';
+      div.innerHTML = `<span>Favorites cleared</span>`;
+
+      const btn = document.createElement('button');
+      btn.className = 'undo-btn';
+      btn.textContent = 'Undo';
+      btn.type = 'button';
+
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        try {
+          writeFavorites(new Set(prevArray));
+        } catch (err) {
+          console.warn('Undo write failed', err);
+        }
+        renderFavorites();
+        clearTimeout(_undoTimeout);
+        const t = document.getElementById('undo-toast');
+        if(t) t.remove();
+      });
+
+      div.appendChild(btn);
+      document.body.appendChild(div);
+
+      // auto-dismiss after 6s
+      _undoTimeout = setTimeout(()=> {
+        const t = document.getElementById('undo-toast');
+        if(t) t.remove();
+      }, 6000);
+    }
+
+    // Clear favorites button handler with Undo support
     document.addEventListener('DOMContentLoaded', ()=> {
       const clearBtn = document.getElementById('clearFavsBtn');
       if(clearBtn){
         clearBtn.addEventListener('click', (ev) => {
           ev.preventDefault();
-          // Confirm to avoid accidental clears
-          const ok = confirm('Clear all favorites? This cannot be undone.');
+          const current = readFavorites();
+          const prevArray = Array.from(current);
+          if(prevArray.length === 0){
+            // nothing to clear — show small toast
+            showShareToast('No favorites to clear');
+            return;
+          }
+
+          const ok = confirm('Clear all favorites? You can undo this for a short time.');
           if(!ok) return;
+
+          // clear favorites
           try {
             localStorage.removeItem('sb_favorites');
           } catch (err) {
             console.warn('Could not clear favorites', err);
-            // fallback: write empty array
             try { localStorage.setItem('sb_favorites', JSON.stringify([])); } catch(e){}
           }
           renderFavorites();
-        });
-      }
 
-      // render favorites after demo products are guaranteed built
-      try {
-        renderFavorites();
-      } catch (err) {
-        console.error('Failed to render favorites', err);
+          // show undo toast with previous array preserved
+          showUndoToast(prevArray);
+        });
       }
     });
   </script>

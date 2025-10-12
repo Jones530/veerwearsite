@@ -1,1 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Grin & Glisten — Contact</title>
+  <link rel="icon" type="image/png" href="/images/GG.png">
+
+  <!-- fonts & tailwind (kept same as Grillz head) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- Snipcart (kept as in Grillz) -->
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+
+  <style>
+    /* ------------------ copy of Grillz base CSS (fonts, roots, helpers) ------------------ */
+    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
+    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+
+    :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
+
+    html{ font-size:112.5%; }
+    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
+    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
+
+    /* keep dropdown, header, pagination styles and other layout primitives exactly as Grillz
+       (omitted here for brevity — kept minimal but functionally equivalent for header UX)
+       NOTE: full Grillz CSS was used earlier; we include the important header/footer parts below and
+       keep contact-specific styles afterwards.
+    */
+
+    /* ---------- Begin header/footer base rules (kept minimal but compatible) ---------- */
+    nav.bg-white { background:#fff; }
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; }
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .dropdown-menu{ position: fixed; background: #fff; color: var(--black); border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.12); padding: 6px 12px; z-index: 9999; display: none; white-space: nowrap; pointer-events: auto; min-width:120px; }
+    .dropdown-menu.open{ display:block; }
+    .dropdown-menu a{ display:inline-block; padding:8px 6px; color: var(--black); text-align:left; border-radius:6px; width:100%; }
+    .dropdown-menu a:hover{ background:#f7f7f7; }
+
+    /* mobile helpers */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
+    @media (max-width:767px){
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\:flex { display:none !important; }
+      .header-actions{ width:120px; }
+    }
+    /* ---------- End header/footer base rules ---------- */
+
+    /* ------------------ CONTACT PAGE SPECIFIC STYLES ------------------ */
+
+    /* tv static background & overlay */
+    body.site-static {
+      background-image: url('/images/tv-static4.gif');
+      background-repeat: repeat;
+      background-position: center;
+      background-size: auto;
+      background-color: black;
+    }
+    .site-overlay::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .site-content { position: relative; z-index: 10; min-height:100vh; }
+
+    /* contact hero — placed right after header so header.scrolled + .contact-hero can be used */
+    .contact-hero {
+      height: 160px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      background: #000;
+      transition: height 220ms ease, padding 220ms ease;
+    }
+    header.scrolled + .contact-hero {
+      height: 110px;
+    }
+    .contact-hero::after {
+      content:"";
+      position:absolute;
+      inset:0;
+      /* extremely subtle white/black micro-contrast to keep it crisp on gif */
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      pointer-events:none;
+    }
+    .hero-title {
+      font-size: clamp(36px,6vw,72px);
+      color: #fff;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:3px;
+      transition: transform 220ms ease, font-size 220ms ease;
+      transform-origin:center;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+    }
+    header.scrolled + .contact-hero .hero-title { transform: scale(0.78); }
+
+    /* form panel (kept from your other site) */
+    .form-panel {
+      background: rgba(0,0,0,0.78);
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: clamp(20px, 3.5vw, 36px);
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      backdrop-filter:none;
+    }
+    .form-panel .input-line, .form-panel .textarea-line {
+      background: transparent;
+      color: #fff;
+    }
+
+    .input-line {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.8);
+      padding: 10px 6px;
+      color: #fff;
+      outline: none;
+      width: 100%;
+    }
+    .input-line::placeholder { color: rgba(255,255,255,0.6); }
+    .textarea-line {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px;
+      color:#fff;
+      outline: none;
+      resize:vertical;
+      min-height:140px;
+      width:100%;
+    }
+
+    .btn-yellow {
+      background: var(--gold);
+      color: black;
+      font-weight:700;
+      padding: 14px 26px;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      transition: transform .14s ease, filter .14s ease;
+      border: none;
+    }
+    .btn-yellow:hover { transform: translateY(-3px); filter:brightness(0.98); }
+
+    /* center intro text */
+    .contact-intro {
+      text-align:center;
+      font-size: 2em;
+      font-weight:400;
+      margin-bottom:1.5rem;
+    }
+
+    /* layout responsiveness */
+    @media (max-width: 768px) {
+      .contact-intro { font-size: 1.5em; padding:0 16px; }
+      .contact-hero { height: 120px; }
+      header.scrolled + .contact-hero { height: 90px; }
+      .form-panel { padding:18px; }
+    }
+  </style>
+</head>
+<body class="monument site-static">
+  <!-- ========== NAV (verbatim Grillz header & UX) ========== -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50" id="grillzHeader">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6 min-w-0">
+        <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
+        </button>
+
+        <a href="/Home/" class="flex items-center">
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </a>
+
+        <div class="hidden md:flex space-x-8">
+          <div class="group" id="all-products-group">
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
+              <span class="menu-label">All Products</span>
+              <i data-feather="chevron-down" class="w-4 h-4"></i>
+            </button>
+
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
+              <div class="grid grid-cols-1 gap-0">
+                <a href="/AllProducts/" class="monument">All Products</a>
+                <div style="height:1px;background:#eee;margin:4px 0;"></div>
+                <a href="/Grillz/" class="monument">Grillz</a>
+                <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
+                <a href="/Earrings/" class="monument">Earrings</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/VEERWEAR/" class="veerwear">Veerwear</a>
+                <div style="height:1px;background:#eee;margin:6px 0;"></div>
+                <a href="/aLvaLemerCh/" class="flex items-center pl-0">
+                  <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
+                  <span class="plunct">aL vaLe merCh</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="/HowToOrder/" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="/ImpressionKit/" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="/Gallery/" class="monument hover:text-amber-600 text-black">Gallery</a>
+        </div>
+      </div>
+
+      <!-- header actions (search, fav, cart) -->
+      <div class="header-actions">
+        <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
+          <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
+            <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
+            <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
+              <i data-feather="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
+          <i data-feather="heart" class="w-5 h-5"></i>
+        </a>
+
+        <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
+          <i data-feather="shopping-bag" class="w-5 h-5"></i>
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
+            <span class="snipcart-items-count">0</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- mobile nav -->
+    <div id="mobileNav" class="md:hidden" style="display:none;">
+      <div class="flex items-center justify-between mb-4 px-4">
+        <div class="flex items-center gap-3">
+          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </div>
+        <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
+      </div>
+
+      <div id="mobileSearchBar" aria-hidden="true">
+        <form id="mobileSearchForm" action="/search.html" method="get" role="search">
+          <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
+          <button type="submit" class="bg-amber-600 text-black px-3 py-2 rounded monument">Search</button>
+        </form>
+      </div>
+
+      <div class="space-y-3 monument px-4">
+        <a href="/Home/" class="block py-2 border-b">HOME</a>
+        <div class="pt-2 pb-2 border-b">
+          <div class="font-medium mb-2">All Products</div>
+          <a href="/Grillz/" class="block py-1">Grillz</a>
+          <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
+          <a href="/Earrings/" class="block py-1">Earrings</a>
+          <a href="/VEERWEAR/" class="block py-1"><span class="veerwear">Veerwear</span></a>
+          <a href="/aLvaLemerCh/" class="block py-1 flex items-center">
+            <img src="/images/vale-logo-removebg-preview.png" class="merch-inline-img" alt="vaLe"/>
+            <span class="plunct">aL vaLe merCh</span>
+          </a>
+        </div>
+
+        <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
+        <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
+        <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
+
+        <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTACT HERO (right after header) -->
+  <section class="contact-hero mt-20">
+    <h1 class="hero-title">CONTACT</h1>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="container mx-auto px-6 py-12 site-content">
+    <p class="contact-intro">I want to hear from you! You can send me a message for any comments or inquiries using the contact form below.</p>
+
+    <div class="max-w-4xl mx-auto">
+      <div class="form-panel">
+        <form id="contactForm" class="space-y-8" autocomplete="off">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label class="block text-sm mb-2">First Name*</label>
+              <input name="firstName" class="input-line" placeholder="First name" required>
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Last Name*</label>
+              <input name="lastName" class="input-line" placeholder="Last name" required>
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Email*</label>
+              <input type="email" name="email" class="input-line" placeholder="you@example.com" required>
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Company</label>
+              <input name="company" class="input-line" placeholder="Company (optional)">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm mb-2">Subject</label>
+            <input name="subject" class="input-line" placeholder="Subject">
+          </div>
+
+          <div>
+            <label class="block text-sm mb-2">Message</label>
+            <textarea name="message" class="textarea-line" placeholder="Write your message here..." required></textarea>
+          </div>
+
+          <div class="flex justify-center">
+            <button type="submit" class="btn-yellow">Send Message</button>
+          </div>
+
+          <div id="formStatus" class="text-center text-sm mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (verbatim Grillz footer) -->
+  <footer class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="monument text-xl mb-4" style="font-weight:900;">Grin & Glisten</h3>
+          <p class="mb-4">Custom grillz and street jewelry crafted with precision and attitude.</p>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Shop</h4>
+          <ul class="space-y-2">
+            <li><a href="/AllProducts/" class="text-sm">All Products</a></li>
+            <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
+            <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
+            <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
+            <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
+            <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="/HowToOrder/" class="text-sm">How to Order</a></li>
+            <li><a href="/ImpressionKit/" class="text-sm">Impression Kit</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="/TermsandConditions/" class="text-sm">Terms & Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t mt-12 pt-8 text-center text-sm" style="border-color:#111;">
+        <p>© 2025 Grin & Glisten. All rights reserved. <span class="plunct">aL vaLe</span> music subsidiary.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Snipcart root -->
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
+
+  <!-- ========== SCRIPTS: Grillz UX + Contact form handling ========== -->
+  <script>
+    // feather icons
+    feather.replace();
+
+    // ---------- Dropdown positioning utility (copied from Grillz file) ----------
+    function positionAndBindDropdowns(){
+      document.querySelectorAll('.group').forEach(group=>{
+        if(group.dataset.dropdownBound === "true") return;
+        const label = group.querySelector('.menu-label');
+        const menu = group.querySelector('.dropdown-menu');
+        const trigger = group.querySelector('.menu-trigger');
+
+        if(!menu || !label || !trigger) return;
+
+        if (!menu.dataset.moved) {
+          document.body.appendChild(menu);
+          menu.dataset.moved = "true";
+          menu.style.position = 'fixed';
+          menu.style.willChange = 'top, left, width';
+          menu.style.zIndex = 9999;
+        }
+
+        function positionMenu(){
+          menu.style.display = 'block';
+          menu.style.visibility = 'hidden';
+          menu.style.left = '-9999px';
+          menu.style.top = '-9999px';
+          menu.style.width = 'auto';
+          menu.style.whiteSpace = 'nowrap';
+
+          let maxItemWidth = 0;
+          menu.querySelectorAll('a').forEach(a=>{
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
+          });
+
+          const cs = getComputedStyle(menu);
+          const padLeft = parseFloat(cs.paddingLeft) || 10;
+          const padRight = parseFloat(cs.paddingRight) || 10;
+          const extraBuffer = 16;
+          const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
+          menu.style.width = finalWidth + 'px';
+
+          const labelRect = label.getBoundingClientRect();
+          const triggerRect = trigger.getBoundingClientRect();
+          const left = Math.round(labelRect.left - padLeft);
+          const top = Math.round(triggerRect.bottom + 8);
+          const clampedLeft = Math.max(8, left);
+          menu.style.left = clampedLeft + 'px';
+          menu.style.top = top + 'px';
+
+          menu.style.visibility = '';
+          menu.style.display = group.classList.contains('open') ? 'block' : 'none';
+        }
+
+        let leaveTimer = null;
+        const openMenu = ()=> {
+          clearTimeout(leaveTimer);
+          group.classList.add('open');
+          menu.classList.add('open');
+          menu.style.display = 'block';
+          trigger.setAttribute('aria-expanded','true');
+          menu.setAttribute('aria-hidden','false');
+          positionMenu();
+        };
+        const closeMenu = ()=> {
+          clearTimeout(leaveTimer);
+          leaveTimer = setTimeout(()=> {
+            group.classList.remove('open');
+            menu.classList.remove('open');
+            menu.style.display = 'none';
+            trigger.setAttribute('aria-expanded','false');
+            menu.setAttribute('aria-hidden','true');
+          }, 120);
+        };
+
+        group.addEventListener('pointerenter', openMenu);
+        group.addEventListener('pointerleave', closeMenu);
+        menu.addEventListener('pointerenter', openMenu);
+        menu.addEventListener('pointerleave', closeMenu);
+
+        trigger.addEventListener('focus', openMenu);
+        trigger.addEventListener('blur', ()=>{
+          leaveTimer = setTimeout(()=> {
+            const active = document.activeElement;
+            if(menu.contains(active)) return;
+            closeMenu();
+          }, 120);
+        });
+
+        trigger.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(group.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        const outsideHandler = (ev) => {
+          if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
+            closeMenu();
+          }
+        };
+        document.addEventListener('click', outsideHandler);
+
+        const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
+        window.addEventListener('resize', repositionOnResize);
+        window.addEventListener('scroll', repositionOnResize, { passive: true });
+
+        document.addEventListener('keydown', (ev)=> {
+          if(ev.key === 'Escape') closeMenu();
+        });
+
+        group.dataset.dropdownBound = "true";
+      });
+    }
+
+    // init positioning
+    document.addEventListener('DOMContentLoaded', ()=>{
+      feather.replace();
+      try { positionAndBindDropdowns(); } catch(e){ console.error(e); }
+    });
+
+    // ---------- header/mobile search helpers (copied from Grillz) ----------
+    function initHeaderSearch(){
+      const wrap = document.getElementById('desktopSearchWrap');
+      const form = document.getElementById('headerSearchForm');
+      const input = document.getElementById('headerSearchInput');
+      const btn = document.getElementById('headerSearchBtn');
+
+      if(!wrap || !form || !input || !btn) return;
+      function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
+
+      btn.addEventListener('click', (ev) => {
+        if (isMobile()) {
+          openMobileSearchAndFocus();
+          ev.preventDefault();
+          return;
+        }
+        const isOpen = wrap.classList.contains('open');
+        if(!isOpen) {
+          ev.preventDefault();
+          wrap.classList.add('open');
+          setTimeout(()=> input.focus(), 80);
+          return;
+        }
+      });
+
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const q = (input.value || '').trim();
+        if(!q) {
+          wrap.classList.remove('open');
+          input.value = '';
+          return;
+        }
+        wrap.classList.remove('open');
+        const valueToSend = q;
+        input.value = '';
+        setTimeout(()=> { window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend); }, 40);
+      });
+
+      document.addEventListener('click', (ev) => {
+        if(!wrap.contains(ev.target)) {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+
+      document.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Escape') {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+    }
+
+    function initMobileSearch(){
+      const mobileForm = document.getElementById('mobileSearchForm');
+      const mobileInput = document.getElementById('mobileSearchInput');
+
+      if(mobileForm){
+        mobileForm.addEventListener('submit', (ev)=>{
+          ev.preventDefault();
+          const q = (mobileInput.value || '').trim();
+          if(!q) return;
+          mobileNav.style.display = 'none';
+          document.body.classList.remove('mobile-search-open');
+          mobileInput.value = '';
+          setTimeout(()=> { window.location.href = '/search.html?q=' + encodeURIComponent(q); }, 60);
+        });
+      }
+    }
+
+    function openMobileSearchAndFocus(){
+      const mobileSearchBar = document.getElementById('mobileSearchBar');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
+        mobileNav.style.display = 'block';
+      }
+      document.body.classList.add('mobile-search-open');
+      setTimeout(()=> {
+        if(mobileInput) mobileInput.focus();
+      }, 60);
+    }
+
+    // mobile nav toggle logic (keeps Grillz behavior)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+    mobileBtn?.addEventListener('click', ()=> {
+      mobileNav.style.display='block';
+      document.body.classList.remove('mobile-search-open');
+    });
+    mobileClose?.addEventListener('click', ()=> {
+      mobileNav.style.display='none';
+      const mIn = document.getElementById('mobileSearchInput');
+      if(mIn) mIn.value = '';
+      document.body.classList.remove('mobile-search-open');
+    });
+
+    // make sure header scrolling class is synchronized with hero behavior (simple approach)
+    const headerEl = document.querySelector('nav.bg-white');
+    const hero = document.querySelector('.contact-hero');
+    const SCROLL_THRESHOLD = 60;
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > SCROLL_THRESHOLD) headerEl.classList.add('scrolled');
+      else headerEl.classList.remove('scrolled');
+    });
+
+    // ---------- Form handling (Formspree) ----------
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzjjdbv'; // replace with your own if needed
+    const form = document.getElementById('contactForm');
+    const statusDiv = document.getElementById('formStatus');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusDiv.textContent = 'Sending…';
+      const fd = new FormData(form);
+
+      try {
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: fd
+        });
+
+        if (res.ok) {
+          statusDiv.style.color = '#9ee89a';
+          statusDiv.textContent = 'Thanks! Your message has been sent.';
+          form.reset();
+        } else {
+          statusDiv.style.color = '#f7b2b2';
+          statusDiv.textContent = 'There was an error sending your message. Please try again or email directly.';
+        }
+      } catch (err) {
+        statusDiv.style.color = '#f7b2b2';
+        statusDiv.textContent = 'Network error. Try again or email directly.';
+      }
+    });
+
+    // Run header/search inits
+    document.addEventListener('DOMContentLoaded', ()=>{
+      feather.replace();
+      try { initHeaderSearch(); initMobileSearch(); positionAndBindDropdowns(); } catch(e){ console.error(e); }
+    });
+  </script>
+</body>
+</html>
 

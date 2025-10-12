@@ -691,19 +691,25 @@
     // Call on load and resize (binding only happens once per group)
     window.addEventListener('resize', ()=> positionAndBindDropdowns());
     document.addEventListener('DOMContentLoaded', ()=>{
-      feather.replace();
-      positionAndBindDropdowns();
+      // optional protection so one runtime error doesn't kill init
+      try {
+        console.log('Grillz script init');
+        feather.replace();
+        positionAndBindDropdowns();
 
-      // build demo products (includes subtype + technique so counts are usable during dev)
-      buildDemoProducts();
+        // build demo products (includes subtype + technique so counts are usable during dev)
+        buildDemoProducts();
 
-      // initialize category hero & links, then render curated
-      initCategoryHeroAndLinks();
-      renderCuratedProducts();
+        // initialize category hero & links, then render curated
+        initCategoryHeroAndLinks();
+        renderCuratedProducts();
 
-      // init search interactions
-      initHeaderSearch();
-      initMobileSearch();
+        // init search interactions
+        initHeaderSearch();
+        initMobileSearch();
+      } catch (err) {
+        console.error('Error initializing Grillz page:', err);
+      }
     });
 
     /* --------------------------
@@ -814,8 +820,21 @@
     let currentSort = 'featured';
 
     // favorites support
-    function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
-    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr); ) }
+    function readFavorites(){
+      try{
+        return new Set(JSON.parse(localStorage.getItem('sb_favorites') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+    function writeFavorites(set){
+      try {
+        const arr = Array.from(set);
+        localStorage.setItem('sb_favorites', JSON.stringify(arr));
+      } catch (e) {
+        console.warn('Could not write favorites to localStorage', e);
+      }
+    }
 
     // small helpers
     function escapeHtml(s) {
@@ -881,10 +900,24 @@
           const url = window.location.origin + href;
           // Copy to clipboard
           try {
-            await navigator.clipboard.writeText(url);
-            showShareToast('Link copied to clipboard');
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(url);
+              showShareToast('Link copied to clipboard');
+            } else {
+              // fallback: select + execCommand (older browsers)
+              const ta = document.createElement('textarea');
+              ta.value = url;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              ta.remove();
+              showShareToast('Link copied to clipboard');
+            }
           } catch (err) {
             // fallback to opening a new tab if clipboard unavailable
+            console.warn('Clipboard failed, opening new tab', err);
             window.open(url, '_blank');
           }
         });
@@ -942,6 +975,14 @@
       let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
         ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
         : [];
+
+      // If CURATED_IDS present but some missing, warn in console
+      if(Array.isArray(CURATED_IDS) && CURATED_IDS.length) {
+        const missing = CURATED_IDS.filter(id => !findProductById(id));
+        if(missing.length) {
+          console.warn('Some CURATED_IDS could not be resolved to products:', missing);
+        }
+      }
 
       // Fallback: if no curated ids or none resolved, pick featured Grillz items
       if(productObjs.length === 0){

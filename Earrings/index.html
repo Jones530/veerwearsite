@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grin & Glisten — CATEGORY_NAME</title>
+  <title>Grin & Glisten — Earrings</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
   <!-- Google font preload -->
@@ -22,7 +22,7 @@
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    /* ---------- fonts, variables and base ---------- */
+    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
@@ -44,14 +44,14 @@
     .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
     .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero (uses same .shop-hero styles as All Products) */
+    /* Hero (small tweak: no hard-coded background here — will be set inline) */
     .shop-hero {
       position: relative;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       color:#fff;
-      overflow:visible;
+      overflow:visible; /* ensure dropdown can overlap if needed */
       padding-top:8rem;
       padding-bottom:8rem;
       min-height:60vh;
@@ -61,24 +61,251 @@
     .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
     .shop-hero .hero-inner{ position:relative; z-index:2; }
 
-    /* small curated-grid styling (similar to product grid) */
+    /* filter panel sticky */
+    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
+    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    /* pagination buttons styling */
+    .page-btn {
+      transition: all .16s ease;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      width: 40px; height:40px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      background-clip: padding-box;
+      position: relative; /* required for glow pseudo element */
+      z-index: 2;
+      overflow: visible; /* allow pseudo elements to be visible */
+    }
+    .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .page-btn.clicked { transform: scale(.98); }
+
+    /* active page: stronger glow & sparkle */
+    .page-active {
+      background: linear-gradient(180deg,#fff9e6,#f7e5b8);
+      color: #000;
+      border: 1px solid rgba(0,0,0,0.18);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.12);
+      overflow: visible;
+    }
+
+    .page-active::before{
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 220%;
+      height: 220%;
+      border-radius: 16px;
+      z-index: -2;
+      background: radial-gradient(circle at 50% 30%,
+                  rgba(255,255,255,0.95) 0%,
+                  rgba(250,250,240,0.9) 6%,
+                  rgba(212,175,55,0.28) 20%,
+                  rgba(212,175,55,0.14) 30%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(28px);
+      pointer-events: none;
+    }
+
+    .page-active::after{
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 20%, rgba(255,255,255,0.8) 21% 45%, rgba(255,255,255,0) 46%);
+      box-shadow: 0 0 12px rgba(212,175,55,0.75), 0 0 2px rgba(255,255,255,0.9);
+      transform-origin: center;
+      animation: sparkle 1.6s infinite ease-in-out;
+      opacity: 1;
+    }
+    @keyframes sparkle {
+      0%   { transform: translateY(0) scale(0.6) rotate(0deg); opacity:0; }
+      25%  { transform: translateY(-4px) scale(1.15) rotate(18deg); opacity:1; }
+      55%  { transform: translateY(-6px) scale(0.95) rotate(-10deg); opacity:0.9; }
+      100% { transform: translateY(0) scale(0.7) rotate(0deg); opacity:0; }
+    }
+
+    /* nav arrow buttons */
+    .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .nav-btn.clicked { transform: scale(.96); opacity:.95; }
+
+    /* heart styling */
+    .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .heart-active{ background:var(--gold); color:#000 !important; }
+
+    /* header icons container */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
+
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .menu-label{ display:inline-block; }
+
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
+    .dropdown-menu{
+      position: fixed;
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 120px;
+    }
+    .dropdown-menu.open { display: block; }
+
+    .dropdown-menu a{
+      display:inline-block;
+      padding: 8px 6px;
+      color: var(--black);
+      text-align: left;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
+
+    /* filter toggle style */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
+    @media (max-width:767px){
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\\:flex { display:none !important; }
+      .header-actions{ width:120px; }
+      .dropdown-menu{ min-width: 180px; }
+      .filter-toggle{ padding:6px 0; }
+
+      /* Hide desktop inline search on mobile */
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
+    }
+
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
+
+    /* ----------------------------
+       Header search UI
+    ---------------------------- */
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
+    .search-form { display:flex; align-items:center; }
+    .search-input {
+      position: absolute;
+      right: 44px;
+      width: 0;
+      opacity: 0;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:0.95rem;
+      outline:none;
+      background:#fff;
+      color:var(--black);
+      transform-origin: right center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60;
+      white-space:nowrap;
+    }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
+    .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
+
+    /* Mobile search inside mobileNav */
+    #mobileSearchBar { display:none; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.04); }
+    #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
+    #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
+    .mobile-search-open #mobileSearchBar { display:block; }
+
+    /* curated-grid responsiveness */
     .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
     @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
 
-    .fav-item { display:flex; gap:12px; border-bottom:1px solid #eee; padding:12px 0; align-items:center; }
+    /* subtype link style / count badge */
+    .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
+    .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
 
-    /* keep product card visuals consistent with All Products */
-    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; background:#fff; border-radius:8px; overflow:hidden; }
-    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
-
-    /* one-click view all button style */
-    .btn-view-all { display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#000; padding:10px 14px; border-radius:8px; font-weight:700; text-decoration:none; }
-
+    /* share button (tiny) */
+    .share-btn {
+      margin-left:8px;
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      width:28px;
+      height:28px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:6px;
+    }
+    .share-toast {
+      position:fixed;
+      bottom:18px;
+      right:18px;
+      background:#111;
+      color:#fff;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:13px;
+      opacity:0.92;
+      z-index:99999;
+    }
   </style>
 </head>
 <body class="monument">
-  <!-- NAV (verbatim copy from your AllProducts file; DO NOT MODIFY) -->
+
+  <!-- ========== CONFIG: edit these for each category page ========== -->
+  <script>
+    // Page config for Earrings
+    const CATEGORY_NAME = 'Earrings';
+    const CATEGORY_SLUG = 'Earrings';
+    const CATEGORY_TAGLINE = 'Statement hoops, studs & dangles — wearable attitude.';
+    const BANNER_URL = '/images/earrings-hero.gif';
+
+    // Optional curated product IDs (example). If empty we auto-pick featured Earrings.
+    const CURATED_IDS = [3,7,11,19];
+
+    // SUBTYPES for Earrings
+    const SUBTYPES = ['Hoops', 'Studs', 'Dangles'];
+  </script>
+
+  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
@@ -192,55 +419,37 @@
     </div>
   </nav>
 
-  <!-- HERO — replace BANNER_URL, CATEGORY_NAME and CATEGORY_TAGLINE below -->
-  <!-- ---------- EDIT THESE VALUES FOR EACH CATEGORY PAGE ---------- -->
-  <script>
-    // EDIT THESE constants for each category page:
-    const BANNER_URL = '/images/placeholder-hero.gif'; // <-- update to the GIF for this category (absolute path)
-    const CATEGORY_NAME = 'CATEGORY_NAME';             // <-- e.g. 'Earrings'
-    const CATEGORY_SLUG = 'CATEGORY_SLUG';             // <-- exact filter string used by AllProducts (e.g. 'Earrings' or 'Veerwear')
-    const CATEGORY_TAGLINE = 'CATEGORY_TAGLINE';       // <-- short, 1-line tagline
-    // CURATED_IDS: array of numeric product ids that match your products array on AllProducts.
-    // e.g. [3,7,12,24,36,42]
-    const CURATED_IDS = [1,2,3,4,5,6];                 // <-- replace with the product IDs you want shown
-    // SUBTYPES: optional array of { name, query } where query is appended to /AllProducts/ to prefilter.
-    // e.g. { name: 'Hoops', query: 'style=hoops' } will link to /AllProducts/?category=Earrings&style=hoops
-    const SUBTYPES = [
-      { name: 'Hoops', query: 'style=hoops' },
-      { name: 'Studs', query: 'style=studs' },
-      { name: 'Drops', query: 'style=drops' }
-    ];
-  </script>
-  <section class="shop-hero text-white" id="categoryHero" style="background-image: url('/images/placeholder-hero.gif');">
+  <!-- HERO (curated landing hero; retains style/UX) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/earrings-hero.gif');">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
       <div class="shop-banner">
         <div>
-          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">CATEGORY_NAME</h1>
+          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">Earrings</h1>
           <div class="flex items-center text-gray-200 text-sm monument">
             <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
             <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-            <span id="categoryBreadcrumb">CATEGORY_NAME</span>
+            <span id="categoryBreadcrumb">Earrings</span>
           </div>
-          <p id="categoryTagline" class="mt-4 text-lg opacity-90">CATEGORY_TAGLINE</p>
+          <p id="categoryTagline" class="mt-4 text-lg opacity-90">Statement hoops, studs & dangles — wearable attitude.</p>
           <div class="mt-6">
-            <a id="viewAllBtn" class="btn-view-all" href="/AllProducts/?category=CATEGORY_SLUG">View all CATEGORY_NAME</a>
+            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Earrings</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTENT: curated landing page -->
+  <!-- CONTENT: curated landing (keeps container/grid sizes & general layout consistent with All Products) -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
-        <!-- left column: quick links & subtypes -->
         <aside class="md:w-1/4">
           <div class="bg-white p-6 rounded-lg filter-panel monument">
             <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Explore</h3>
+
             <div class="space-y-3">
-              <a id="linkViewAll" href="/AllProducts/?category=CATEGORY_SLUG" class="block py-2 px-3 border rounded-md text-sm monument">View all CATEGORY_NAME</a>
+              <a id="linkViewAll" href="/AllProducts/?category=CATEGORY_SLUG" class="block py-2 px-3 border rounded-md text-sm monument">View all Earrings</a>
 
               <div class="mt-4">
                 <h4 class="monument font-medium mb-2">By style</h4>
@@ -252,33 +461,32 @@
                 <p class="text-sm">Handcrafted pieces — care & sizing info on each product page. Free shipping over $150.</p>
               </div>
             </div>
+
           </div>
         </aside>
 
-        <!-- main curated grid -->
         <main class="md:w-3/4 monument">
           <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="text-2xl font-bold" id="featuredTitle">Featured CATEGORY_NAME</h2>
+              <h2 class="text-2xl font-bold" id="featuredTitle">Featured Earrings</h2>
               <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Hand-picked pieces & bestsellers.</p>
             </div>
             <div>
-              <a id="viewAllTop" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">View all CATEGORY_NAME</a>
+              <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Earrings</a>
             </div>
           </div>
 
           <div id="curatedGrid" class="curated-grid"></div>
 
-          <!-- optional: a small 'more from category' area linking to allProducts -->
           <div class="mt-8 text-center">
-            <a id="viewAllBottom" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">See every CATEGORY_NAME item</a>
+            <a id="viewAllBottom" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">See every Earrings item</a>
           </div>
         </main>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER (verbatim copy from AllProducts; DO NOT MODIFY) -->
+  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -320,11 +528,18 @@
   <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: dropdowns, search, cart toggle, etc. (kept from AllProducts with a single change: we call renderCuratedProducts()) -->
+  <!-- SCRIPTS: keep your AllProducts JS & behavior, but CALL curated render instead of full catalog render on this page -->
   <script>
+    // Small helpers used across script
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    }
+    function escapeAttr(s){ return escapeHtml(String(s)); }
+
     feather.replace();
 
-    // Mobile nav toggle
+    // Mobile nav toggle (verbatim)
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
     const mobileClose = document.getElementById('mobileCloseBtn');
@@ -340,7 +555,7 @@
       document.body.classList.remove('mobile-search-open');
     });
 
-    // Filter collapse behavior (chevrons to the right)
+    // Filter collapse behavior (chevrons to the right) - keep present though landing uses just subtype links
     document.querySelectorAll('.filter-toggle').forEach(btn=>{
       const target = document.getElementById(btn.getAttribute('data-target'));
       const chev = btn.querySelector('.chev');
@@ -356,6 +571,7 @@
 
     /* --------------------------
        Dropdown: attach menu to body (fixed) and robust open/close
+       (verbatim from AllProducts)
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -366,6 +582,7 @@
 
         if(!menu || !label || !trigger) return;
 
+        // Move menu to body to escape stacking contexts and allow overlay
         if (!menu.dataset.moved) {
           document.body.appendChild(menu);
           menu.dataset.moved = "true";
@@ -375,12 +592,6 @@
         }
 
         function positionMenu(){
-          const prevDisplay = menu.style.display;
-          const prevVisibility = menu.style.visibility;
-          const prevLeft = menu.style.left;
-          const prevTop = menu.style.top;
-          const prevWidth = menu.style.width;
-
           menu.style.display = 'block';
           menu.style.visibility = 'hidden';
           menu.style.left = '-9999px';
@@ -477,23 +688,343 @@
       });
     }
 
+    // Call on load and resize (binding only happens once per group)
     window.addEventListener('resize', ()=> positionAndBindDropdowns());
     document.addEventListener('DOMContentLoaded', ()=>{
-      feather.replace();
-      positionAndBindDropdowns();
+      try {
+        console.log('Earrings script init');
+        feather.replace();
+        positionAndBindDropdowns();
 
-      // IMPORTANT: we DON'T render the full AllProducts grid here.
-      // Instead we initialize category page UI and render curated items:
-      initCategoryHeroAndLinks();
-      renderCuratedProducts();
+        // build demo products (includes subtype + technique so counts are usable during dev)
+        buildDemoProducts();
 
-      // init search interactions
-      initHeaderSearch();
-      initMobileSearch();
+        // initialize category hero & links, then render curated
+        initCategoryHeroAndLinks();
+        renderCuratedProducts();
+
+        // init search interactions
+        initHeaderSearch();
+        initMobileSearch();
+      } catch (err) {
+        console.error('Error initializing Earrings page:', err);
+      }
     });
 
     /* --------------------------
-       SEARCH UI & mobile search (kept from AllProducts)
+       Subtypes & technique helpers (shared with AllProducts)
+    -------------------------- */
+    const subtypesMap = {
+      'Earrings': ['Hoops','Studs','Dangles'],
+      'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
+      'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
+      'aL vaLe': ['Merch'],
+      'Veerwear': ['Apparel']
+    };
+
+    function techniqueFromSubtype(sub) {
+      if(!sub) return '';
+      const s = sub.toLowerCase();
+      if(s.includes('full-cover') || s.includes('full cover')) return 'Full-Cover';
+      if(s.includes('resin')) return 'Resin-Embedded';
+      if(s.includes('accent') || s.includes('single')) return 'Accent';
+      if(s.includes('3d') || s.includes('sculpt')) return '3D Sculpt';
+      return '';
+    }
+
+    /* --------------------------
+       Canonical slug map & helpers
+    -------------------------- */
+    const displayToSlug = {
+      'Full-Cover Sets': 'full-cover-sets',
+      'Half-Cover / Open-Face': 'half-cover-open-face',
+      'Top Sets': 'top-sets',
+      'Bottom Sets': 'bottom-sets',
+      'Single-Tooth / Cap': 'single-tooth-cap',
+      'Resin-Embedded Specials': 'resin-embedded-specials',
+      'Hoops': 'hoops',
+      'Studs': 'studs',
+      'Dangles': 'dangles',
+      'Full-Cover Press-Ons': 'full-cover-press-ons',
+      'Accent Tips': 'accent-tips',
+      'Resin-Embedded Nails': 'resin-embedded-nails'
+    };
+
+    function normalizeSlugInput(raw){
+      if(!raw) return '';
+      let s = String(raw).trim().toLowerCase();
+      s = s.replace(/[%20\+_]+/g,'-');
+      s = s.replace(/[^\w-]+/g,'-');
+      s = s.replace(/-+/g,'-');
+      s = s.replace(/^-|-$/g,'');
+      return s;
+    }
+
+    function slugForDisplay(display){
+      if(!display) return '';
+      if(displayToSlug[display]) return displayToSlug[display];
+      return normalizeSlugInput(display);
+    }
+
+    /* --------------------------
+       Product generator (demo dataset)
+    -------------------------- */
+    const categories = ['Earrings','Grillz','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
+    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
+    const products = [];
+    const TOTAL_ITEMS = 86;
+    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    function buildDemoProducts(){
+      products.length = 0;
+      for(let i=1;i<=TOTAL_ITEMS;i++){
+        const cat = categories[i % categories.length];
+        const mat = materials[i % materials.length];
+        const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
+        const sold = rand(0,2000);
+        const featured = i % 7 === 0;
+        const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
+
+        const pool = subtypesMap[cat] || ['General'];
+        const subtype = pool[rand(0, pool.length-1)];
+        const technique = techniqueFromSubtype(subtype) || (Math.random() < 0.12 ? '3D Sculpt' : '');
+
+        products.push({
+          id:i,
+          title:`${subtype} ${cat} ${i}`,
+          description:`${mat} · ${cat} · ${subtype}`,
+          image:`/images/placeholder-${(i%10)+1}.jpg`,
+          price,
+          category:cat,
+          material:mat,
+          subtype,
+          technique,
+          soldCount:sold,
+          featured,
+          date
+        });
+      }
+    }
+
+    // pagination / filters state (kept in case needed)
+    let currentPage = 1;
+    const pageSize = 24;
+    let currentFilters = { categories:[], materials:[], price:'all' };
+    let currentSort = 'featured';
+
+    // favorites support (fixed and robust)
+    function readFavorites(){
+      try{
+        return new Set(JSON.parse(localStorage.getItem('sb_favorites') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+    function writeFavorites(set){
+      try {
+        const arr = Array.from(set);
+        localStorage.setItem('sb_favorites', JSON.stringify(arr));
+      } catch (e) {
+        console.warn('Could not write favorites to localStorage', e);
+      }
+    }
+
+    /* --------------------------
+       Category-specific helpers (render curated grid & subtype links)
+    -------------------------- */
+
+    function initCategoryHeroAndLinks(){
+      // set hero background, title and tagline
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
+
+      // set view all links (category slug)
+      const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
+      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = viewAllHref);
+      document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllTop')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllBottom')?.setAttribute('href', viewAllHref);
+      document.getElementById('linkViewAll')?.setAttribute('href', viewAllHref);
+
+      // render subtype links with counts
+      const container = document.getElementById('subtypeLinks');
+      if(!container) return;
+      container.innerHTML = '';
+
+      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES.slice() : (subtypesMap[CATEGORY_NAME]||[]);
+
+      subtypeList.forEach(name => {
+        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === name).length;
+        const slug = slugForDisplay(name);
+        const href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&style=${encodeURIComponent(slug)}`;
+
+        const outer = document.createElement('div');
+        outer.className = 'flex items-center justify-between gap-2';
+
+        const a = document.createElement('a');
+        a.className = 'subtype-link flex-1';
+        a.href = href;
+        a.setAttribute('title', `Open ${name}`);
+        a.innerHTML = `<span>${escapeHtml(name)}</span><span class="subtype-badge">${count}</span>`;
+
+        // share button (copy link / open in new tab)
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'share-btn';
+        shareBtn.type = 'button';
+        shareBtn.title = 'Copy direct link / Open';
+        shareBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 7h4v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7h4"></path><path d="M8 7V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"></path></svg>`;
+
+        shareBtn.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const url = window.location.origin + href;
+          try {
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(url);
+              showShareToast('Link copied to clipboard');
+            } else {
+              const ta = document.createElement('textarea');
+              ta.value = url;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              ta.remove();
+              showShareToast('Link copied to clipboard');
+            }
+          } catch (err) {
+            console.warn('Clipboard failed, opening new tab', err);
+            window.open(url, '_blank');
+          }
+        });
+        shareBtn.addEventListener('auxclick', (ev) => {
+          if(ev.button === 1){
+            ev.preventDefault();
+            const url = window.location.origin + href;
+            window.open(url, '_blank');
+          }
+        });
+
+        outer.appendChild(a);
+        const btnwrap = document.createElement('div');
+        btnwrap.style.display = 'flex';
+        btnwrap.style.alignItems = 'center';
+        btnwrap.appendChild(shareBtn);
+        outer.appendChild(btnwrap);
+
+        container.appendChild(outer);
+      });
+    }
+
+    function showShareToast(msg){
+      const id = 'share-toast';
+      if(document.getElementById(id)) return;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'share-toast';
+      div.textContent = msg;
+      document.body.appendChild(div);
+      setTimeout(()=> {
+        div.style.transition = 'opacity .3s ease';
+        div.style.opacity = '0';
+        setTimeout(()=> { div.remove(); }, 350);
+      }, 1400);
+    }
+
+    function findProductById(id){
+      if(typeof products !== 'undefined' && Array.isArray(products)){
+        return products.find(p => Number(p.id) === Number(id));
+      }
+      if(window.PRODUCTS && typeof window.PRODUCTS === 'object'){
+        return window.PRODUCTS[id] || Object.values(window.PRODUCTS).find(x => x.id == id);
+      }
+      return null;
+    }
+
+    function renderCuratedProducts(){
+      const grid = document.getElementById('curatedGrid');
+      if(!grid) return;
+      grid.innerHTML = '';
+
+      // Resolve CURATED_IDS
+      let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
+        ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
+        : [];
+
+      // warn for missing curated ids
+      if(Array.isArray(CURATED_IDS) && CURATED_IDS.length) {
+        const missing = CURATED_IDS.filter(id => !findProductById(id));
+        if(missing.length) {
+          console.warn('Some CURATED_IDS could not be resolved to products:', missing);
+        }
+      }
+
+      // Fallback: pick featured Earrings items
+      if(productObjs.length === 0){
+        productObjs = products.filter(p => p.category === CATEGORY_NAME).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
+      }
+
+      if(productObjs.length === 0){
+        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items, or ensure your shared product dataset is loaded.</div>';
+        return;
+      }
+
+      const favSet = readFavorites();
+
+      for(const p of productObjs){
+        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        const heartActive = favSet.has(Number(p.id));
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="relative overflow-hidden h-64">
+            <img src="${escapeAttr(p.image || '/images/placeholder-1.jpg')}" alt="${escapeAttr(p.title || '')}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
+            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${escapeAttr(p.id)}" title="Save to favorites">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${escapeHtml(p.title || '')}</h3>
+            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${escapeHtml(p.description || '')}</p>
+            <div class="flex justify-between items-center">
+              <span class="${fontClass} font-bold" style="color:var(--black);">$${(Number(p.price)||0).toLocaleString()}</span>
+              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
+                data-item-id="${escapeAttr(p.id)}"
+                data-item-name="${escapeAttr(p.title || '')}"
+                data-item-price="${escapeAttr(p.price||0)}"
+                data-item-url="/AllProducts/"
+                data-item-description="${escapeAttr(p.description||'')}"
+                data-item-image="${escapeAttr(p.image||'')}">
+                Add to cart
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      // bind favorites toggles
+      grid.querySelectorAll('.heart-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(btn.getAttribute('data-id'));
+          const s = readFavorites();
+          if(s.has(id)) s.delete(id); else s.add(id);
+          writeFavorites(s);
+          // refresh curated UI
+          renderCuratedProducts();
+        });
+      });
+
+      feather.replace();
+    }
+
+    /* --------------------------
+       SEARCH UI: desktop & mobile behavior (verbatim)
     -------------------------- */
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
@@ -502,6 +1033,7 @@
       const btn = document.getElementById('headerSearchBtn');
 
       if(!wrap || !form || !input || !btn) return;
+
       function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
 
       btn.addEventListener('click', (ev) => {
@@ -580,163 +1112,6 @@
         if(mobileInput) mobileInput.focus();
       }, 60);
     }
-
-    /* --------------------------
-       Cart toggle behavior (kept)
-    -------------------------- */
-    const headerCartToggle = document.getElementById('headerCartToggle');
-    let cartOpen = false;
-    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
-    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
-    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
-
-    headerCartToggle?.addEventListener('click', (e)=>{
-      e.preventDefault();
-      headerCartToggle.classList.add('clicked');
-      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
-
-      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
-        if(cartOpen) window.Snipcart.api.modal.close();
-        else window.Snipcart.api.modal.open();
-      } else {
-        const anchor = document.querySelector('a.snipcart-checkout');
-        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
-      }
-    });
-
-    /* --------------------------
-       FAVORITES (localStorage) small helper for this page
-    -------------------------- */
-    function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
-    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
-
-    function toggleFavoriteById(id){
-      const s = readFavorites();
-      if(s.has(id)) s.delete(id); else s.add(id);
-      writeFavorites(s);
-      // update curated rendering
-      renderCuratedProducts();
-    }
-
-    /* --------------------------
-       Category page helpers: init hero, subtype links, curated render
-       - Uses the global `products` array (from AllProducts generator) if present.
-       - If you use an external /js/products.js that exposes window.PRODUCTS keyed by SKU,
-         you can adapt CURATED_IDS to use SKUs and enable that block below.
-    -------------------------- */
-    function initCategoryHeroAndLinks(){
-      // set background, title and tagline
-      const hero = document.getElementById('categoryHero');
-      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
-      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
-      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
-      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
-      // set view all links
-      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllBtn')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllTop')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllBottom')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-
-      // render subtype links
-      const container = document.getElementById('subtypeLinks');
-      if(!container) return;
-      container.innerHTML = '';
-      if(Array.isArray(SUBTYPES) && SUBTYPES.length){
-        SUBTYPES.forEach(s => {
-          const a = document.createElement('a');
-          a.className = 'block py-1 text-sm';
-          a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&${s.query}`;
-          a.textContent = s.name;
-          container.appendChild(a);
-        });
-      } else {
-        container.innerHTML = '<p class="text-sm">Browse styles and sizes in the full catalog.</p>';
-      }
-    }
-
-    function findProductById(id){
-      // prefer the global numeric 'products' array if present (used by AllProducts sample)
-      if(typeof products !== 'undefined' && Array.isArray(products)){
-        return products.find(p => Number(p.id) === Number(id));
-      }
-      // fallback to window.PRODUCTS keyed object (if you maintain a products.js)
-      if(window.PRODUCTS && typeof window.PRODUCTS === 'object'){
-        // CURATED_IDS may be SKUs in that case, so try direct lookup
-        return window.PRODUCTS[id] || Object.values(window.PRODUCTS).find(x => x.id == id);
-      }
-      // not found
-      return null;
-    }
-
-    function renderCuratedProducts(){
-      const grid = document.getElementById('curatedGrid');
-      if(!grid) return;
-      grid.innerHTML = '';
-
-      // collect product objects from CURATED_IDS
-      const productObjs = CURATED_IDS.map(id => findProductById(id)).filter(Boolean);
-
-      // if none found, show a helpful message
-      if(productObjs.length === 0){
-        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items.</div>';
-        return;
-      }
-
-      const favSet = readFavorites();
-
-      for(const p of productObjs){
-        // p should have fields: id, title, description, image, price, category (matching your dataset)
-        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
-        const heartActive = favSet.has(Number(p.id));
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <div class="relative overflow-hidden h-64">
-            <img src="${p.image || '/images/placeholder-1.jpg'}" alt="${escapeHtml(p.title || '')}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
-            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${p.id}" title="Save to favorites">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </button>
-          </div>
-          <div class="p-4">
-            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${escapeHtml(p.title || '')}</h3>
-            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${escapeHtml(p.description || '')}</p>
-            <div class="flex justify-between items-center">
-              <span class="${fontClass} font-bold" style="color:var(--black);">$${(Number(p.price)||0).toLocaleString()}</span>
-              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
-                data-item-id="${escapeAttr(p.id)}"
-                data-item-name="${escapeAttr(p.title || '')}"
-                data-item-price="${escapeAttr(p.price||0)}"
-                data-item-url="/AllProducts/"
-                data-item-description="${escapeAttr(p.description||'')}"
-                data-item-image="${escapeAttr(p.image||'')}">
-                Add to cart
-              </button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      }
-
-      // bind heart toggles for curated grid
-      grid.querySelectorAll('.heart-btn').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const id = Number(btn.getAttribute('data-id'));
-          toggleFavoriteById(id);
-        });
-      });
-
-      feather.replace();
-    }
-
-    // small helpers
-    function escapeHtml(s) {
-      if(!s) return '';
-      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-    }
-    function escapeAttr(s){ return escapeHtml(String(s)); }
-
   </script>
 </body>
 </html>

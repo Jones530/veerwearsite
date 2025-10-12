@@ -260,6 +260,32 @@
     /* subtype link style / count badge */
     .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
     .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
+
+    /* share button (tiny) */
+    .share-btn {
+      margin-left:8px;
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      width:28px;
+      height:28px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:6px;
+    }
+    .share-toast {
+      position:fixed;
+      bottom:18px;
+      right:18px;
+      background:#111;
+      color:#fff;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:13px;
+      opacity:0.92;
+      z-index:99999;
+    }
   </style>
 </head>
 <body class="monument">
@@ -275,14 +301,14 @@
     // Optional curated product IDs. If empty or missing, we auto-pick featured Grillz.
     const CURATED_IDS = [2,5,8,12,15,22];
 
-    // SUBTYPES definitions for this category (used in the sidebar).
+    // SUBTYPES: keep only canonical display names; we will compute canonical slugs when building links
     const SUBTYPES = [
-      { name: 'Full-Cover Sets', query: 'style=full-coversets' },
-      { name: 'Half-Cover / Open-Face', query: 'style=half-cover_open-face' },
-      { name: 'Top Sets', query: 'style=topsets' },
-      { name: 'Bottom Sets', query: 'style=bottomsets' },
-      { name: 'Single-Tooth / Cap', query: 'style=single-tooth_cap' },
-      { name: 'Resin-Embedded Specials', query: 'style=resin-embeddedspecials' }
+      'Full-Cover Sets',
+      'Half-Cover / Open-Face',
+      'Top Sets',
+      'Bottom Sets',
+      'Single-Tooth / Cap',
+      'Resin-Embedded Specials'
     ];
   </script>
 
@@ -702,6 +728,45 @@
     }
 
     /* --------------------------
+       Canonical slug map & helpers
+       - displayToSlug: canonical slug for each human label
+       - normalizeSlugInput: safe fallback
+    -------------------------- */
+    const displayToSlug = {
+      'Full-Cover Sets': 'full-cover-sets',
+      'Half-Cover / Open-Face': 'half-cover-open-face',
+      'Top Sets': 'top-sets',
+      'Bottom Sets': 'bottom-sets',
+      'Single-Tooth / Cap': 'single-tooth-cap',
+      'Resin-Embedded Specials': 'resin-embedded-specials',
+
+      // (we include other maps for completeness if you reuse this script)
+      'Hoops': 'hoops',
+      'Studs': 'studs',
+      'Dangles': 'dangles',
+      'Full-Cover Press-Ons': 'full-cover-press-ons',
+      'Accent Tips': 'accent-tips',
+      'Resin-Embedded Nails': 'resin-embedded-nails'
+    };
+
+    // normalize inputs to safe hyphenated slug
+    function normalizeSlugInput(raw){
+      if(!raw) return '';
+      let s = String(raw).trim().toLowerCase();
+      s = s.replace(/[%20\+_]+/g,'-');       // spaces, plus, underscores -> hyphen
+      s = s.replace(/[^\w-]+/g,'-');         // non-word -> hyphen
+      s = s.replace(/-+/g,'-');              // collapse multiple hyphens
+      s = s.replace(/^-|-$/g,'');            // trim leading/trailing hyphens
+      return s;
+    }
+
+    function slugForDisplay(display){
+      if(!display) return '';
+      if(displayToSlug[display]) return displayToSlug[display];
+      return normalizeSlugInput(display);
+    }
+
+    /* --------------------------
        Product generator: now adds subtype + technique (so this page can compute counts & pick curated items)
        Production: you should replace this with your canonical product dataset or import from a shared file.
     -------------------------- */
@@ -750,7 +815,7 @@
 
     // favorites support
     function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
-    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
+    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr); ) }
 
     // small helpers
     function escapeHtml(s) {
@@ -762,6 +827,7 @@
     /* --------------------------
        ========== Category-specific helpers ==========
        These functions render the curated grid using the existing `products` array.
+       The key change: build subtype links with canonical `style=` slugs (displayToSlug)
     -------------------------- */
 
     function initCategoryHeroAndLinks(){
@@ -772,30 +838,89 @@
       const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
       const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
 
-      // set view all links
-      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllBtn')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllTop')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('viewAllBottom')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
-      document.getElementById('linkViewAll')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+      // set view all links (category slug)
+      const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
+      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = viewAllHref);
+      document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllTop')?.setAttribute('href', viewAllHref);
+      document.getElementById('viewAllBottom')?.setAttribute('href', viewAllHref);
+      document.getElementById('linkViewAll')?.setAttribute('href', viewAllHref);
 
       // render subtype links with counts (counts taken from the products array if present)
       const container = document.getElementById('subtypeLinks');
       if(!container) return;
       container.innerHTML = '';
 
-      // if our SUBTYPES is empty, fallback to the subtypesMap
-      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES : (subtypesMap[CATEGORY_NAME]||[]).map(s=>({name:s,query:`style=${encodeURIComponent(s.replace(/\s+/g,'-').toLowerCase())}`}));
+      // use SUBTYPES array (canonical display names). Build canonical slug via displayToSlug or normalizer.
+      const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES.slice() : (subtypesMap[CATEGORY_NAME]||[]);
 
-      subtypeList.forEach(s => {
-        // compute count from local products array (if available)
-        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === s.name).length;
+      subtypeList.forEach(name => {
+        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === name).length;
+        const slug = slugForDisplay(name); // canonical
+        const href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&style=${encodeURIComponent(slug)}`;
+
+        const outer = document.createElement('div');
+        outer.className = 'flex items-center justify-between gap-2';
+
         const a = document.createElement('a');
-        a.className = 'subtype-link';
-        a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&${s.query}`;
-        a.innerHTML = `<span>${escapeHtml(s.name)}</span><span class="subtype-badge">${count}</span>`;
-        container.appendChild(a);
+        a.className = 'subtype-link flex-1';
+        a.href = href;
+        a.setAttribute('title', `Open ${name}`);
+        a.innerHTML = `<span>${escapeHtml(name)}</span><span class="subtype-badge">${count}</span>`;
+
+        // share button (copy link / open in new tab)
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'share-btn';
+        shareBtn.type = 'button';
+        shareBtn.title = 'Copy direct link / Open';
+        shareBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 7h4v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7h4"></path><path d="M8 7V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"></path></svg>`;
+
+        // action: copy to clipboard (primary), on shift-click open in new tab
+        shareBtn.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const url = window.location.origin + href;
+          // Copy to clipboard
+          try {
+            await navigator.clipboard.writeText(url);
+            showShareToast('Link copied to clipboard');
+          } catch (err) {
+            // fallback to opening a new tab if clipboard unavailable
+            window.open(url, '_blank');
+          }
+        });
+        shareBtn.addEventListener('auxclick', (ev) => {
+          // middle-click opens deep link in new tab
+          if(ev.button === 1){
+            ev.preventDefault();
+            const url = window.location.origin + href;
+            window.open(url, '_blank');
+          }
+        });
+
+        outer.appendChild(a);
+        const btnwrap = document.createElement('div');
+        btnwrap.style.display = 'flex';
+        btnwrap.style.alignItems = 'center';
+        btnwrap.appendChild(shareBtn);
+        outer.appendChild(btnwrap);
+
+        container.appendChild(outer);
       });
+    }
+
+    function showShareToast(msg){
+      const id = 'share-toast';
+      if(document.getElementById(id)) return;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'share-toast';
+      div.textContent = msg;
+      document.body.appendChild(div);
+      setTimeout(()=> {
+        div.style.transition = 'opacity .3s ease';
+        div.style.opacity = '0';
+        setTimeout(()=> { div.remove(); }, 350);
+      }, 1400);
     }
 
     function findProductById(id){

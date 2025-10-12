@@ -3,13 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grin & Glisten — Veerwear</title>
+  <title>VEERWEAR — Apparel</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-
-  <!-- Google font preload -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -22,20 +17,20 @@
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
+    /* ---------- fonts, variables and base (adjusted for VEERWEAR) ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
-    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
 
     :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
 
     html{ font-size:112.5%; }
-    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    /* Make Monument Extended the default for the page (banner + body) */
+    html,body{ font-family:"Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
-    .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
-    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
-    .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
+    .plunct{ font-family:"Plunct","Monument Extended",sans-serif; font-weight:700; }
+    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument{ font-family:"Monument Extended","Monument Extended Ultrabold",sans-serif; font-weight:700; }
 
     .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
 
@@ -44,14 +39,14 @@
     .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
     .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero (small tweak: no hard-coded background here — will be set inline) */
+    /* Hero (no hard-coded background here — set inline) */
     .shop-hero {
       position: relative;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       color:#fff;
-      overflow:visible; /* ensure dropdown can overlap if needed */
+      overflow:visible;
       padding-top:8rem;
       padding-bottom:8rem;
       min-height:60vh;
@@ -82,14 +77,13 @@
       cursor:pointer;
       font-weight:700;
       background-clip: padding-box;
-      position: relative; /* required for glow pseudo element */
+      position: relative;
       z-index: 2;
-      overflow: visible; /* allow pseudo elements to be visible */
+      overflow: visible;
     }
     .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
     .page-btn.clicked { transform: scale(.98); }
 
-    /* active page: stronger glow & sparkle */
     .page-active {
       background: linear-gradient(180deg,#fff9e6,#f7e5b8);
       color: #000;
@@ -152,21 +146,20 @@
     .heart-active{ background:var(--gold); color:#000 !important; }
 
     /* header icons container */
-    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; }
 
-    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
-    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
+    /* Dropdown menu styling */
+    .group{ position: relative; display: inline-block; }
     .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
     .menu-label{ display:inline-block; }
 
-    /* dropdown will be positioned as fixed (moved to document.body by JS) */
     .dropdown-menu{
       position: fixed;
       background: #fff;
       color: var(--black);
       border-radius: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      padding: 6px 12px;
       z-index: 9999;
       display: none;
       white-space: nowrap;
@@ -212,15 +205,12 @@
       .dropdown-menu{ min-width: 180px; }
       .filter-toggle{ padding:6px 0; }
 
-      /* Hide desktop inline search on mobile */
       .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
     }
 
     .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
 
-    /* ----------------------------
-       Header search UI
-    ---------------------------- */
+    /* Header search UI */
     .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
     .search-form { display:flex; align-items:center; }
     .search-input {
@@ -290,23 +280,24 @@
 </head>
 <body class="monument">
 
-  <!-- ========== CONFIG: edit these for each category page ========== -->
+  <!-- ========== CONFIG: VEERWEAR category page ========== -->
   <script>
-    // Page config for Veerwear
-    const CATEGORY_NAME = 'Veerwear';
-    const CATEGORY_SLUG = 'Veerwear';
-    const CATEGORY_TAGLINE = 'Soft goods & apparel — Veerwear collection.';
-    const BANNER_URL = '/images/veerwear-hero.gif'; // hero banner
-    const BODY_GIF = '/images/veerwear-body-loop.gif'; // the gif to show in the page body
+    // VEERWEAR page config
+    const CATEGORY_NAME = 'VEERWEAR';              // visible title
+    const CATEGORY_SLUG = 'veerwear';              // used in the ?category= link
+    const CATEGORY_TAGLINE = 'Signature streetwear & apparel — finely crafted, limited drops.';
+    const BANNER_URL = '/images/VeerwearBanner.gif'; // banner for this category (adjust path as needed)
 
-    // Optional curated product IDs (example). Replace with real IDs from your product dataset.
-    const CURATED_IDS = [6,13,25,31];
+    // Single curated style: Apparel
+    const CURATED_IDS = []; // leave empty to auto-pick featured Veerwear items
 
-    // SUBTYPES: keep canonical display names
-    const SUBTYPES = ['Apparel'];
+    // SUBTYPES: only the canonical "Apparel"
+    const SUBTYPES = [
+      'Apparel'
+    ];
   </script>
 
-  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
+  <!-- NAV (verbatim header from your All Products file with VEERWEAR link emphasized) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
@@ -354,11 +345,9 @@
 
       <!-- header icons: search, heart, cart -->
       <div class="header-actions">
-        <!-- SEARCH WRAP: desktop expands left. On mobile the icon will open mobile nav & focus mobile search. -->
         <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
           <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
             <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
-            <!-- search button: when collapsed clicking it opens input; when open form submit -->
             <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
               <i data-feather="search" class="w-4 h-4"></i>
             </button>
@@ -388,7 +377,7 @@
         <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
       </div>
 
-      <!-- Mobile search area (toggled by header search icon on small screens) -->
+      <!-- Mobile search area -->
       <div id="mobileSearchBar" aria-hidden="true">
         <form id="mobileSearchForm" action="/search.html" method="get" role="search">
           <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
@@ -414,25 +403,24 @@
         <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
 
-        <!-- mobile favorites link -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO (curated landing hero; retains style/UX) -->
-  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/veerwear-hero.gif');">
+  <!-- HERO -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/VeerwearBanner.gif');">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
       <div class="shop-banner">
         <div>
-          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">Veerwear</h1>
+          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">VEERWEAR</h1>
           <div class="flex items-center text-gray-200 text-sm monument">
             <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
             <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-            <span id="categoryBreadcrumb">Veerwear</span>
+            <span id="categoryBreadcrumb">VEERWEAR</span>
           </div>
-          <p id="categoryTagline" class="mt-4 text-lg opacity-90">Soft goods & apparel — Veerwear collection.</p>
+          <p id="categoryTagline" class="mt-4 text-lg opacity-90 monument">Signature streetwear & apparel — finely crafted, limited drops.</p>
           <div class="mt-6">
             <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
           </div>
@@ -441,7 +429,7 @@
     </div>
   </section>
 
-  <!-- CONTENT: curated landing (keeps container/grid sizes & general layout consistent with All Products) -->
+  <!-- CONTENT: curated landing -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
@@ -459,7 +447,7 @@
 
               <div class="mt-6">
                 <h4 class="monument font-medium mb-2">Quick info</h4>
-                <p class="text-sm">Limited runs & merch drops. Care info on each product page. Free shipping over $150.</p>
+                <p class="text-sm">Premium apparel & limited drops — size guides and care info on each product page. Free shipping over $150.</p>
               </div>
             </div>
 
@@ -469,17 +457,12 @@
         <main class="md:w-3/4 monument">
           <div class="flex justify-between items-center mb-6">
             <div>
-              <h2 class="text-2xl font-bold" id="featuredTitle">Featured Veerwear</h2>
-              <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Limited drops, tees, hoodies & more.</p>
+              <h2 class="text-2xl font-bold" id="featuredTitle">Featured VEERWEAR</h2>
+              <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Hand-picked pieces & recent drops.</p>
             </div>
             <div>
               <a id="viewAllTop" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="/AllProducts/?category=CATEGORY_SLUG">View all Veerwear</a>
             </div>
-          </div>
-
-          <!-- BODY GIF: full-width, responsive, non-blocking (keeps UX) -->
-          <div class="mb-8">
-            <img src="/images/veerwear-body-loop.gif" alt="Veerwear loop" class="w-full rounded-lg object-cover" loading="lazy" aria-hidden="false">
           </div>
 
           <div id="curatedGrid" class="curated-grid"></div>
@@ -492,7 +475,7 @@
     </div>
   </section>
 
-  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
+  <!-- FOOTER (kept) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -534,34 +517,26 @@
   <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: patched + Veerwear-specific init -->
+  <!-- SCRIPTS: preserved behavior, adapted for VEERWEAR -->
   <script>
-    // tiny safe helpers
-    function escapeHtml(s) {
-      if(!s) return '';
-      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-    }
-    function escapeAttr(s){ return escapeHtml(String(s)); }
-
     feather.replace();
 
-    // Mobile nav toggle (verbatim)
+    // Mobile nav toggle
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
     const mobileClose = document.getElementById('mobileCloseBtn');
     mobileBtn?.addEventListener('click', ()=> {
       mobileNav.style.display='block';
-      document.body.classList.remove('mobile-search-open'); // don't auto-open mobile search here
+      document.body.classList.remove('mobile-search-open');
     });
     mobileClose?.addEventListener('click', ()=> {
       mobileNav.style.display='none';
-      // also clear mobile search
       const mIn = document.getElementById('mobileSearchInput');
       if(mIn) mIn.value = '';
       document.body.classList.remove('mobile-search-open');
     });
 
-    // Filter collapse behavior (kept)
+    // Filter collapse behavior (keeps present)
     document.querySelectorAll('.filter-toggle').forEach(btn=>{
       const target = document.getElementById(btn.getAttribute('data-target'));
       const chev = btn.querySelector('.chev');
@@ -576,8 +551,7 @@
     });
 
     /* --------------------------
-       Dropdown: attach menu to body (fixed) and robust open/close
-       (verbatim from AllProducts)
+       Dropdown: attach menu to body (robust open/close)
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -588,7 +562,7 @@
 
         if(!menu || !label || !trigger) return;
 
-        // Move menu to body to escape stacking contexts and allow overlay
+        // Move menu to body
         if (!menu.dataset.moved) {
           document.body.appendChild(menu);
           menu.dataset.moved = "true";
@@ -694,16 +668,15 @@
       });
     }
 
-    // Call on load and resize (binding only happens once per group)
+    // Call on load and resize
     window.addEventListener('resize', ()=> positionAndBindDropdowns());
     document.addEventListener('DOMContentLoaded', ()=>{
-      // optional protection so one runtime error doesn't kill init
       try {
-        console.log('Veerwear script init');
+        console.log('VEERWEAR script init');
         feather.replace();
         positionAndBindDropdowns();
 
-        // build demo products (includes subtype + technique so counts are usable during dev)
+        // build demo products (includes subtype + technique)
         buildDemoProducts();
 
         // initialize category hero & links, then render curated
@@ -714,19 +687,20 @@
         initHeaderSearch();
         initMobileSearch();
       } catch (err) {
-        console.error('Error initializing Veerwear page:', err);
+        console.error('Error initializing VEERWEAR page:', err);
       }
     });
 
     /* --------------------------
-       Subtypes & technique helpers (shared with AllProducts)
+       Subtypes & technique helpers
     -------------------------- */
     const subtypesMap = {
       'Earrings': ['Hoops','Studs','Dangles'],
       'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
       'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
       'aL vaLe': ['Merch'],
-      'Veerwear': ['Apparel']
+      'Veerwear': ['Apparel'],
+      'VEERWEAR': ['Apparel']
     };
 
     function techniqueFromSubtype(sub) {
@@ -743,6 +717,7 @@
        Canonical slug map & helpers
     -------------------------- */
     const displayToSlug = {
+      'Apparel': 'apparel',
       'Full-Cover Sets': 'full-cover-sets',
       'Half-Cover / Open-Face': 'half-cover-open-face',
       'Top Sets': 'top-sets',
@@ -754,8 +729,7 @@
       'Dangles': 'dangles',
       'Full-Cover Press-Ons': 'full-cover-press-ons',
       'Accent Tips': 'accent-tips',
-      'Resin-Embedded Nails': 'resin-embedded-nails',
-      'Apparel': 'apparel'
+      'Resin-Embedded Nails': 'resin-embedded-nails'
     };
 
     function normalizeSlugInput(raw){
@@ -775,10 +749,10 @@
     }
 
     /* --------------------------
-       Product generator: demo dataset
+       Product generator
     -------------------------- */
-    const categories = ['Veerwear','Grillz','Earrings','Nail Jewelry','aL vaLe','Accessories'];
-    const materials = ['Cotton','Polyester','Denim','Leather','Resin'];
+    const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
+    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
     const products = [];
     const TOTAL_ITEMS = 86;
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
@@ -788,7 +762,7 @@
       for(let i=1;i<=TOTAL_ITEMS;i++){
         const cat = categories[i % categories.length];
         const mat = materials[i % materials.length];
-        const price = (i % 10 === 0) ? rand(80,350) : rand(20,180);
+        const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
         const sold = rand(0,2000);
         const featured = i % 7 === 0;
         const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
@@ -820,7 +794,7 @@
     let currentFilters = { categories:[], materials:[], price:'all' };
     let currentSort = 'featured';
 
-    // favorites support (robust)
+    // favorites support
     function readFavorites(){
       try{
         return new Set(JSON.parse(localStorage.getItem('sb_favorites') || '[]'));
@@ -837,8 +811,14 @@
       }
     }
 
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    }
+    function escapeAttr(s){ return escapeHtml(String(s)); }
+
     /* --------------------------
-       Category-specific helpers (render curated grid & subtype links)
+       Category-specific helpers: render curated grid using `products`.
     -------------------------- */
 
     function initCategoryHeroAndLinks(){
@@ -857,7 +837,7 @@
       document.getElementById('viewAllBottom')?.setAttribute('href', viewAllHref);
       document.getElementById('linkViewAll')?.setAttribute('href', viewAllHref);
 
-      // render subtype links with counts
+      // render subtype links with counts (counts taken from products array if present)
       const container = document.getElementById('subtypeLinks');
       if(!container) return;
       container.innerHTML = '';
@@ -865,7 +845,7 @@
       const subtypeList = (Array.isArray(SUBTYPES) && SUBTYPES.length) ? SUBTYPES.slice() : (subtypesMap[CATEGORY_NAME]||[]);
 
       subtypeList.forEach(name => {
-        const count = products.filter(p => p.category === CATEGORY_NAME && p.subtype === name).length;
+        const count = products.filter(p => (p.category === CATEGORY_NAME || p.category.toLowerCase() === CATEGORY_NAME.toLowerCase()) && p.subtype === name).length;
         const slug = slugForDisplay(name);
         const href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&style=${encodeURIComponent(slug)}`;
 
@@ -878,7 +858,6 @@
         a.setAttribute('title', `Open ${name}`);
         a.innerHTML = `<span>${escapeHtml(name)}</span><span class="subtype-badge">${count}</span>`;
 
-        // share button (copy link / open in new tab)
         const shareBtn = document.createElement('button');
         shareBtn.className = 'share-btn';
         shareBtn.type = 'button';
@@ -957,12 +936,11 @@
       if(!grid) return;
       grid.innerHTML = '';
 
-      // Resolve CURATED_IDS to product objects; if they are missing, choose fallback picks
+      // Resolve CURATED_IDS to product objects; fallback to featured VEERWEAR items
       let productObjs = (Array.isArray(CURATED_IDS) && CURATED_IDS.length)
         ? CURATED_IDS.map(id => findProductById(id)).filter(Boolean)
         : [];
 
-      // If CURATED_IDS present but some missing, warn in console
       if(Array.isArray(CURATED_IDS) && CURATED_IDS.length) {
         const missing = CURATED_IDS.filter(id => !findProductById(id));
         if(missing.length) {
@@ -970,12 +948,10 @@
         }
       }
 
-      // Fallback: if no curated ids or none resolved, pick featured Veerwear items
       if(productObjs.length === 0){
-        productObjs = products.filter(p => p.category === CATEGORY_NAME).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
+        productObjs = products.filter(p => (p.category.toLowerCase() === 'veerwear' || p.category.toLowerCase() === 'veerwear' || p.category === 'Veerwear' || p.category === 'VEERWEAR')).sort((a,b) => (b.featured?1:0) - (a.featured?1:0)).slice(0,6);
       }
 
-      // Final fallback to "none configured" message
       if(productObjs.length === 0){
         grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items, or ensure your shared product dataset is loaded.</div>';
         return;
@@ -984,7 +960,7 @@
       const favSet = readFavorites();
 
       for(const p of productObjs){
-        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        const fontClass = (p.category.toLowerCase() === 'veerwear' || p.category === 'Veerwear' || p.category === 'VEERWEAR') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
         const heartActive = favSet.has(Number(p.id));
         const card = document.createElement('div');
         card.className = 'product-card';
@@ -1033,7 +1009,7 @@
     }
 
     /* --------------------------
-       SEARCH UI: desktop & mobile behavior (verbatim)
+       SEARCH UI: desktop & mobile behavior
     -------------------------- */
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
@@ -1124,4 +1100,3 @@
   </script>
 </body>
 </html>
-

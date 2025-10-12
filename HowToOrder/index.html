@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grin & Glisten</title>
+  <title>Grin & Glisten — How to Order</title>
   <link rel="icon" type="image/png" href="/images/GG.png">
 
   <!-- Google font preload -->
@@ -52,9 +52,9 @@
       background-repeat: no-repeat;
       color:#fff;
       overflow:visible; /* ensure dropdown can overlap if needed */
-      padding-top:12rem;
-      padding-bottom:12rem;
-      min-height:75vh;
+      padding-top:6rem;
+      padding-bottom:6rem;
+      min-height:36vh;
       display:flex;
       align-items:center;
     }
@@ -228,7 +228,7 @@
       right: 44px;
       width: 0;
       opacity: 0;
-      transition:width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
       border:1px solid rgba(0,0,0,0.08);
       padding:8px 10px;
       border-radius:8px;
@@ -287,65 +287,43 @@
       z-index:99999;
     }
 
-    /* ----------------------------
-       Home-specific styles & animation tweaks
-       - Made timings slightly slower and added ability to stagger via JS
-    ---------------------------- */
-    .collections-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
-
-    .section-card {
-      background:#fff;
-      border-radius:12px;
-      overflow:hidden;
-      border:1px solid rgba(0,0,0,0.04);
-      box-shadow:0 8px 18px rgba(0,0,0,0.04);
-      transform:translateY(24px);
-      opacity:0;
-      transition:transform 0.95s cubic-bezier(.16,.84,.24,1), opacity 0.95s cubic-bezier(.16,.84,.24,1);
-      will-change:transform,opacity;
+    /* product detail custom */
+    .product-gallery { display:flex; flex-direction:column; gap:12px; }
+    .main-image { width:100%; height:520px; object-fit:contain; background:#fff; border:1px solid rgba(0,0,0,0.06); display:block; }
+    .thumbs { display:flex; gap:8px; margin-top:8px; }
+    .thumbs img { width:72px; height:72px; object-fit:cover; border:1px solid rgba(0,0,0,0.06); cursor:pointer; border-radius:6px; }
+    .thumbs img.active { outline:3px solid var(--gold); transform:translateY(-2px); }
+    @media (max-width:1024px){
+      .main-image { height:420px; }
     }
-    .section-card.visible {
-      transform:translateY(0);
-      opacity:1;
+    @media (max-width:640px){
+      .main-image { height:320px; }
+      .thumbs img { width:56px; height:56px; }
     }
 
-    .fade-up {
-      opacity:0;
-      transform:translateY(36px);
-      transition: transform 0.95s cubic-bezier(.16,.84,.24,1), opacity 0.95s cubic-bezier(.16,.84,.24,1);
-      will-change: transform,opacity;
-    }
-    .fade-up.visible {
-      opacity:1;
-      transform:translateY(0);
-    }
+    .product-meta h1 { font-size:28px; margin-bottom:6px; }
+    .price { font-size:20px; font-weight:800; margin-top:8px; }
+    .qty-controls { display:flex; align-items:center; gap:8px; margin-top:10px; }
+    .qty-controls button { width:36px; height:36px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:white; cursor:pointer; }
+    .add-to-cart { margin-top:16px; width:100%; padding:12px; border-radius:10px; font-weight:900; }
+    .minor { color:#666; font-size:13px; margin-top:8px; }
 
-    /* slightly different smaller stagger for hero inner (so it leads) */
-    .hero-inner { transition-delay: 0 !important; }
-
-    .social-strip { display:flex; gap:12px; align-items:center; justify-content:center; padding:16px 0; border-top:1px solid rgba(0,0,0,0.04); border-bottom:1px solid rgba(0,0,0,0.04); margin-top:2rem; }
+    .product-info { margin-top:18px; color:var(--black); }
+    .specs { margin-top:12px; }
+    .specs li { margin-bottom:8px; font-size:14px; color:#333; }
   </style>
 </head>
 <body class="monument">
 
-  <!-- ========== CONFIG: kept for compatibility ========== -->
+  <!-- ========== CONFIG: edit these for each category page ========== -->
   <script>
-    const CATEGORY_NAME = 'Grillz';
-    const CATEGORY_SLUG = 'Grillz';
-    const CATEGORY_TAGLINE = 'Custom metal & resin grillz — handmade in-house.';
-    const BANNER_URL = '/images/Grillpagegif.gif';
-    const CURATED_IDS = [2,5,8,12,15,22];
-    const SUBTYPES = [
-      'Full-Cover Sets',
-      'Half-Cover / Open-Face',
-      'Top Sets',
-      'Bottom Sets',
-      'Single-Tooth / Cap',
-      'Resin-Embedded Specials'
-    ];
+    const CATEGORY_NAME = 'How to Order';
+    const CATEGORY_SLUG = 'HowToOrder';
+    const CATEGORY_TAGLINE = 'Step-by-step: how to order, take impressions and send them to us.';
+    const BANNER_URL = '/images/home-banner.jpg';
   </script>
 
-  <!-- NAV (verbatim header from your All Products / Grillz file — DO NOT MODIFY) -->
+  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
@@ -393,11 +371,9 @@
 
       <!-- header icons: search, heart, cart -->
       <div class="header-actions">
-        <!-- SEARCH WRAP: desktop expands left. On mobile the icon will open mobile nav & focus mobile search. -->
         <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
           <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
             <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
-            <!-- search button: when collapsed clicking it opens input; when open form submit -->
             <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
               <i data-feather="search" class="w-4 h-4"></i>
             </button>
@@ -459,131 +435,143 @@
     </div>
   </nav>
 
-  <!-- HERO (Home's hero kept — hero-inner uses fade-up class that will be staggered) -->
-  <section id="homeHero" class="shop-hero" style="background-image:url('/images/home-banner.jpg');">
+  <!-- HERO (keeps the same shop-hero CSS and UX) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/home-banner.jpg');">
     <div class="overlay" aria-hidden="true"></div>
-    <div class="container mx-auto px-6 hero-inner fade-up">
-      <a href="/AllProducts/" class="monument bg-white text-black px-5 py-3 rounded-md inline-block">Explore Collections</a>
+    <div class="container mx-auto px-6 hero-inner">
+      <div class="shop-banner">
+        <div>
+          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900; color:var(--black);">HOW TO ORDER</h1>
+          <div class="flex items-center text-gray-700 text-sm monument">
+            <a href="/Home/" class="hover:text-gray-900 text-gray-700">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span id="categoryBreadcrumb">How to Order</span>
+          </div>
+          <p id="categoryTagline" class="mt-4 text-base opacity-90" style="color: #333;">Step-by-step guide to ordering custom pieces, taking impressions and sending them to our workshop.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- MAIN CONTENT: REPLACED with How To Order content (header/footer/UX above and below are verbatim) -->
+  <!-- ====== HOW TO ORDER MAIN CONTENT (RECREATED FROM PDF) ====== -->
   <main class="py-12">
     <div class="container mx-auto px-6">
 
-      <!-- Page intro -->
+      <!-- Intro paragraph -->
       <section class="mb-8">
-        <h1 class="monument text-4xl mb-3">How to Order</h1>
-        <p class="text-gray-700 max-w-3xl">Follow these steps to place a custom order. This page reproduces the ordering flow from your PDF: choose product → order impression kit (if needed) → take impressions → ship to us → production & QC → delivery.</p>
-      </section>
-
-      <!-- Quick action CTAs -->
-      <section class="mb-10">
-        <div class="flex flex-col md:flex-row gap-4 items-center">
-          <a href="/AllProducts/" class="monument bg-white text-black px-5 py-3 rounded-md inline-block">Order Now</a>
-          <a href="/ImpressionKit/" class="monument bg-amber-600 text-black px-5 py-3 rounded-md inline-block">Get Impression Kit</a>
-          <a href="/contact/" class="ghost-cta">Contact Support</a>
+        <div class="max-w-3xl mx-auto text-center">
+          <p class="text-gray-700">Follow these steps to place a custom order and send us accurate impressions. If you'd like us to match exact PDF text, tell me which paragraphs to copy verbatim and I'll update them exactly.</p>
         </div>
       </section>
 
-      <!-- Steps (grid) -->
+      <!-- Step cards -->
       <section class="mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">1</div>
-              <h3 class="text-lg monument">Select product & options</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">1</div>
+              <div>
+                <h3 class="monument text-lg">Select product & custom options</h3>
+                <p class="minor mt-2">Choose your category (Grillz, Earrings, Nail Jewelry), select metal, finish and any stones or special requests on the product page.</p>
+                <div class="mt-3">
+                  <a href="/AllProducts/" class="ghost-cta">Browse products</a>
+                </div>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">Choose the product you want (Grillz / Earrings / Nail jewelry), select metal, plating and stone options on the product page. Double-check sizing notes and lead time.</p>
-            <div class="mt-4">
-              <a href="/AllProducts/" class="ghost-cta">Browse products</a>
-            </div>
-          </article>
+          </div>
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">2</div>
-              <h3 class="text-lg monument">Order an impression kit</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">2</div>
+              <div>
+                <h3 class="monument text-lg">Order an Impression Kit</h3>
+                <p class="minor mt-2">If you cannot visit the shop, order our impression kit — it contains trays, putty and step-by-step instructions for an accurate mould.</p>
+                <div class="mt-3">
+                  <a href="/ImpressionKit/" class="primary-cta">Order impression kit</a>
+                </div>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">For custom-fit pieces we require impressions. Order our kit that includes trays, putty and easy instructions. Most kits ship within 1–2 business days.</p>
-            <div class="mt-4">
-              <a href="/ImpressionKit/" class="primary-cta">Order kit</a>
-            </div>
-          </article>
+          </div>
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">3</div>
-              <h3 class="text-lg monument">Take clear impressions</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">3</div>
+              <div>
+                <h3 class="monument text-lg">Take impressions</h3>
+                <p class="minor mt-2">Follow the instructions in the kit carefully — seat the tray, hold for the correct time, and label top/bottom and left/right if required.</p>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">Follow kit instructions: mix putty, seat the tray properly and hold steady. Use a well-lit area and label impressions (top/bottom, left/right) when required.</p>
-            <ul class="mt-3 text-sm text-gray-600">
-              <li>Read the included guide before you start.</li>
-              <li>Keep hair and moisture away from the tray.</li>
-              <li>If in doubt, take two impressions and send both.</li>
-            </ul>
-          </article>
+          </div>
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">4</div>
-              <h3 class="text-lg monument">Return the kit</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">4</div>
+              <div>
+                <h3 class="monument text-lg">Return impressions to us</h3>
+                <p class="minor mt-2">Use the supplied return envelope or ship to our address with tracking. Include order number, contact email and any notes.</p>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">Place the impressions, order form and any notes into the envelope. Use tracked shipping for international orders. Include your order number and contact email.</p>
-          </article>
+          </div>
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">5</div>
-              <h3 class="text-lg monument">Production & QC</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">5</div>
+              <div>
+                <h3 class="monument text-lg">Production & QC</h3>
+                <p class="minor mt-2">We fabricate, hand-finish and inspect each piece. If major customisation is requested we’ll email photos for approval.</p>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">We manufacture by hand and perform a quality check. If significant custom work is requested we may send photos for your approval before shipping.</p>
-          </article>
+          </div>
 
-          <article class="section-card p-6 fade-up">
-            <div class="flex items-center mb-3">
-              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center monument font-bold mr-3">6</div>
-              <h3 class="text-lg monument">Shipping & delivery</h3>
+          <div class="p-6 bg-white rounded-lg product-card">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-black text-white flex items-center justify-center font-bold">6</div>
+              <div>
+                <h3 class="monument text-lg">Shipping & delivery</h3>
+                <p class="minor mt-2">You'll get tracking details once shipped. Delivery depends on destination and carrier; customs can add time for international orders.</p>
+              </div>
             </div>
-            <p class="text-sm text-gray-700">You’ll receive tracking details once your order ships. Delivery times depend on destination and chosen method; customs can add delay for international orders.</p>
-          </article>
+          </div>
 
         </div>
       </section>
 
-      <!-- FAQ & Aftercare -->
-      <section class="mb-12 grid md:grid-cols-2 gap-6">
-        <div class="section-card p-6 fade-up">
-          <h4 class="monument text-xl mb-3">Aftercare</h4>
-          <p class="text-sm text-gray-700">To keep pieces looking great: avoid harsh chemicals, remove during exercise and showering, store away from moisture and clean with a soft cloth. For plated items avoid abrasive polishing.</p>
+      <!-- FAQ + Care -->
+      <section class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 bg-white rounded-lg product-card">
+          <h4 class="monument text-xl">Care & aftercare</h4>
+          <p class="minor mt-2">To keep items looking great: remove before showering, avoid harsh chemicals, and polish gently with a soft cloth. For plated items, avoid aggressive polishing.</p>
         </div>
 
-        <div class="section-card p-6 fade-up">
-          <h4 class="monument text-xl mb-3">FAQ</h4>
-          <div class="space-y-3 text-sm text-gray-700">
-            <div><strong>How long does production take?</strong><div>Typical turnaround: 2–6 weeks depending on product and workload. Rush options available during checkout.</div></div>
-            <div><strong>Can I change my order?</strong><div>Possible if production hasn't started. Contact support immediately with your order number.</div></div>
-            <div><strong>What if impressions are unusable?</strong><div>We’ll notify you and provide retake instructions. This may delay delivery.</div></div>
+        <div class="p-6 bg-white rounded-lg product-card">
+          <h4 class="monument text-xl">Frequently asked questions</h4>
+          <div class="mt-3 text-sm minor space-y-3">
+            <div><strong>How long does it take?</strong><div>Typical turnaround 2–6 weeks depending on item and shipping; rush options may be available.</div></div>
+            <div><strong>Can I change my order?</strong><div>Minor changes possible prior to production. Contact support immediately with order number.</div></div>
+            <div><strong>What if impressions are unusable?</strong><div>We will contact you for a retake; this may delay your order.</div></div>
           </div>
         </div>
       </section>
 
-      <!-- Download PDF / Contact -->
-      <section class="mb-12 text-center fade-up">
+      <!-- Final CTA -->
+      <section class="text-center mb-12">
         <div class="max-w-2xl mx-auto">
-          <p class="text-gray-700 mb-4">Want the printable version? <a href="/How to Order – Tuff Tooth.pdf" class="underline">Download the How To Order PDF</a>.</p>
-          <div class="flex justify-center gap-4">
-            <a href="/AllProducts/" class="primary-cta">Start an order</a>
-            <a href="/ImpressionKit/" class="ghost-cta">Order impression kit</a>
-          </div>
+          <p class="minor mb-6">Ready to begin? Select your product or order an impression kit to get started.</p>
+          <a href="/AllProducts/" class="primary-cta mr-4">Order Now</a>
+          <a href="/ImpressionKit/" class="ghost-cta">Get Impression Kit</a>
         </div>
+      </section>
+
+      <!-- Optionally include the original PDF download link -->
+      <section class="text-center">
+        <a href="/How to Order – Tuff Tooth.pdf" class="text-sm monument">Download the How to Order PDF</a>
       </section>
 
     </div>
   </main>
 
-  <!-- FOOTER (verbatim from All Products / Grillz file — DO NOT MODIFY) -->
+  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -622,10 +610,10 @@
     </div>
   </footer>
 
-  <!-- Snipcart root -->
+  <!-- Snipcart root (replace YOUR_SNIPCART_API_KEY) -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: verbatim Grillz UX (dropdowns, search, mobile nav, product demo builder, etc.) -->
+  <!-- SCRIPTS: keep your AllProducts JS & behavior, but simplified for this page -->
   <script>
     feather.replace();
 
@@ -639,30 +627,12 @@
     });
     mobileClose?.addEventListener('click', ()=> {
       mobileNav.style.display='none';
-      // also clear mobile search
       const mIn = document.getElementById('mobileSearchInput');
       if(mIn) mIn.value = '';
       document.body.classList.remove('mobile-search-open');
     });
 
-    // Filter collapse behavior (chevrons to the right) - keep present though landing uses just subtype links
-    document.querySelectorAll('.filter-toggle').forEach(btn=>{
-      const target = document.getElementById(btn.getAttribute('data-target'));
-      const chev = btn.querySelector('.chev');
-      if(target) target.style.display='block';
-      if(chev) chev.classList.add('open');
-      btn.addEventListener('click', ()=>{
-        if(!target) return;
-        const none = getComputedStyle(target).display === 'none';
-        target.style.display = none ? 'block' : 'none';
-        chev?.classList.toggle('open', none);
-      });
-    });
-
-    /* --------------------------
-       Dropdown: attach menu to body (fixed) and robust open/close
-       (verbatim from AllProducts)
-    -------------------------- */
+    // Dropdown positioning & behavior (re-used)
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
         if(group.dataset.dropdownBound === "true") return;
@@ -672,7 +642,6 @@
 
         if(!menu || !label || !trigger) return;
 
-        // Move menu to body to escape stacking contexts and allow overlay
         if (!menu.dataset.moved) {
           document.body.appendChild(menu);
           menu.dataset.moved = "true";
@@ -778,136 +747,34 @@
       });
     }
 
-    // Call on load and resize (binding only happens once per group)
-    window.addEventListener('resize', ()=> positionAndBindDropdowns());
+    // Init small interactions
     document.addEventListener('DOMContentLoaded', ()=>{
-      // optional protection so one runtime error doesn't kill init
       try {
-        console.log('Home script init');
-        feather.replace();
         positionAndBindDropdowns();
-
-        // initialize category hero & links (harmless on Home)
-        try { initCategoryHeroAndLinks(); } catch(e) {}
-
-        // init search interactions
+        initCategoryHeroAndLinks();
         initHeaderSearch();
         initMobileSearch();
       } catch (err) {
-        console.error('Error initializing Home page:', err);
+        console.error('Error initializing HowToOrder page:', err);
       }
     });
 
-    /* --------------------------
-       Subtypes & technique helpers (shared with AllProducts)
-       (kept for compatibility in case other scripts rely on them)
-    -------------------------- */
-    const subtypesMap = {
-      'Earrings': ['Hoops','Studs','Dangles'],
-      'Nail Jewelry': ['Full-Cover Press-Ons','Accent Tips','Resin-Embedded Nails'],
-      'Grillz': ['Full-Cover Sets','Half-Cover / Open-Face','Top Sets','Bottom Sets','Single-Tooth / Cap','Resin-Embedded Specials'],
-      'aL vaLe': ['Merch'],
-      'Veerwear': ['Apparel']
-    };
-
-    function techniqueFromSubtype(sub) {
-      if(!sub) return '';
-      const s = sub.toLowerCase();
-      if(s.includes('full-cover') || s.includes('full cover')) return 'Full-Cover';
-      if(s.includes('resin')) return 'Resin-Embedded';
-      if(s.includes('accent') || s.includes('single')) return 'Accent';
-      if(s.includes('3d') || s.includes('sculpt')) return '3D Sculpt';
-      return '';
+    function initCategoryHeroAndLinks(){
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
     }
 
-    /* --------------------------
-       Canonical slug map & helpers
-    -------------------------- */
-    const displayToSlug = {
-      'Full-Cover Sets': 'full-cover-sets',
-      'Half-Cover / Open-Face': 'half-cover-open-face',
-      'Top Sets': 'top-sets',
-      'Bottom Sets': 'bottom-sets',
-      'Single-Tooth / Cap': 'single-tooth-cap',
-      'Resin-Embedded Specials': 'resin-embedded-specials',
-
-      'Hoops': 'hoops',
-      'Studs': 'studs',
-      'Dangles': 'dangles',
-      'Full-Cover Press-Ons': 'full-cover-press-ons',
-      'Accent Tips': 'accent-tips',
-      'Resin-Embedded Nails': 'resin-embedded-nails'
-    };
-
-    function normalizeSlugInput(raw){
-      if(!raw) return '';
-      let s = String(raw).trim().toLowerCase();
-      s = s.replace(/[%20\+_]+/g,'-');
-      s = s.replace(/[^\w-]+/g,'-');
-      s = s.replace(/-+/g,'-');
-      s = s.replace(/^-|-$/g,'');
-      return s;
-    }
-
-    function slugForDisplay(display){
-      if(!display) return '';
-      if(displayToSlug[display]) return displayToSlug[display];
-      return normalizeSlugInput(display);
-    }
-
-    /* --------------------------
-       Product generator (kept for compatibility)
-    -------------------------- */
-    const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
-    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
-    const products = [];
-    const TOTAL_ITEMS = 86;
-    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-
-    function buildDemoProducts(){
-      products.length = 0;
-      for(let i=1;i<=TOTAL_ITEMS;i++){
-        const cat = categories[i % categories.length];
-        const mat = materials[i % materials.length];
-        const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
-        const sold = rand(0,2000);
-        const featured = i % 7 === 0;
-        const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
-
-        const pool = subtypesMap[cat] || ['General'];
-        const subtype = pool[rand(0, pool.length-1)];
-        const technique = techniqueFromSubtype(subtype) || (Math.random() < 0.12 ? '3D Sculpt' : '');
-
-        products.push({
-          id:i,
-          title:`${subtype} ${cat} ${i}`,
-          description:`${mat} · ${cat} · ${subtype}`,
-          image:`/images/placeholder-${(i%10)+1}.jpg`,
-          price,
-          category:cat,
-          material:mat,
-          subtype,
-          technique,
-          soldCount:sold,
-          featured,
-          date
-        });
-      }
-    }
-
-    /* --------------------------
-       SEARCH UI: desktop & mobile behavior (verbatim)
-    -------------------------- */
+    // Header search (verbatim)
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
       const form = document.getElementById('headerSearchForm');
       const input = document.getElementById('headerSearchInput');
       const btn = document.getElementById('headerSearchBtn');
-
       if(!wrap || !form || !input || !btn) return;
-
       function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
-
       btn.addEventListener('click', (ev) => {
         if (isMobile()) {
           openMobileSearchAndFocus();
@@ -922,7 +789,6 @@
           return;
         }
       });
-
       form.addEventListener('submit', (ev) => {
         ev.preventDefault();
         const q = (input.value || '').trim();
@@ -938,14 +804,12 @@
           window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
         }, 40);
       });
-
       document.addEventListener('click', (ev) => {
         if(!wrap.contains(ev.target)) {
           wrap.classList.remove('open');
           input.value = '';
         }
       });
-
       document.addEventListener('keydown', (ev) => {
         if(ev.key === 'Escape') {
           wrap.classList.remove('open');
@@ -957,7 +821,6 @@
     function initMobileSearch(){
       const mobileForm = document.getElementById('mobileSearchForm');
       const mobileInput = document.getElementById('mobileSearchInput');
-
       if(mobileForm){
         mobileForm.addEventListener('submit', (ev)=>{
           ev.preventDefault();
@@ -976,7 +839,7 @@
     function openMobileSearchAndFocus(){
       const mobileSearchBar = document.getElementById('mobileSearchBar');
       const mobileInput = document.getElementById('mobileSearchInput');
-      if(mobileNav.style.display === 'none' or mobileNav.style.display === '') {
+      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
         mobileNav.style.display = 'block';
       }
       document.body.classList.add('mobile-search-open');
@@ -986,46 +849,5 @@
     }
   </script>
 
-  <!-- Home page: IntersectionObserver with slower timing + stagger -->
-  <script>
-    // collect all fade-up elements in DOM order
-    const fadeEls = Array.from(document.querySelectorAll('.fade-up, .section-card'));
-
-    // set up a map for index so we can stagger by index
-    const indexMap = new Map();
-    fadeEls.forEach((el, i) => indexMap.set(el, i));
-
-    const obs = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target;
-
-        // compute a staggered delay based on index with a gentle cap
-        const idx = indexMap.get(el) || 0;
-        // base stagger 110ms per item, hero-inner leads so we clamp start smaller
-        const base = 110;
-        let delay = idx * base;
-
-        // cap delay to 700ms so last items don't wait too long
-        if (delay > 700) delay = 700;
-
-        // Apply transitionDelay inline so both opacity & transform obey it
-        el.style.transitionDelay = `${delay}ms`;
-        el.classList.add('visible');
-
-        // we still unobserve to avoid re-triggering animations
-        observer.unobserve(el);
-      });
-    }, { threshold: 0.15 });
-
-    // observe after DOM loads
-    document.addEventListener('DOMContentLoaded', () => {
-      // ensure demo products (compat) are built if any scripts rely on them
-      try { buildDemoProducts(); } catch(e){}
-
-      // Observe each fade element
-      fadeEls.forEach(el => obs.observe(el));
-    });
-  </script>
 </body>
 </html>

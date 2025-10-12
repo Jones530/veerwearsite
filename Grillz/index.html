@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- NOTE: edit PAGE_TITLE below in the SETTINGS script block for each category -->
-  <title>Grin & Glisten — All Products</title>
+  <title>Grin & Glisten — CATEGORY_NAME</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
   <!-- Google font preload -->
@@ -45,7 +44,7 @@
     .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
     .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero (we keep class name the same; change background via SETTINGS below) */
+    /* Hero (uses same .shop-hero styles as All Products) */
     .shop-hero {
       position: relative;
       background-size: cover;
@@ -62,25 +61,28 @@
     .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
     .shop-hero .hero-inner{ position:relative; z-index:2; }
 
-    /* filter panel sticky */
-    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
-    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+    /* small curated-grid styling (similar to product grid) */
+    .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
 
-    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
-    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+    .fav-item { display:flex; gap:12px; border-bottom:1px solid #eee; padding:12px 0; align-items:center; }
 
-    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    /* keep product card visuals consistent with All Products */
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; background:#fff; border-radius:8px; overflow:hidden; }
     .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
 
-    /* pagination & other styles unchanged... (kept identical to your AllProducts CSS) */
-    /* ... (omitted here for brevity in this preview, but in your copy this block should match the original verbatim) */
+    /* one-click view all button style */
+    .btn-view-all { display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:#000; padding:10px 14px; border-radius:8px; font-weight:700; text-decoration:none; }
+
   </style>
 </head>
 <body class="monument">
-  <!-- NAV (unchanged) -->
+  <!-- NAV (verbatim copy from your AllProducts file; DO NOT MODIFY) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
         <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
         </button>
@@ -97,7 +99,7 @@
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
-            <!-- dropdown menu -->
+            <!-- dropdown menu (white backing, auto width) -->
             <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
               <div class="grid grid-cols-1 gap-0">
                 <a href="/AllProducts/" class="monument">All Products</a>
@@ -124,9 +126,11 @@
 
       <!-- header icons: search, heart, cart -->
       <div class="header-actions">
+        <!-- SEARCH WRAP: desktop expands left. On mobile the icon will open mobile nav & focus mobile search. -->
         <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
           <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
             <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
+            <!-- search button: when collapsed clicking it opens input; when open form submit -->
             <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
               <i data-feather="search" class="w-4 h-4"></i>
             </button>
@@ -146,7 +150,7 @@
       </div>
     </div>
 
-    <!-- mobile nav (unchanged) -->
+    <!-- mobile nav -->
     <div id="mobileNav" class="md:hidden" style="display:none;">
       <div class="flex items-center justify-between mb-4 px-4">
         <div class="flex items-center gap-3">
@@ -156,6 +160,7 @@
         <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
       </div>
 
+      <!-- Mobile search area (toggled by header search icon on small screens) -->
       <div id="mobileSearchBar" aria-hidden="true">
         <form id="mobileSearchForm" action="/search.html" method="get" role="search">
           <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
@@ -181,169 +186,99 @@
         <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
 
+        <!-- mobile favorites link -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
   </nav>
 
-  <!-- ============================
-       HERO — customize only the BANNER_IMAGE & PAGE_TITLE in SETTINGS below
-       ============================ -->
-  <section id="categoryHero" class="shop-hero text-white" style="background-image: url('/images/fantasmagorie.gif');">
+  <!-- HERO — replace BANNER_URL, CATEGORY_NAME and CATEGORY_TAGLINE below -->
+  <!-- ---------- EDIT THESE VALUES FOR EACH CATEGORY PAGE ---------- -->
+  <script>
+    // EDIT THESE constants for each category page:
+    const BANNER_URL = '/images/placeholder-hero.gif'; // <-- update to the GIF for this category (absolute path)
+    const CATEGORY_NAME = 'CATEGORY_NAME';             // <-- e.g. 'Earrings'
+    const CATEGORY_SLUG = 'CATEGORY_SLUG';             // <-- exact filter string used by AllProducts (e.g. 'Earrings' or 'Veerwear')
+    const CATEGORY_TAGLINE = 'CATEGORY_TAGLINE';       // <-- short, 1-line tagline
+    // CURATED_IDS: array of numeric product ids that match your products array on AllProducts.
+    // e.g. [3,7,12,24,36,42]
+    const CURATED_IDS = [1,2,3,4,5,6];                 // <-- replace with the product IDs you want shown
+    // SUBTYPES: optional array of { name, query } where query is appended to /AllProducts/ to prefilter.
+    // e.g. { name: 'Hoops', query: 'style=hoops' } will link to /AllProducts/?category=Earrings&style=hoops
+    const SUBTYPES = [
+      { name: 'Hoops', query: 'style=hoops' },
+      { name: 'Studs', query: 'style=studs' },
+      { name: 'Drops', query: 'style=drops' }
+    ];
+  </script>
+  <section class="shop-hero text-white" id="categoryHero" style="background-image: url('/images/placeholder-hero.gif');">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
       <div class="shop-banner">
         <div>
-          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">Shop Category</h1>
+          <h1 id="categoryTitle" class="monument text-5xl md:text-6xl mb-4" style="font-weight:900;">CATEGORY_NAME</h1>
           <div class="flex items-center text-gray-200 text-sm monument">
             <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
             <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-            <span id="categoryBreadcrumb">Category</span>
+            <span id="categoryBreadcrumb">CATEGORY_NAME</span>
+          </div>
+          <p id="categoryTagline" class="mt-4 text-lg opacity-90">CATEGORY_TAGLINE</p>
+          <div class="mt-6">
+            <a id="viewAllBtn" class="btn-view-all" href="/AllProducts/?category=CATEGORY_SLUG">View all CATEGORY_NAME</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================
-       CURATED LANDING BLOCK — change the content via SETTINGS below
-       Includes: short copy, curatedGrid (6-12 items), sub-type anchors, View All button
-       ============================ -->
-  <section id="categoryCurated" class="py-10 bg-white">
-    <div class="container mx-auto px-6">
-      <div class="max-w-4xl mx-auto text-center mb-8">
-        <p id="categoryIntro" class="text-lg text-gray-700 monument">Handpicked pieces to get you started.</p>
-      </div>
-
-      <div id="curatedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
-
-      <div class="flex justify-center mb-6">
-        <a id="viewAllLink" href="/AllProducts/" class="monument bg-amber-600 hover:bg-amber-700 text-black px-5 py-2 rounded">View all</a>
-      </div>
-
-      <div id="subtypeAnchors" class="text-center mt-4"></div>
-    </div>
-  </section>
-
-  <!-- ============================
-       ORIGINAL CONTENT (unchanged) — kept exactly as in your AllProducts page
-       This one is the full filter + product grid + pagination (we left it here so the page still behaves exactly like AllProducts).
-       If you want the landing page to *not* show the full catalog, you can hide this with CSS or remove it later.
-       ============================ -->
+  <!-- CONTENT: curated landing page -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row gap-8">
+        <!-- left column: quick links & subtypes -->
         <aside class="md:w-1/4">
           <div class="bg-white p-6 rounded-lg filter-panel monument">
-            <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
-            <div class="filter-section">
-              <button class="filter-toggle" data-target="category-body">
-                <span style="color:var(--black);">Category</span>
-                <i data-feather="chevron-down" class="chev" id="chev-category"></i>
-              </button>
-              <div id="category-body" class="mt-3">
-                <div class="space-y-2">
-                  <div class="flex items-center">
-                    <input type="checkbox" id="grillz" value="Grillz" class="filter-cat mr-2">
-                    <label for="grillz" class="text-sm" style="color:var(--black);">Grillz</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2">
-                    <label for="earrings" class="text-sm" style="color:var(--black);">Earrings</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="nails" value="Nail Jewelry" class="filter-cat mr-2">
-                    <label for="nails" class="text-sm" style="color:var(--black);">Nail Jewelry</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="aL_vaLe" value="aL vaLe" class="filter-cat mr-2">
-                    <label for="aL_vaLe" class="text-sm"><span class="plunct" style="color:var(--black);">aL vaLe</span></label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="veerwear" value="Veerwear" class="filter-cat mr-2">
-                    <label for="veerwear" class="text-sm"><span class="veerwear">Veerwear</span></label>
-                  </div>
-                </div>
+            <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Explore</h3>
+            <div class="space-y-3">
+              <a id="linkViewAll" href="/AllProducts/?category=CATEGORY_SLUG" class="block py-2 px-3 border rounded-md text-sm monument">View all CATEGORY_NAME</a>
+
+              <div class="mt-4">
+                <h4 class="monument font-medium mb-2">By style</h4>
+                <div id="subtypeLinks" class="space-y-2"></div>
+              </div>
+
+              <div class="mt-6">
+                <h4 class="monument font-medium mb-2">Quick info</h4>
+                <p class="text-sm">Handcrafted pieces — care & sizing info on each product page. Free shipping over $150.</p>
               </div>
             </div>
-
-            <div class="filter-section">
-              <button class="filter-toggle" data-target="material-body">
-                <span style="color:var(--black);">Material</span>
-                <i data-feather="chevron-down" class="chev" id="chev-material"></i>
-              </button>
-              <div id="material-body" class="mt-3">
-                <div class="space-y-2">
-                  <div class="flex items-center">
-                    <input type="checkbox" id="gold" value="Gold" class="filter-material mr-2">
-                    <label for="gold" class="text-sm" style="color:var(--black);">Gold</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="silver" value="Silver" class="filter-material mr-2">
-                    <label for="silver" class="text-sm" style="color:var(--black);">Silver</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="platinum" value="Platinum" class="filter-material mr-2">
-                    <label for="platinum" class="text-sm" style="color:var(--black);">Platinum</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="with-diamonds" value="With Diamonds" class="filter-material mr-2">
-                    <label for="with-diamonds" class="text-sm" style="color:var(--black);">With Diamonds</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="resin" value="Resin" class="filter-material mr-2">
-                    <label for="resin" class="text-sm" style="color:var(--black);">Resin</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-section">
-              <button class="filter-toggle" data-target="price-body">
-                <span style="color:var(--black);">Price Range</span>
-                <i data-feather="chevron-down" class="chev" id="chev-price"></i>
-              </button>
-              <div id="price-body" class="mt-3">
-                <div class="space-y-2">
-                  <div class="flex items-center"><input type="radio" id="price-all" name="price" value="all" checked class="filter-price mr-2"><label for="price-all" class="text-sm">All Prices</label></div>
-                  <div class="flex items-center"><input type="radio" id="price-1" name="price" value="under200" class="filter-price mr-2"><label for="price-1" class="text-sm">Under $200</label></div>
-                  <div class="flex items-center"><input type="radio" id="price-2" name="price" value="200-500" class="filter-price mr-2"><label for="price-2" class="text-sm">$200 - $500</label></div>
-                  <div class="flex items-center"><input type="radio" id="price-3" name="price" value="500-1000" class="filter-price mr-2"><label for="price-3" class="text-sm">$500 - $1,000</label></div>
-                </div>
-              </div>
-            </div>
-
-            <button id="applyFiltersBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 rounded-md monument">Apply Filters</button>
           </div>
         </aside>
 
+        <!-- main curated grid -->
         <main class="md:w-3/4 monument">
-          <div class="flex justify-between items-center mb-8">
-            <div><span id="showingText" style="color:var(--black);">Showing 0 of 0 products</span></div>
-
-            <div class="flex items-baseline sort-row">
-              <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
-              <div class="select-with-icon">
-                <i data-feather="chevron-down" class="w-4 h-4"></i>
-                <select id="sortSelect" class="text-black rounded-md text-sm">
-                  <option value="featured">Featured</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="newest">Newest Arrivals</option>
-                  <option value="best-selling">Best Selling</option>
-                </select>
-              </div>
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h2 class="text-2xl font-bold" id="featuredTitle">Featured CATEGORY_NAME</h2>
+              <p class="text-sm text-gray-600 mt-1" id="featuredSubtitle">Hand-picked pieces & bestsellers.</p>
+            </div>
+            <div>
+              <a id="viewAllTop" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">View all CATEGORY_NAME</a>
             </div>
           </div>
 
-          <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+          <div id="curatedGrid" class="curated-grid"></div>
 
-          <div class="flex justify-center mt-12"><nav id="pagination" class="flex items-center space-x-2"></nav></div>
+          <!-- optional: a small 'more from category' area linking to allProducts -->
+          <div class="mt-8 text-center">
+            <a id="viewAllBottom" href="/AllProducts/?category=CATEGORY_SLUG" class="btn-view-all">See every CATEGORY_NAME item</a>
+          </div>
         </main>
       </div>
     </div>
   </section>
 
+  <!-- FOOTER (verbatim copy from AllProducts; DO NOT MODIFY) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -385,30 +320,8 @@
   <!-- Snipcart root -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- ============================
-       SETTINGS (edit these on each category page)
-       - PAGE_TITLE: H1 and document title
-       - BANNER_IMAGE: hero GIF for this category
-       - PRESELECT_CATEGORY: category the page represents (matches checkbox value)
-       - CURATED_IDS: array of product.id numbers (from products array) to showcase (optional)
-       - CATEGORY_COPY: short intro copy under hero
-       - SUBTYPES: optional array of {name,href} objects to render subtype anchors
-       ============================ -->
+  <!-- SCRIPTS: dropdowns, search, cart toggle, etc. (kept from AllProducts with a single change: we call renderCuratedProducts()) -->
   <script>
-    const PAGE_TITLE = "Earrings"; // change for each category
-    const BANNER_IMAGE = "/images/earrings-banner.gif"; // change to that category's gif
-    const PRESELECT_CATEGORY = "Earrings"; // must match the value used by your filter checkbox
-    const CURATED_IDS = [3, 7, 11, 15, 21, 25]; // optional: specific product.id values from products[]
-    const CATEGORY_COPY = "Statement studs, delicate hoops, and everyday huggies — handcrafted to last.";
-    const SUBTYPES = [
-      { name: 'Hoops', href: '/AllProducts/?category=Earrings&style=hoops' },
-      { name: 'Studs', href: '/AllProducts/?category=Earrings&style=studs' },
-      { name: 'Drops', href: '/AllProducts/?category=Earrings&style=drops' }
-    ];
-  </script>
-
-  <script>
-    // ---------- keep all existing page JS intact below ----------
     feather.replace();
 
     // Mobile nav toggle
@@ -443,7 +356,6 @@
 
     /* --------------------------
        Dropdown: attach menu to body (fixed) and robust open/close
-       (kept identical)
     -------------------------- */
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
@@ -565,41 +477,15 @@
       });
     }
 
-    // Call on load and resize (binding only happens once per group)
     window.addEventListener('resize', ()=> positionAndBindDropdowns());
     document.addEventListener('DOMContentLoaded', ()=>{
       feather.replace();
       positionAndBindDropdowns();
 
-      // ---------- CUSTOM: set hero + curated BEFORE original product render ----------
-      // Update title and hero banner from SETTINGS above
-      try {
-        document.title = PAGE_TITLE + " — Grin & Glisten";
-        const hero = document.getElementById('categoryHero');
-        if(hero && BANNER_IMAGE) hero.style.backgroundImage = `url('${BANNER_IMAGE}')`;
-        const titleEl = document.getElementById('categoryTitle');
-        const crumb = document.getElementById('categoryBreadcrumb');
-        const intro = document.getElementById('categoryIntro');
-        const viewAll = document.getElementById('viewAllLink');
-        if(titleEl) titleEl.textContent = PAGE_TITLE;
-        if(crumb) crumb.textContent = PAGE_TITLE;
-        if(intro) intro.textContent = CATEGORY_COPY || intro.textContent;
-        if(viewAll) viewAll.href = '/AllProducts/?category=' + encodeURIComponent(PRESELECT_CATEGORY || PAGE_TITLE);
-      } catch (e) { console.warn('Hero init error', e); }
-
-      // Pre-check category checkbox (so All Products grid can be filtered)
-      if(PRESELECT_CATEGORY) {
-        const catEl = Array.from(document.querySelectorAll('.filter-cat')).find(i => i.value === PRESELECT_CATEGORY);
-        if(catEl) catEl.checked = true;
-      }
-
-      // Render curated section (uses the products[] array created below)
-      renderCuratedSection(); // defined later
-
-      // rest of your initialization (filters/products/pagination)
-      readFiltersFromUI();
-      currentSort = document.getElementById('sortSelect').value || 'featured';
-      renderProducts();
+      // IMPORTANT: we DON'T render the full AllProducts grid here.
+      // Instead we initialize category page UI and render curated items:
+      initCategoryHeroAndLinks();
+      renderCuratedProducts();
 
       // init search interactions
       initHeaderSearch();
@@ -607,216 +493,8 @@
     });
 
     /* --------------------------
-       Product generator / renderer (unchanged; keep verbatim from your AllProducts)
-       ... (the entire original products array generation + rendering functions)
-       For brevity here I will include the original products generation and renderProducts exactly as they were in your AllProducts file.
-       Make sure this block is identical to your AllProducts JS (so IDs match).
+       SEARCH UI & mobile search (kept from AllProducts)
     -------------------------- */
-
-    const categories = ['Grillz','Earrings','Nail Jewelry','aL va Le','Veerwear','Accessories'];
-    // NOTE: If your original had 'aL vaLe' exactly, ensure PRESELECT_CATEGORY matches it.
-    const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
-    const products = [];
-    const TOTAL_ITEMS = 86;
-    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    for(let i=1;i<=TOTAL_ITEMS;i++){
-      const cat = categories[i % categories.length];
-      const mat = materials[i % materials.length];
-      const price = (i % 10 === 0) ? rand(1200,3500) : rand(50,1200);
-      const sold = rand(0,2000);
-      const featured = i % 7 === 0;
-      const date = new Date(Date.now() - rand(0,365)*24*3600*1000).toISOString();
-      products.push({ id:i, title:`${cat} Item ${i}`, description:`${mat} · ${cat}`, image:`/images/placeholder-${(i%10)+1}.jpg`, price, category:cat, material:mat, soldCount:sold, featured, date });
-    }
-
-    // --------- state, favorites, filter, render functions (unchanged) ----------
-    let currentPage = 1;
-    const pageSize = 24;
-    let currentFilters = { categories:[], materials:[], price:'all' };
-    let currentSort = 'featured';
-    function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
-    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
-    function toggleFavorite(id){ const s = readFavorites(); if(s.has(id)) s.delete(id); else s.add(id); writeFavorites(s); renderProducts(); }
-    function priceMatch(price, filterKey){
-      if(!filterKey||filterKey==='all') return true;
-      if(filterKey==='under200') return price < 200;
-      if(filterKey==='200-500') return price >=200 && price <=500;
-      if(filterKey==='500-1000') return price >500 && price <=1000;
-      if(filterKey==='over1000') return price >1000;
-      return true;
-    }
-    function applyFiltersAndSort(){
-      let out = products.slice();
-      if(currentFilters.categories.length) out = out.filter(p => currentFilters.categories.includes(p.category));
-      if(currentFilters.materials.length) out = out.filter(p => currentFilters.materials.includes(p.material));
-      if(currentFilters.price && currentFilters.price !== 'all') out = out.filter(p => priceMatch(p.price, currentFilters.price));
-      if(currentSort==='price-asc') out.sort((a,b)=>a.price-b.price);
-      else if(currentSort==='price-desc') out.sort((a,b)=>b.price-a.price);
-      else if(currentSort==='newest') out.sort((a,b)=>new Date(b.date)-new Date(a.date));
-      else if(currentSort==='best-selling') out.sort((a,b)=>b.soldCount-a.soldCount);
-      else out.sort((a,b)=> (b.featured?1:0) - (a.featured?1:0));
-      return out;
-    }
-
-    function renderProducts(){
-      const grid = document.getElementById('productGrid');
-      if(!grid) return;
-      grid.innerHTML = '';
-      const filtered = applyFiltersAndSort();
-      const total = filtered.length;
-      const start = (currentPage-1)*pageSize;
-      const pageItems = filtered.slice(start, start + pageSize);
-      const showingTextEl = document.getElementById('showingText');
-      if(showingTextEl) showingTextEl.textContent = `Showing ${pageItems.length} of ${total} products`;
-      const favSet = readFavorites();
-
-      for(const p of pageItems){
-        let fontClass = 'monument';
-        if(p.category==='Veerwear') fontClass='veerwear';
-        else if(p.category==='aL vaLe') fontClass='plunct';
-        const heartActive = favSet.has(p.id);
-
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-lg overflow-hidden product-card';
-        card.innerHTML = `
-          <div class="relative overflow-hidden h-64">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-            ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
-            <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${p.id}" title="Save to favorites">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ${heartActive ? '' : ''}" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </button>
-          </div>
-          <div class="p-4">
-            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${p.title}</h3>
-            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${p.description}</p>
-            <div class="flex justify-between items-center">
-              <span class="${fontClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
-
-              <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
-                data-item-id="${p.id}"
-                data-item-name="${p.title}"
-                data-item-price="${p.price}"
-                data-item-url="/AllProducts/"
-                data-item-description="${p.description}"
-                data-item-image="${p.image}">
-                Add to cart
-              </button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      }
-
-      // bind heart toggles
-      document.querySelectorAll('.heart-btn').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const id = Number(btn.getAttribute('data-id'));
-          toggleFavorite(id);
-        });
-      });
-
-      feather.replace();
-      renderPagination(filtered.length);
-    }
-
-    function renderPagination(totalFiltered){
-      const pagination = document.getElementById('pagination'); if(!pagination) return;
-      pagination.innerHTML='';
-      const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
-
-      function makeNavButton(iconName, onClick, disabled=false){
-        const b = document.createElement('button');
-        b.className = 'nav-btn';
-        if(disabled) b.setAttribute('disabled','true');
-        b.innerHTML = `<i data-feather="${iconName}" class="w-4 h-4"></i>`;
-        b.addEventListener('click', (e)=>{ if(disabled) return; b.classList.add('clicked'); setTimeout(()=>b.classList.remove('clicked'),140); onClick(e); });
-        pagination.appendChild(b);
-        return b;
-      }
-
-      makeNavButton('chevron-left', ()=>{
-        if(currentPage > 1){ currentPage--; renderProducts(); }
-      }, currentPage === 1);
-
-      function pageBtn(page){
-        const b = document.createElement('button');
-        b.className = 'page-btn';
-        b.textContent = String(page);
-        if(page === currentPage) b.classList.add('page-active');
-        b.addEventListener('click', ()=>{
-          if(page === currentPage) {
-            b.classList.add('clicked');
-            setTimeout(()=>b.classList.remove('clicked'),120);
-            return;
-          }
-          b.classList.add('clicked');
-          setTimeout(()=>b.classList.remove('clicked'),120);
-          currentPage = page;
-          renderProducts();
-        });
-        ['mousedown','touchstart'].forEach(ev => b.addEventListener(ev, ()=> b.classList.add('clicked')));
-        ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => b.addEventListener(ev, ()=> b.classList.remove('clicked')));
-        pagination.appendChild(b);
-      }
-
-      if(totalPages <= 8){
-        for(let p=1;p<=totalPages;p++) pageBtn(p);
-      } else {
-        pageBtn(1);
-        pageBtn(2);
-        if(currentPage > 4){
-          const dots = document.createElement('span'); dots.className='px-2'; dots.textContent='...'; pagination.appendChild(dots);
-        }
-        const start = Math.max(3, Math.min(currentPage-1, totalPages-4));
-        const end = Math.min(totalPages-2, start + 2);
-        for(let p=start;p<=end;p++) pageBtn(p);
-        if(end < totalPages-2){
-          const dots2 = document.createElement('span'); dots2.className='px-2'; dots2.textContent='...'; pagination.appendChild(dots2);
-        }
-        pageBtn(totalPages-1);
-        pageBtn(totalPages);
-      }
-
-      makeNavButton('chevron-right', ()=>{
-        if(currentPage < Math.ceil(totalFiltered / pageSize)){ currentPage++; renderProducts(); }
-      }, currentPage === Math.ceil(totalFiltered / pageSize));
-
-      feather.replace();
-    }
-
-    function readFiltersFromUI(){
-      currentFilters.categories = Array.from(document.querySelectorAll('.filter-cat:checked')).map(i=>i.value);
-      currentFilters.materials = Array.from(document.querySelectorAll('.filter-material:checked')).map(i=>i.value);
-      const priceRadio = document.querySelector('.filter-price:checked');
-      currentFilters.price = priceRadio ? priceRadio.value : 'all';
-    }
-
-    document.getElementById('applyFiltersBtn').addEventListener('click', ()=>{ readFiltersFromUI(); currentPage = 1; renderProducts(); });
-    document.getElementById('sortSelect').addEventListener('change', e => { currentSort = e.target.value; currentPage = 1; renderProducts(); });
-
-    /* Cart toggle (unchanged) */
-    const headerCartToggle = document.getElementById('headerCartToggle');
-    let cartOpen = false;
-    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
-    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
-    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
-
-    headerCartToggle?.addEventListener('click', (e)=>{
-      e.preventDefault();
-      headerCartToggle.classList.add('clicked');
-      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
-
-      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
-        if(cartOpen) window.Snipcart.api.modal.close();
-        else window.Snipcart.api.modal.open();
-      } else {
-        const anchor = document.querySelector('a.snipcart-checkout');
-        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
-      }
-    });
-
-    /* SEARCH UI (unchanged) */
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
       const form = document.getElementById('headerSearchForm');
@@ -903,112 +581,161 @@
       }, 60);
     }
 
-    /* ===========================
-       CUSTOM: Curated section rendering
-       - Renders cards into #curatedGrid using CURATED_IDS or by picking featured/category items
-       - Keeps the same card style & Snipcart add-to-cart format as the full grid
-       =========================== */
-    function renderCuratedSection(){
-      const container = document.getElementById('curatedGrid');
+    /* --------------------------
+       Cart toggle behavior (kept)
+    -------------------------- */
+    const headerCartToggle = document.getElementById('headerCartToggle');
+    let cartOpen = false;
+    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
+    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
+    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
+
+    headerCartToggle?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      headerCartToggle.classList.add('clicked');
+      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
+
+      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
+        if(cartOpen) window.Snipcart.api.modal.close();
+        else window.Snipcart.api.modal.open();
+      } else {
+        const anchor = document.querySelector('a.snipcart-checkout');
+        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
+      }
+    });
+
+    /* --------------------------
+       FAVORITES (localStorage) small helper for this page
+    -------------------------- */
+    function readFavorites(){ try{ return new Set(JSON.parse(localStorage.getItem('sb_favorites')||'[]')); }catch(e){ return new Set(); } }
+    function writeFavorites(set){ const arr = Array.from(set); localStorage.setItem('sb_favorites', JSON.stringify(arr)); }
+
+    function toggleFavoriteById(id){
+      const s = readFavorites();
+      if(s.has(id)) s.delete(id); else s.add(id);
+      writeFavorites(s);
+      // update curated rendering
+      renderCuratedProducts();
+    }
+
+    /* --------------------------
+       Category page helpers: init hero, subtype links, curated render
+       - Uses the global `products` array (from AllProducts generator) if present.
+       - If you use an external /js/products.js that exposes window.PRODUCTS keyed by SKU,
+         you can adapt CURATED_IDS to use SKUs and enable that block below.
+    -------------------------- */
+    function initCategoryHeroAndLinks(){
+      // set background, title and tagline
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
+      // set view all links
+      document.querySelectorAll('[href="/AllProducts/?category=CATEGORY_SLUG"]').forEach(a => a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+      document.getElementById('viewAllBtn')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+      document.getElementById('viewAllTop')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+      document.getElementById('viewAllBottom')?.setAttribute('href', `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`);
+
+      // render subtype links
+      const container = document.getElementById('subtypeLinks');
       if(!container) return;
       container.innerHTML = '';
-
-      // helper to find product by id
-      function findById(id){ return products.find(p => Number(p.id) === Number(id)); }
-
-      // build list of curated products
-      let curated = [];
-      if(Array.isArray(CURATED_IDS) && CURATED_IDS.length){
-        curated = CURATED_IDS.map(id => findById(id)).filter(Boolean);
+      if(Array.isArray(SUBTYPES) && SUBTYPES.length){
+        SUBTYPES.forEach(s => {
+          const a = document.createElement('a');
+          a.className = 'block py-1 text-sm';
+          a.href = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}&${s.query}`;
+          a.textContent = s.name;
+          container.appendChild(a);
+        });
       } else {
-        // fallback: pick up to 8 featured items from the PRESELECT_CATEGORY, else pick featured items site-wide
-        curated = products.filter(p => p.featured && p.category === PRESELECT_CATEGORY).slice(0,8);
-        if(curated.length < 6){
-          // fill with any featured items
-          const more = products.filter(p => p.featured && p.category !== PRESELECT_CATEGORY).slice(0, 8 - curated.length);
-          curated = curated.concat(more);
-        }
-        if(curated.length < 6){
-          // fill with top items from category
-          const catItems = products.filter(p => p.category === PRESELECT_CATEGORY).slice(0, 6 - curated.length);
-          curated = curated.concat(catItems);
-        }
+        container.innerHTML = '<p class="text-sm">Browse styles and sizes in the full catalog.</p>';
       }
+    }
 
-      if(curated.length === 0){
-        container.innerHTML = '<p class="text-center text-gray-600">No featured items to show yet.</p>';
+    function findProductById(id){
+      // prefer the global numeric 'products' array if present (used by AllProducts sample)
+      if(typeof products !== 'undefined' && Array.isArray(products)){
+        return products.find(p => Number(p.id) === Number(id));
+      }
+      // fallback to window.PRODUCTS keyed object (if you maintain a products.js)
+      if(window.PRODUCTS && typeof window.PRODUCTS === 'object'){
+        // CURATED_IDS may be SKUs in that case, so try direct lookup
+        return window.PRODUCTS[id] || Object.values(window.PRODUCTS).find(x => x.id == id);
+      }
+      // not found
+      return null;
+    }
+
+    function renderCuratedProducts(){
+      const grid = document.getElementById('curatedGrid');
+      if(!grid) return;
+      grid.innerHTML = '';
+
+      // collect product objects from CURATED_IDS
+      const productObjs = CURATED_IDS.map(id => findProductById(id)).filter(Boolean);
+
+      // if none found, show a helpful message
+      if(productObjs.length === 0){
+        grid.innerHTML = '<div class="p-6 bg-white rounded-lg text-center">No curated items configured. Edit <code>CURATED_IDS</code> in this page to show items.</div>';
         return;
       }
 
-      // create cards (smaller preview card variant)
       const favSet = readFavorites();
-      for(const p of curated){
-        let fontClass = 'monument';
-        if(p.category==='Veerwear') fontClass='veerwear';
-        else if(p.category==='aL vaLe') fontClass='plunct';
-        const heartActive = favSet.has(p.id);
 
+      for(const p of productObjs){
+        // p should have fields: id, title, description, image, price, category (matching your dataset)
+        const fontClass = (p.category === 'Veerwear') ? 'veerwear' : (p.category === 'aL vaLe' ? 'plunct' : 'monument');
+        const heartActive = favSet.has(Number(p.id));
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-lg overflow-hidden product-card';
+        card.className = 'product-card';
         card.innerHTML = `
-          <div class="relative overflow-hidden h-56">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/18 to-transparent"></div>
+          <div class="relative overflow-hidden h-64">
+            <img src="${p.image || '/images/placeholder-1.jpg'}" alt="${escapeHtml(p.title || '')}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             ${p.featured ? `<div class="absolute top-3 left-3 badge-gold">BESTSELLER</div>` : ''}
             <button class="absolute top-3 right-3 heart-btn ${heartActive ? 'heart-active' : ''}" data-id="${p.id}" title="Save to favorites">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ${heartActive ? '' : ''}" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="${heartActive ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
           </div>
-          <div class="p-3">
-            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black); font-size:0.95rem;">${p.title}</h3>
-            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black); font-size:0.85rem;">${p.description}</p>
+          <div class="p-4">
+            <h3 class="font-medium mb-1 ${fontClass}" style="color:var(--black);">${escapeHtml(p.title || '')}</h3>
+            <p class="${fontClass} text-gray-600 text-sm mb-2" style="color:var(--black);">${escapeHtml(p.description || '')}</p>
             <div class="flex justify-between items-center">
-              <span class="${fontClass} font-bold" style="color:var(--black);">$${p.price.toLocaleString()}</span>
-
+              <span class="${fontClass} font-bold" style="color:var(--black);">$${(Number(p.price)||0).toLocaleString()}</span>
               <button class="snipcart-add-item inline-flex items-center px-3 py-2 rounded text-sm border border-transparent bg-amber-600 hover:bg-amber-700"
-                data-item-id="${p.id}"
-                data-item-name="${p.title}"
-                data-item-price="${p.price}"
+                data-item-id="${escapeAttr(p.id)}"
+                data-item-name="${escapeAttr(p.title || '')}"
+                data-item-price="${escapeAttr(p.price||0)}"
                 data-item-url="/AllProducts/"
-                data-item-description="${p.description}"
-                data-item-image="${p.image}">
-                Add
+                data-item-description="${escapeAttr(p.description||'')}"
+                data-item-image="${escapeAttr(p.image||'')}">
+                Add to cart
               </button>
             </div>
           </div>
         `;
-        container.appendChild(card);
+        grid.appendChild(card);
       }
 
-      // add subtype anchors area
-      const subtypeEl = document.getElementById('subtypeAnchors');
-      if(subtypeEl){
-        subtypeEl.innerHTML = '';
-        if(Array.isArray(SUBTYPES) && SUBTYPES.length){
-          const frag = document.createDocumentFragment();
-          SUBTYPES.forEach(s => {
-            const a = document.createElement('a');
-            a.href = s.href;
-            a.className = 'inline-block monument px-3 py-2 mx-2 border rounded';
-            a.textContent = s.name;
-            frag.appendChild(a);
-          });
-          subtypeEl.appendChild(frag);
-        }
-      }
-
-      // bind heart toggles on curated
-      container.querySelectorAll('.heart-btn').forEach(btn=>{
+      // bind heart toggles for curated grid
+      grid.querySelectorAll('.heart-btn').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           const id = Number(btn.getAttribute('data-id'));
-          toggleFavorite(id);
-          // toggle class quickly for visual feedback
-          btn.classList.toggle('heart-active');
+          toggleFavoriteById(id);
         });
       });
 
       feather.replace();
     }
+
+    // small helpers
+    function escapeHtml(s) {
+      if(!s) return '';
+      return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    }
+    function escapeAttr(s){ return escapeHtml(String(s)); }
 
   </script>
 </body>

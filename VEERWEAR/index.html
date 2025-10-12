@@ -31,7 +31,7 @@
     :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
 
     html{ font-size:112.5%; }
-    /* Make Monument Extended the primary face for banner & body text by ensuring monument class is present */
+    /* Keep global stack (header/footer still use their original classes) */
     html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
     .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
@@ -63,9 +63,17 @@
     .shop-hero .hero-inner{ position:relative; z-index:2; }
 
     /* Ensure banner text uses Monument Extended (explicitly) */
-    .shop-banner .monument, .shop-hero .monument, #categoryTagline.monument {
-      font-family: "Monument Extended", "Pirata One", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
-      font-weight:700 !important;
+    /* NOTE: header (nav) and footer are intentionally NOT targeted here so they remain untouched. */
+    #categoryHero, #categoryHero * ,
+    .shop-banner, .shop-banner * ,
+    section, section * ,
+    main, main * ,
+    aside, aside * ,
+    .filter-panel, .filter-panel * ,
+    .curated-grid, .curated-grid * ,
+    .product-card, .product-card * {
+      font-family: "Monument Extended", "Monument Extended Ultrabold", "Pirata One", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+      /* keep weight behavior but allow existing weight declarations to work */
     }
 
     /* filter panel sticky */

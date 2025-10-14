@@ -1142,5 +1142,136 @@
       }, 60);
     }
   </script>
+  <script>
+/* SITE-WIDE TEMP HIDE: remove or comment out to restore normal behaviour.
+   - HIDE: entries in this array will be hidden from DOM and filtered out from JS data arrays.
+   - Keeps footer ".plunct" alone (so the subsidiary text remains). */
+(function(){
+  const HIDE = ['aL vaLe','Veerwear'];
+
+  // mark hidden elements with this dataset key so they can be restored easily
+  const DATAKEY = 'hidden-by-site-filter';
+
+  // Hide DOM elements that contain matching visible text (anchors, buttons, spans, labels, list items, etc.)
+  function hideMatchingDOM(){
+    const selectors = 'a,button,span,li,div,p,svg';
+    document.querySelectorAll(selectors).forEach(el=>{
+      if(el.dataset && el.dataset[DATAKEY]) return; // already hidden by this script
+      const txt = (el.textContent || '').trim();
+      if(!txt) return;
+      for(const bad of HIDE){
+        // exact match or direct contains (case sensitive to match your markup)
+        if(txt === bad || txt.includes(bad)){
+          // Exception: allow footer subsidiary "aL vaLe" inside <footer><span class="plunct">aL vaLe</span>
+          if(bad === 'aL vaLe' && el.closest('footer') && el.classList && el.classList.contains('plunct')) {
+            continue;
+          }
+          // Hide this element but keep it in DOM (reversible)
+          try { el.style.display = 'none'; el.dataset[DATAKEY] = 'true'; } catch(e){}
+          break;
+        }
+      }
+    });
+
+    // Also hide elements by class (common usage in your code)
+    document.querySelectorAll('.veerwear, .plunct').forEach(el=>{
+      if(el.dataset && el.dataset[DATAKEY]) return;
+      // keep the footer's plunct intact
+      if(el.classList.contains('plunct') && el.closest('footer')) return;
+      el.style.display = 'none';
+      el.dataset[DATAKEY] = 'true';
+    });
+  }
+
+  // Try to clean in-memory JS data structures used by pages (runs until it succeeds or times out)
+  function filterJSData(){
+    let changed = false;
+
+    // remove keys from subtypesMap
+    if(window.subtypesMap && typeof window.subtypesMap === 'object'){
+      HIDE.forEach(h => {
+        if(window.subtypesMap[h]) { delete window.subtypesMap[h]; changed = true; }
+      });
+    }
+
+    // remove entries from categories array
+    if(Array.isArray(window.categories)){
+      const before = window.categories.length;
+      window.categories = window.categories.filter(c => !HIDE.includes(c));
+      if(window.categories.length !== before) changed = true;
+    }
+
+    // filter products array (remove items with category matching hide list)
+    if(Array.isArray(window.products)){
+      const before = window.products.length;
+      window.products = window.products.filter(p => !HIDE.includes(p.category));
+      if(window.products.length !== before) changed = true;
+    }
+
+    // Remove displayToSlug entries that reference the hidden labels (best-effort)
+    if(window.displayToSlug && typeof window.displayToSlug === 'object'){
+      Object.keys(window.displayToSlug).forEach(k=>{
+        for(const bad of HIDE){
+          if(k && k.toLowerCase().includes(bad.toLowerCase())){
+            delete window.displayToSlug[k];
+            changed = true;
+          }
+        }
+      });
+    }
+
+    return changed;
+  }
+
+  // Attempt to run filter repeatedly until page scripts have created their data
+  let attempts = 0;
+  const maxAttempts = 40; // ~8 seconds if interval 200ms
+  const jsInterval = setInterval(()=>{
+    attempts++;
+    const done = filterJSData();
+    // once products/categories/subtypesMap are filtered (or after timeout) stop polling
+    if(done || attempts >= maxAttempts){
+      clearInterval(jsInterval);
+    }
+  }, 200);
+
+  // Run DOM hide on initial load + observe for added nodes (handles menus injected or moved)
+  function init(){
+    hideMatchingDOM();
+
+    // Observe DOM changes to hide newly inserted elements (e.g., menus moved to body)
+    const obs = new MutationObserver((mutations)=>{
+      // only run hide when node additions occur
+      for(const m of mutations){
+        if(m.addedNodes && m.addedNodes.length){
+          hideMatchingDOM();
+          break;
+        }
+      }
+    });
+    obs.observe(document.documentElement || document.body, { childList:true, subtree:true, attributes:false });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Restore helper: call window.__siteRestoreHidden() from console or another script to unhide elements hidden by this snippet.
+  window.__siteRestoreHidden = function(){
+    document.querySelectorAll('[data-' + DATAKEY + ']').forEach(el=>{
+      el.style.display = '';
+      delete el.dataset[DATAKEY];
+    });
+    // Note: in-page JS arrays changed by this script are not restored automatically.
+    console.info('Restored DOM elements hidden by site filter. JS data arrays (categories/products) won\'t automatically restore — remove the script and reload to fully restore.');
+  };
+
+  // Safety: expose what we hide
+  window.__siteHideConfig = { hiddenLabels: HIDE.slice() };
+})();
+</script>
+
 </body>
 </html>

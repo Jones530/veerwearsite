@@ -444,152 +444,184 @@
       </div>
     </div>
   </section>
-<!-- CONTENT (fixed tag nesting + sticky filter) -->
-<section class="py-12">
-  <div class="container mx-auto px-6">
-    <div class="flex flex-col md:flex-row gap-8 items-start">
-      <!-- SIDEBAR / FILTERS -->
-      <aside class="md:w-1/4 w-full">
-        <div class="bg-white p-6 rounded-lg filter-panel monument">
-          <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
 
-          <!-- Category -->
-          <div class="filter-section">
-            <button class="filter-toggle" data-target="category-body">
-              <span style="color:var(--black);">Category</span>
-              <i data-feather="chevron-down" class="chev" id="chev-category"></i>
-            </button>
+  <!-- CONTENT -->
+  <section class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row gap-8">
+        <aside class="md:w-1/4">
+          <div class="bg-white p-6 rounded-lg filter-panel monument">
+            <h3 class="font-medium text-lg mb-4" style="color:var(--black);">Filter By</h3>
 
-            <div id="category-body" class="mt-3">
-              <div class="space-y-2">
-                <div class="flex items-center">
-                  <input type="checkbox" id="grillz" value="Grillz" class="filter-cat mr-2">
-                  <label for="grillz" class="text-sm" style="color:var(--black);">Grillz</label>
+            <!-- Category -->
+            <div class="filter-section">
+              <button class="filter-toggle" data-target="category-body">
+                <span style="color:var(--black);">Category</span>
+                <i data-feather="chevron-down" class="chev" id="chev-category"></i>
+              </button>
+              <div id="category-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="grillz" value="Grillz" class="filter-cat mr-2">
+                    <label for="grillz" class="text-sm" style="color:var(--black);">Grillz</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2">
+                    <label for="earrings" class="text-sm" style="color:var(--black);">Earrings</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="nails" value="Nail Jewelry" class="filter-cat mr-2">
+                    <label for="nails" class="text-sm" style="color:var(--black);">Nail Jewelry</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="aL_vaLe" value="aL vaLe" class="filter-cat mr-2">
+                    <label for="aL_vaLe" class="text-sm"><span class="plunct" style="color:var(--black);">aL vaLe</span></label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="veerwear" value="Veerwear" class="filter-cat mr-2">
+                    <label for="veerwear" class="text-sm"><span class="veerwear">Veerwear</span></label>
+                  </div>
                 </div>
-                <div class="flex items-center">
-                  <input type="checkbox" id="earrings" value="Earrings" class="filter-cat mr-2">
-                  <label for="earrings" class="text-sm" style="color:var(--black);">Earrings</label>
+              </div>
+            </div>
+
+            <!-- Subtype (new) -->
+            <div class="filter-section mt-4">
+              <button class="filter-toggle" data-target="subtype-body">
+                <span style="color:var(--black);">Subtype</span>
+                <i data-feather="chevron-down" class="chev" id="chev-subtype"></i>
+              </button>
+              <div id="subtype-body" class="mt-3">
+                <!-- Organized by parent category to make it scannable -->
+                <div class="subtype-heading">Earrings</div>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Hoops"> Hoops</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Studs"> Studs</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Dangles"> Dangles</label>
+
+                <div class="subtype-heading">Nail Jewelry</div>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Full-Cover Press-Ons"> Full-Cover Press-Ons</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Accent Tips"> Accent Tips</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Resin-Embedded Nails"> Resin-Embedded</label>
+
+                <div class="subtype-heading">Grillz</div>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Full-Cover Sets"> Full-Cover Sets</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Half-Cover / Open-Face"> Half-Cover / Open-Face</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Top Sets"> Top Sets</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Bottom Sets"> Bottom Sets</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Single-Tooth / Cap"> Single-Tooth / Cap</label>
+                <label class="subtype-group"><input type="checkbox" class="filter-subtype mr-2" value="Resin-Embedded Specials"> Resin-Embedded Specials</label>
+              </div>
+            </div>
+
+            <!-- Technique / Features (new) -->
+            <div class="filter-section mt-4">
+              <button class="filter-toggle" data-target="feature-body">
+                <span style="color:var(--black);">Features / Technique</span>
+                <i data-feather="chevron-down" class="chev" id="chev-feature"></i>
+              </button>
+              <div id="feature-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="feat-fullcover" value="Full-Cover" class="filter-tech mr-2">
+                    <label for="feat-fullcover" class="text-sm" style="color:var(--black);">Full-Cover</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="feat-resin" value="Resin-Embedded" class="filter-tech mr-2">
+                    <label for="feat-resin" class="text-sm" style="color:var(--black);">Resin-Embedded</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="feat-accent" value="Accent" class="filter-tech mr-2">
+                    <label for="feat-accent" class="text-sm" style="color:var(--black);">Accent / Single Pieces</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="feat-3d" value="3D Sculpt" class="filter-tech mr-2">
+                    <label for="feat-3d" class="text-sm" style="color:var(--black);">3D / Sculpt</label>
+                  </div>
                 </div>
-                <div class="flex items-center">
-                  <input type="checkbox" id="nails" value="Nail Jewelry" class="filter-cat mr-2">
-                  <label for="nails" class="text-sm" style="color:var(--black);">Nail Jewelry</label>
+              </div>
+            </div>
+
+            <!-- other filters (materials) -->
+            <div class="filter-section mt-4">
+              <button class="filter-toggle" data-target="material-body">
+                <span style="color:var(--black);">Material</span>
+                <i data-feather="chevron-down" class="chev" id="chev-material"></i>
+              </button>
+              <div id="material-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="gold" value="Gold" class="filter-material mr-2">
+                    <label for="gold" class="text-sm" style="color:var(--black);">Gold</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="silver" value="Silver" class="filter-material mr-2">
+                    <label for="silver" class="text-sm" style="color:var(--black);">Silver</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="platinum" value="Platinum" class="filter-material mr-2">
+                    <label for="platinum" class="text-sm" style="color:var(--black);">Platinum</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="with-diamonds" value="With Diamonds" class="filter-material mr-2">
+                    <label for="with-diamonds" class="text-sm" style="color:var(--black);">With Diamonds</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="resin" value="Resin" class="filter-material mr-2">
+                    <label for="resin" class="text-sm" style="color:var(--black);">Resin</label>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Subtype -->
-          <div class="filter-section mt-4">
-            <button class="filter-toggle" data-target="subtype-body">
-              <span style="color:var(--black);">Subtype</span>
-              <i data-feather="chevron-down" class="chev" id="chev-subtype"></i>
-            </button>
-            <div id="subtype-body" class="mt-3">
-              <!-- Earrings -->
-              <div class="subtype-heading">Earrings</div>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Hoops"> Hoops</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Studs"> Studs</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Dangles"> Dangles</label>
-
-              <!-- Nails -->
-              <div class="subtype-heading mt-3">Nail Jewelry</div>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Full-Cover Press-Ons"> Full-Cover Press-Ons</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Accent Tips"> Accent Tips</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Resin-Embedded Nails"> Resin-Embedded</label>
-
-              <!-- Grillz -->
-              <div class="subtype-heading mt-3">Grillz</div>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Full-Cover Sets"> Full-Cover Sets</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Half-Cover / Open-Face"> Half-Cover / Open-Face</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Top Sets"> Top Sets</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Bottom Sets"> Bottom Sets</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Single-Tooth / Cap"> Single-Tooth / Cap</label>
-              <label class="subtype-group block mb-1"><input type="checkbox" class="filter-subtype mr-2" value="Resin-Embedded Specials"> Resin-Embedded Specials</label>
+            <div class="filter-section">
+              <button class="filter-toggle" data-target="price-body">
+                <span style="color:var(--black);">Price Range</span>
+                <i data-feather="chevron-down" class="chev" id="chev-price"></i>
+              </button>
+              <div id="price-body" class="mt-3">
+                <div class="space-y-2">
+                  <div class="flex items-center"><input type="radio" id="price-all" name="price" value="all" checked class="filter-price mr-2"><label for="price-all" class="text-sm">All Prices</label></div>
+                  <div class="flex items-center"><input type="radio" id="price-1" name="price" value="under200" class="filter-price mr-2"><label for="price-1" class="text-sm">Under $200</label></div>
+                  <div class="flex items-center"><input type="radio" id="price-2" name="price" value="200-500" class="filter-price mr-2"><label for="price-2" class="text-sm">$200 - $500</label></div>
+                  <div class="flex items-center"><input type="radio" id="price-3" name="price" value="500-1000" class="filter-price mr-2"><label for="price-3" class="text-sm">$500 - $1,000</label></div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Features / Technique -->
-          <div class="filter-section mt-4">
-            <button class="filter-toggle" data-target="feature-body">
-              <span style="color:var(--black);">Features / Technique</span>
-              <i data-feather="chevron-down" class="chev" id="chev-feature"></i>
-            </button>
-            <div id="feature-body" class="mt-3">
-              <div class="space-y-2">
-                <div class="flex items-center"><input type="checkbox" id="feat-fullcover" value="Full-Cover" class="filter-tech mr-2"><label for="feat-fullcover" class="text-sm" style="color:var(--black);">Full-Cover</label></div>
-                <div class="flex items-center"><input type="checkbox" id="feat-resin" value="Resin-Embedded" class="filter-tech mr-2"><label for="feat-resin" class="text-sm" style="color:var(--black);">Resin-Embedded</label></div>
-                <div class="flex items-center"><input type="checkbox" id="feat-accent" value="Accent" class="filter-tech mr-2"><label for="feat-accent" class="text-sm" style="color:var(--black);">Accent / Single Pieces</label></div>
-                <div class="flex items-center"><input type="checkbox" id="feat-3d" value="3D Sculpt" class="filter-tech mr-2"><label for="feat-3d" class="text-sm" style="color:var(--black);">3D / Sculpt</label></div>
+            <button id="applyFiltersBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 rounded-md monument">Apply Filters</button>
+          </div>
+        </aside>
+
+        <main class="md:w-3/4 monument">
+          <div class="flex justify-between items-center mb-8">
+            <div>
+              <span id="showingText" style="color:var(--black);">Showing 0 of 0 products</span>
+              <!-- Applied filters pill will be injected here -->
+              <div id="appliedFiltersWrap" style="display:inline-block; margin-left:12px; vertical-align:middle;"></div>
+            </div>
+
+            <div class="flex items-baseline sort-row">
+              <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
+              <div class="select-with-icon">
+                <i data-feather="chevron-down" class="w-4 h-4"></i>
+                <select id="sortSelect" class="text-black rounded-md text-sm">
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="newest">Newest Arrivals</option>
+                  <option value="best-selling">Best Selling</option>
+                </select>
               </div>
             </div>
           </div>
 
-          <!-- Materials -->
-          <div class="filter-section mt-4">
-            <button class="filter-toggle" data-target="material-body">
-              <span style="color:var(--black);">Material</span>
-              <i data-feather="chevron-down" class="chev" id="chev-material"></i>
-            </button>
-            <div id="material-body" class="mt-3">
-              <div class="space-y-2">
-                <div class="flex items-center"><input type="checkbox" id="gold" value="Gold" class="filter-material mr-2"><label for="gold" class="text-sm" style="color:var(--black);">Gold</label></div>
-                <div class="flex items-center"><input type="checkbox" id="silver" value="Silver" class="filter-material mr-2"><label for="silver" class="text-sm" style="color:var(--black);">Silver</label></div>
-                <div class="flex items-center"><input type="checkbox" id="platinum" value="Platinum" class="filter-material mr-2"><label for="platinum" class="text-sm" style="color:var(--black);">Platinum</label></div>
-                <div class="flex items-center"><input type="checkbox" id="with-diamonds" value="With Diamonds" class="filter-material mr-2"><label for="with-diamonds" class="text-sm" style="color:var(--black);">With Diamonds</label></div>
-                <div class="flex items-center"><input type="checkbox" id="resin" value="Resin" class="filter-material mr-2"><label for="resin" class="text-sm" style="color:var(--black);">Resin</label></div>
-              </div>
-            </div>
-          </div>
+          <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-          <!-- Price -->
-          <div class="filter-section mt-4">
-            <button class="filter-toggle" data-target="price-body">
-              <span style="color:var(--black);">Price Range</span>
-              <i data-feather="chevron-down" class="chev" id="chev-price"></i>
-            </button>
-            <div id="price-body" class="mt-3">
-              <div class="space-y-2">
-                <div class="flex items-center"><input type="radio" id="price-all" name="price" value="all" checked class="filter-price mr-2"><label for="price-all" class="text-sm">All Prices</label></div>
-                <div class="flex items-center"><input type="radio" id="price-1" name="price" value="under200" class="filter-price mr-2"><label for="price-1" class="text-sm">Under $200</label></div>
-                <div class="flex items-center"><input type="radio" id="price-2" name="price" value="200-500" class="filter-price mr-2"><label for="price-2" class="text-sm">$200 - $500</label></div>
-                <div class="flex items-center"><input type="radio" id="price-3" name="price" value="500-1000" class="filter-price mr-2"><label for="price-3" class="text-sm">$500 - $1,000</label></div>
-              </div>
-            </div>
-          </div>
-
-          <button id="applyFiltersBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 rounded-md monument mt-4">Apply Filters</button>
-        </div>
-      </aside>
-
-      <!-- MAIN (products) -->
-      <main class="md:w-3/4 w-full monument">
-        <div class="flex justify-between items-center mb-8">
-          <div>
-            <span id="showingText" style="color:var(--black);">Showing 0 of 0 products</span>
-            <div id="appliedFiltersWrap" style="display:inline-block; margin-left:12px; vertical-align:middle;"></div>
-          </div>
-
-          <div class="flex items-baseline sort-row">
-            <span class="mr-2 text-gray-600 text-sm" style="color:var(--black);">Sort by:</span>
-            <div class="select-with-icon">
-              <i data-feather="chevron-down" class="w-4 h-4"></i>
-              <select id="sortSelect" class="text-black rounded-md text-sm">
-                <option value="featured">Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="newest">Newest Arrivals</option>
-                <option value="best-selling">Best Selling</option>
-              </select>
-            </div>
-          </div>
-
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-        <div class="flex justify-center mt-12"><nav id="pagination" class="flex items-center space-x-2"></nav></div>
-      </main>
+          <div class="flex justify-center mt-12"><nav id="pagination" class="flex items-center space-x-2"></nav></div>
+        </main>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <footer class="py-12">
     <div class="container mx-auto px-6">
@@ -918,7 +950,7 @@
     /* --------------------------
        Product generator: now adds subtype + technique
     -------------------------- */
-    const categories = ['Grillz','Earrings','Nail Jewelry','Accessories'];
+    const categories = ['Grillz','Earrings','Nail Jewelry','aL vaLe','Veerwear','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];
     const products = [];
     const TOTAL_ITEMS = 86;

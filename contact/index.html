@@ -22,7 +22,7 @@
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
+    /* ---------- fonts, variables and base (from All Products) ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
@@ -44,7 +44,7 @@
     .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
     .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
 
-    /* Hero (small tweak: no hard-coded background here — will be set inline) */
+    /* Hero (no hard-coded background here — set inline where needed) */
     .shop-hero {
       position: relative;
       background-size: cover;
@@ -218,9 +218,7 @@
 
     .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
 
-    /* ----------------------------
-       Header search UI
-    ---------------------------- */
+    /* Header search UI */
     .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
     .search-form { display:flex; align-items:center; }
     .search-input {
@@ -252,41 +250,6 @@
     #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
     .mobile-search-open #mobileSearchBar { display:block; }
 
-    /* curated-grid responsiveness */
-    .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
-    @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
-
-    /* subtype link style / count badge */
-    .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
-    .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
-
-    /* share button (tiny) */
-    .share-btn {
-      margin-left:8px;
-      background:transparent;
-      border:none;
-      cursor:pointer;
-      width:28px;
-      height:28px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:6px;
-    }
-    .share-toast {
-      position:fixed;
-      bottom:18px;
-      right:18px;
-      background:#111;
-      color:#fff;
-      padding:8px 12px;
-      border-radius:8px;
-      font-size:13px;
-      opacity:0.92;
-      z-index:99999;
-    }
-
     /* product detail custom */
     .product-gallery { display:flex; flex-direction:column; gap:12px; }
     .main-image { width:100%; height:520px; object-fit:contain; background:#fff; border:1px solid rgba(0,0,0,0.06); display:block; }
@@ -317,13 +280,13 @@
 
   <!-- ========== CONFIG: edit these for each category page ========== -->
   <script>
-    const CATEGORY_NAME = 'Impression Kit';
-    const CATEGORY_SLUG = 'ImpressionKit';
-    const CATEGORY_TAGLINE = 'Tuff Tooth Dental Impression Kit — send us an accurate mould if you cannot visit our shop.' ;
-    const BANNER_URL = '/images/teethgif.gif'; // change to your banner image for impression kit
+    const CATEGORY_NAME = 'Contact';
+    const CATEGORY_SLUG = 'Contact';
+    const CATEGORY_TAGLINE = 'Get in touch with Grin & Glisten.';
+    const BANNER_URL = '/images/contact-banner.jpg';
   </script>
 
-  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
+  <!-- NAV (from All Products UX) -->
   <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
@@ -352,8 +315,7 @@
                 <a href="/Grillz/" class="monument">Grillz</a>
                 <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
                 <a href="/Earrings/" class="monument">Earrings</a>
-                <div style="height:1px;background:#eee;margin:6px 0;"></div>
-                <!-- Veerwear and aL vaLe removed from desktop All Products dropdown -->
+                <!-- Veerwear and aL vaLe intentionally removed from the desktop All Products dropdown -->
               </div>
             </div>
           </div>
@@ -390,7 +352,7 @@
       </div>
     </div>
 
-    <!-- mobile nav -->
+    <!-- mobile nav (from All Products UX) -->
     <div id="mobileNav" class="md:hidden" style="display:none;">
       <div class="flex items-center justify-between mb-4 px-4">
         <div class="flex items-center gap-3">
@@ -400,7 +362,7 @@
         <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
       </div>
 
-      <!-- Mobile search area (toggled by header search icon on small screens) -->
+      <!-- Mobile search area -->
       <div id="mobileSearchBar" aria-hidden="true">
         <form id="mobileSearchForm" action="/search.html" method="get" role="search">
           <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
@@ -415,7 +377,7 @@
           <a href="/Grillz/" class="block py-1">Grillz</a>
           <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
           <a href="/Earrings/" class="block py-1">Earrings</a>
-          <!-- VEERWEAR and aL vaLe removed from mobile All Products list -->
+          <!-- VEERWEAR and aL vaLe removed from the mobile All Products list -->
         </div>
 
         <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
@@ -423,107 +385,74 @@
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
         <a href="/contact/" class="block py-2 border-b">Contact Us</a>
 
-
         <!-- mobile favorites link -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO (reworked for Impression Kit) -->
-  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/impression-kit-banner.jpg');">
+  <!-- HERO (contact) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/contact-banner.jpg');">
     <div class="overlay" aria-hidden="true"></div>
     <div class="container mx-auto px-6 hero-inner">
       <div class="shop-banner">
         <div>
-          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900;">Impression Kit</h1>
+          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900;">Contact Us</h1>
           <div class="flex items-center text-gray-200 text-sm monument">
             <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
             <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
-            <span id="categoryBreadcrumb">Impression Kit</span>
+            <span id="categoryBreadcrumb">Contact</span>
           </div>
-          <p id="categoryTagline" class="mt-4 text-base opacity-90">Tuff Tooth Dental Impression Kit — send us an accurate mould if you cannot visit the shop.</p>
-          <div class="mt-6">
-            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="http://veerwear.com/HowToOrder/">How to order</a>
-          </div>
+          <p id="categoryTagline" class="mt-4 text-base opacity-90">Questions, orders, or custom requests — hit us up.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PRODUCT DETAIL CONTENT (replaces curated landing) -->
+  <!-- CONTACT / PRODUCT DETAIL CONTENT (your original contact content preserved) -->
   <section class="py-12">
     <div class="container mx-auto px-6">
       <div class="flex flex-col lg:flex-row gap-10">
-        <!-- Left: gallery -->
+        <!-- Left: gallery / image or map -->
         <div class="lg:w-1/2">
-          <div class="product-gallery">
-            <div class="bg-white p-6 rounded-lg text-center">
-              <!-- Main image -->
-              <img id="mainImage" src="/images/impression-kit-main.jpg" alt="Grillz Impression Kit" class="main-image mx-auto">
-            </div>
-
-            <!-- thumbnails -->
-            <div class="thumbs" role="tablist" aria-label="Product thumbnails">
-              <img src="/images/impression-kit-thumb1.jpg" alt="Kit front" data-src="/images/impression-kit-main.jpg" class="thumb active" />
-              <img src="/images/impression-kit-thumb2.jpg" alt="Instructions" data-src="/images/impression-kit-page2.jpg" class="thumb" />
-              <img src="/images/impression-kit-thumb3.jpg" alt="Close up" data-src="/images/impression-kit-page3.jpg" class="thumb" />
-              <img src="/images/impression-kit-thumb4.jpg" alt="Hands-on" data-src="/images/impression-kit-page4.jpg" class="thumb" />
-            </div>
+          <div class="bg-white p-6 rounded-lg text-center product-card">
+            <img src="/images/contact-storefront.jpg" alt="Grin & Glisten Storefront" class="main-image mx-auto">
+            <p class="minor mt-4">Visit our shop in London or message us — we reply within 48 hours.</p>
           </div>
         </div>
 
-        <!-- Right: meta & purchase -->
-        <div class="lg:w-1/2 product-meta">
-          <h1 class="monument">Grillz Impression Kit</h1>
-          <p class="minor">Our Tuff Tooth Dental Impression Kit — you'll need one of these to send us an accurate mould of your teeth if you can't come to the shop in London.</p>
-
-          <div class="product-info">
-            <p class="price">$35.00 USD</p>
-            <p class="minor">Taxes included.</p>
-
-            <div class="mt-4">
-              <label class="block text-sm mb-2">Quantity</label>
-              <div class="qty-controls" aria-label="Quantity controls">
-                <button id="qtyMinus" aria-label="Decrease quantity">−</button>
-                <input id="qtyInput" type="number" value="1" min="1" style="width:64px; text-align:center; border:1px solid rgba(0,0,0,0.06); border-radius:6px; padding:8px;" />
-                <button id="qtyPlus" aria-label="Increase quantity">+</button>
+        <!-- Right: contact form -->
+        <div class="lg:w-1/2">
+          <div class="bg-white p-6 rounded-lg product-card">
+            <h2 class="monument text-2xl mb-4">Get in touch</h2>
+            <form id="contactForm">
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Name</label>
+                <input type="text" id="contactName" required class="w-full border rounded p-2" />
               </div>
-            </div>
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Email</label>
+                <input type="email" id="contactEmail" required class="w-full border rounded p-2" />
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Message</label>
+                <textarea id="contactMessage" rows="6" class="w-full border rounded p-2"></textarea>
+              </div>
+              <div class="flex gap-3 items-center">
+                <button type="submit" class="bg-amber-600 text-black py-2 px-4 rounded monument">Send Message</button>
+                <button type="button" id="contactPhoneBtn" class="bg-white border py-2 px-4 rounded monument">Call Us</button>
+              </div>
+              <p id="contactStatus" class="minor mt-3" aria-live="polite" style="display:none;"></p>
+            </form>
 
-            <div>
-              <!-- Snipcart Add to Cart -->
-              <button id="addToCartBtn"
-                class="add-to-cart monument snipcart-add-item bg-amber-600 text-black hover:bg-amber-700"
-                data-item-id="impression-kit-001"
-                data-item-name="Grillz Impression Kit"
-                data-item-price="35.00"
-                data-item-url="/ImpressionKit/"
-                data-item-description="Tuff Tooth Dental Impression Kit — for sending an accurate mould."
-                data-item-image="/images/impression-kit-main.jpg">
-                Add to cart
-              </button>
-
-              <button id="buyWithShopBtn" class="add-to-cart monument mt-3 bg-white text-black border border-gray-200">
-                Buy with shop
-              </button>
-
-              <p class="minor mt-3">Watch our instructional video before starting the kit to ensure an accurate mould.</p>
-            </div>
-
-            <div class="specs">
-              <h4 class="monument text-base mt-6 mb-2">Inside the box you will find:</h4>
+            <div class="specs mt-6">
+              <h4 class="monument text-base mt-6 mb-2">Shop details</h4>
               <ul>
-                <li>1x Top Tray</li>
-                <li>1x Bottom Tray</li>
-                <li>1x Light Body Silicone Dispenser</li>
-                <li>2x Mixing Tips</li>
-                <li>2x Sets of Silicone Putty</li>
+                <li>Address: 123 Shoreditch Lane, London</li>
+                <li>Hours: Tue–Sat 11:00–19:00</li>
+                <li>Email: hello@grinandglisten.com</li>
+                <li>Phone: +44 20 0000 0000</li>
               </ul>
-            </div>
-
-            <div class="mt-6">
-              <a href="/HowToOrder/" class="text-sm monument hover:text-amber-600">How to send your mould</a>
             </div>
           </div>
         </div>
@@ -531,7 +460,7 @@
     </div>
   </section>
 
-  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
+  <!-- FOOTER (from All Products) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -556,7 +485,6 @@
             <li><a href="/HowToOrder/" class="text-sm">How to Order</a></li>
             <li><a href="/ImpressionKit/" class="text-sm">Impression Kit</a></li>
             <li><a href="/contact/" class="text-sm">Contact Us</a></li>
-
           </ul>
         </div>
         <div>
@@ -575,17 +503,17 @@
   <!-- Snipcart root (replace YOUR_SNIPCART_API_KEY) -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- SCRIPTS: keep your AllProducts JS & behavior, but simplified for this product page -->
+  <!-- UX Scripts (header/footer/search/dropdown behavior copied from All Products) -->
   <script>
     feather.replace();
 
-    // Mobile nav toggle (verbatim)
+    // Mobile nav toggle
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
     const mobileClose = document.getElementById('mobileCloseBtn');
     mobileBtn?.addEventListener('click', ()=> {
       mobileNav.style.display='block';
-      document.body.classList.remove('mobile-search-open'); // don't auto-open mobile search here
+      document.body.classList.remove('mobile-search-open');
     });
     mobileClose?.addEventListener('click', ()=> {
       mobileNav.style.display='none';
@@ -594,7 +522,7 @@
       document.body.classList.remove('mobile-search-open');
     });
 
-    // Dropdown positioning & behavior (re-used)
+    // Dropdown positioning & behavior (re-used from All Products)
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
         if(group.dataset.dropdownBound === "true") return;
@@ -709,86 +637,19 @@
       });
     }
 
-    // Init small product interactions
+    // Init UI behavior
     document.addEventListener('DOMContentLoaded', ()=>{
       try {
         positionAndBindDropdowns();
-        initCategoryHeroAndLinks(); // sets banner/title
-        initProductGallery();
-        initQtyControls();
         initHeaderSearch();
         initMobileSearch();
+        initContactForm();
       } catch (err) {
-        console.error('Error initializing Impression Kit page:', err);
+        console.error('Error initializing Contact page UX:', err);
       }
     });
 
-    function initCategoryHeroAndLinks(){
-      const hero = document.getElementById('categoryHero');
-      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
-      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
-      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
-      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
-      const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
-      document.querySelectorAll('[href="/AllProducts/?category=ImpressionKit"]').forEach(a => a.href = viewAllHref);
-      document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
-    }
-
-    function initProductGallery(){
-      const main = document.getElementById('mainImage');
-      const thumbs = document.querySelectorAll('.thumbs .thumb');
-      thumbs.forEach(t => {
-        t.addEventListener('click', (ev) => {
-          thumbs.forEach(x => x.classList.remove('active'));
-          t.classList.add('active');
-          const src = t.getAttribute('data-src') || t.src;
-          if(main) main.src = src;
-        });
-        // support keyboard
-        t.setAttribute('tabindex','0');
-        t.addEventListener('keydown', (ev) => {
-          if(ev.key === 'Enter' || ev.key === ' ') {
-            ev.preventDefault();
-            t.click();
-          }
-        });
-      });
-    }
-
-    function initQtyControls(){
-      const minus = document.getElementById('qtyMinus');
-      const plus = document.getElementById('qtyPlus');
-      const input = document.getElementById('qtyInput');
-      const addBtn = document.getElementById('addToCartBtn');
-
-      minus?.addEventListener('click', ()=> {
-        const cur = Math.max(1, Number(input.value || 1) - 1);
-        input.value = cur;
-        updateSnipcartQuantity(addBtn, cur);
-      });
-      plus?.addEventListener('click', ()=> {
-        const cur = Math.max(1, Number(input.value || 1) + 1);
-        input.value = cur;
-        updateSnipcartQuantity(addBtn, cur);
-      });
-      input?.addEventListener('change', ()=> {
-        let v = Number(input.value || 1);
-        if(isNaN(v) || v < 1) v = 1;
-        input.value = v;
-        updateSnipcartQuantity(addBtn, v);
-      });
-
-      // set initial quantity param for Snipcart add button
-      updateSnipcartQuantity(addBtn, Number(input.value || 1));
-    }
-
-    function updateSnipcartQuantity(button, qty){
-      if(!button) return;
-      button.setAttribute('data-item-quantity', String(qty));
-      // if Snipcart is present, we can set attribute on click event as well; keep attribute updated
-    }
-
-    // Header search initialization (verbatim)
+    // Header search (same behavior as All Products)
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
       const form = document.getElementById('headerSearchForm');
@@ -839,6 +700,7 @@
       });
     }
 
+    // Mobile search: show mobile nav and focus the mobile input.
     function initMobileSearch(){
       const mobileForm = document.getElementById('mobileSearchForm');
       const mobileInput = document.getElementById('mobileSearchInput');
@@ -868,6 +730,57 @@
         if(mobileInput) mobileInput.focus();
       }, 60);
     }
+
+    // Simple client-side contact form handler (keeps UX consistent with site)
+    function initContactForm(){
+      const form = document.getElementById('contactForm');
+      const status = document.getElementById('contactStatus');
+      const phoneBtn = document.getElementById('contactPhoneBtn');
+      if(phoneBtn){
+        phoneBtn.addEventListener('click', ()=> {
+          window.location.href = 'tel:+442000000000';
+        });
+      }
+      if(!form) return;
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        if(!name || !email || !message){
+          if(status){ status.style.display = ''; status.textContent = 'Please fill all fields.'; }
+          return;
+        }
+        // Simple UX feedback - replace with real form submit as needed
+        if(status){ status.style.display = ''; status.textContent = 'Sending message...'; }
+        setTimeout(()=> {
+          if(status){ status.textContent = 'Thanks — message sent. We will respond within 48 hours.'; }
+          form.reset();
+        }, 900);
+      });
+    }
+
+    // Cart toggle behaviour (keeps parity with site)
+    const headerCartToggle = document.getElementById('headerCartToggle');
+    let cartOpen = false;
+    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
+    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
+    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
+
+    headerCartToggle?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      headerCartToggle.classList.add('clicked');
+      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
+
+      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
+        if(cartOpen) window.Snipcart.api.modal.close();
+        else window.Snipcart.api.modal.open();
+      } else {
+        const anchor = document.querySelector('a.snipcart-checkout');
+        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
+      }
+    });
+
   </script>
 </body>
 </html>

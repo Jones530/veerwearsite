@@ -1,24 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Grin & Glisten — Contact</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grin & Glisten</title>
   <link rel="icon" type="image/png" href="/images/GG.png">
 
-  <!-- fonts & tailwind (kept same as Grillz head) -->
+  <!-- Google font preload -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
 
-  <!-- Snipcart (kept as in Grillz) -->
+  <!-- Snipcart -->
   <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
   <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    /* ------------------ copy of Grillz base CSS (fonts, roots, helpers) ------------------ */
+    /* ---------- fonts, variables and base (verbatim from your All Products file) ---------- */
     @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
     @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
     @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
@@ -33,153 +37,297 @@
     .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
     .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
 
-    /* keep dropdown, header, pagination styles and other layout primitives exactly as Grillz
-       (omitted here for brevity — kept minimal but functionally equivalent for header UX)
-       NOTE: full Grillz CSS was used earlier; we include the important header/footer parts below and
-       keep contact-specific styles afterwards.
-    */
+    .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
 
-    /* ---------- Begin header/footer base rules (kept minimal but compatible) ---------- */
-    nav.bg-white { background:#fff; }
-    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; }
+    /* ---- select-with-icon: hide native arrow and position custom icon ---- */
+    .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
+
+    /* Hero (small tweak: no hard-coded background here — will be set inline) */
+    .shop-hero {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color:#fff;
+      overflow:visible; /* ensure dropdown can overlap if needed */
+      padding-top:6rem;
+      padding-bottom:6rem;
+      min-height:36vh;
+      display:flex;
+      align-items:center;
+    }
+    .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
+    .shop-hero .hero-inner{ position:relative; z-index:2; }
+
+    /* filter panel sticky */
+    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
+    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    /* pagination buttons styling */
+    .page-btn {
+      transition: all .16s ease;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      width: 40px; height:40px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      background-clip: padding-box;
+      position: relative; /* required for glow pseudo element */
+      z-index: 2;
+      overflow: visible; /* allow pseudo elements to be visible */
+    }
+    .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .page-btn.clicked { transform: scale(.98); }
+
+    /* active page: stronger glow & sparkle */
+    .page-active {
+      background: linear-gradient(180deg,#fff9e6,#f7e5b8);
+      color: #000;
+      border: 1px solid rgba(0,0,0,0.18);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.12);
+      overflow: visible;
+    }
+
+    .page-active::before{
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 220%;
+      height: 220%;
+      border-radius: 16px;
+      z-index: -2;
+      background: radial-gradient(circle at 50% 30%,
+                  rgba(255,255,255,0.95) 0%,
+                  rgba(250,250,240,0.9) 6%,
+                  rgba(212,175,55,0.28) 20%,
+                  rgba(212,175,55,0.14) 30%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(28px);
+      pointer-events: none;
+    }
+
+    .page-active::after{
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 20%, rgba(255,255,255,0.8) 21% 45%, rgba(255,255,255,0) 46%);
+      box-shadow: 0 0 12px rgba(212,175,55,0.75), 0 0 2px rgba(255,255,255,0.9);
+      transform-origin: center;
+      animation: sparkle 1.6s infinite ease-in-out;
+      opacity: 1;
+    }
+    @keyframes sparkle {
+      0%   { transform: translateY(0) scale(0.6) rotate(0deg); opacity:0; }
+      25%  { transform: translateY(-4px) scale(1.15) rotate(18deg); opacity:1; }
+      55%  { transform: translateY(-6px) scale(0.95) rotate(-10deg); opacity:0.9; }
+      100% { transform: translateY(0) scale(0.7) rotate(0deg); opacity:0; }
+    }
+
+    /* nav arrow buttons */
+    .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .nav-btn.clicked { transform: scale(.96); opacity:.95; }
+
+    /* heart styling */
+    .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .heart-active{ background:var(--gold); color:#000 !important; }
+
+    /* header icons container */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
+
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
     .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
-    .dropdown-menu{ position: fixed; background: #fff; color: var(--black); border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.12); padding: 6px 12px; z-index: 9999; display: none; white-space: nowrap; pointer-events: auto; min-width:120px; }
-    .dropdown-menu.open{ display:block; }
-    .dropdown-menu a{ display:inline-block; padding:8px 6px; color: var(--black); text-align:left; border-radius:6px; width:100%; }
-    .dropdown-menu a:hover{ background:#f7f7f7; }
+    .menu-label{ display:inline-block; }
 
-    /* mobile helpers */
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
+    .dropdown-menu{
+      position: fixed;
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 120px;
+    }
+    .dropdown-menu.open { display: block; }
+
+    .dropdown-menu a{
+      display:inline-block;
+      padding: 8px 6px;
+      color: var(--black);
+      text-align: left;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
+
+    /* filter toggle style */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
     #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
     @media (max-width:767px){
       #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
-      .hidden.md\:flex { display:none !important; }
+      .hidden.md\\:flex { display:none !important; }
       .header-actions{ width:120px; }
-    }
-    /* ---------- End header/footer base rules ---------- */
+      .dropdown-menu{ min-width: 180px; }
+      .filter-toggle{ padding:6px 0; }
 
-    /* ------------------ CONTACT PAGE SPECIFIC STYLES ------------------ */
-
-    /* tv static background & overlay */
-    body.site-static {
-      background-image: url('/images/mickeymouse1.gif');
-      background-repeat: repeat;
-      background-position: center;
-      background-size: auto;
-      background-color: black;
+      /* Hide desktop inline search on mobile */
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
     }
-    .site-overlay::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .site-content { position: relative; z-index: 10; min-height:100vh; }
 
-    /* contact hero — placed right after header so header.scrolled + .contact-hero can be used */
-    .contact-hero {
-      height: 160px;
-      display:flex;
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
+
+    /* ----------------------------
+       Header search UI
+    ---------------------------- */
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
+    .search-form { display:flex; align-items:center; }
+    .search-input {
+      position: absolute;
+      right: 44px;
+      width: 0;
+      opacity: 0;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:0.95rem;
+      outline:none;
+      background:#fff;
+      color:var(--black);
+      transform-origin: right center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60;
+      white-space:nowrap;
+    }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
+    .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
+
+    /* Mobile search inside mobileNav */
+    #mobileSearchBar { display:none; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.04); }
+    #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
+    #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
+    .mobile-search-open #mobileSearchBar { display:block; }
+
+    /* curated-grid responsiveness */
+    .curated-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    @media (max-width:1024px){ .curated-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .curated-grid { grid-template-columns: 1fr; } }
+
+    /* subtype link style / count badge */
+    .subtype-link { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid rgba(0,0,0,0.04); }
+    .subtype-badge { background:rgba(0,0,0,0.06); padding:2px 8px; border-radius:9999px; font-size:12px; }
+
+    /* share button (tiny) */
+    .share-btn {
+      margin-left:8px;
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      width:28px;
+      height:28px;
+      display:inline-flex;
       align-items:center;
       justify-content:center;
-      position:relative;
-      overflow:hidden;
-      background: #000;
-      transition: height 220ms ease, padding 220ms ease;
+      border-radius:6px;
     }
-    header.scrolled + .contact-hero {
-      height: 110px;
-    }
-    .contact-hero::after {
-      content:"";
-      position:absolute;
-      inset:0;
-      /* extremely subtle white/black micro-contrast to keep it crisp on gif */
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-      pointer-events:none;
-    }
-    .hero-title {
-      font-size: clamp(36px,6vw,72px);
-      color: #fff;
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:3px;
-      transition: transform 220ms ease, font-size 220ms ease;
-      transform-origin:center;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
-    }
-    header.scrolled + .contact-hero .hero-title { transform: scale(0.78); }
-
-    /* form panel (kept from your other site) */
-    .form-panel {
-      background: rgba(0,0,0,0.78);
-      border: 1px solid rgba(255,255,255,0.04);
-      padding: clamp(20px, 3.5vw, 36px);
-      border-radius: 12px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
-      backdrop-filter:none;
-    }
-    .form-panel .input-line, .form-panel .textarea-line {
-      background: transparent;
-      color: #fff;
-    }
-
-    .input-line {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.8);
-      padding: 10px 6px;
-      color: #fff;
-      outline: none;
-      width: 100%;
-    }
-    .input-line::placeholder { color: rgba(255,255,255,0.6); }
-    .textarea-line {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 14px;
+    .share-toast {
+      position:fixed;
+      bottom:18px;
+      right:18px;
+      background:#111;
       color:#fff;
-      outline: none;
-      resize:vertical;
-      min-height:140px;
-      width:100%;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:13px;
+      opacity:0.92;
+      z-index:99999;
     }
 
-    .btn-yellow {
-      background: var(--gold);
-      color: black;
-      font-weight:700;
-      padding: 14px 26px;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-      transition: transform .14s ease, filter .14s ease;
-      border: none;
+    /* product detail custom */
+    .product-gallery { display:flex; flex-direction:column; gap:12px; }
+    .main-image { width:100%; height:520px; object-fit:contain; background:#fff; border:1px solid rgba(0,0,0,0.06); display:block; }
+    .thumbs { display:flex; gap:8px; margin-top:8px; }
+    .thumbs img { width:72px; height:72px; object-fit:cover; border:1px solid rgba(0,0,0,0.06); cursor:pointer; border-radius:6px; }
+    .thumbs img.active { outline:3px solid var(--gold); transform:translateY(-2px); }
+    @media (max-width:1024px){
+      .main-image { height:420px; }
     }
-    .btn-yellow:hover { transform: translateY(-3px); filter:brightness(0.98); }
-
-    /* center intro text */
-    .contact-intro {
-      text-align:center;
-      font-size: 2em;
-      font-weight:400;
-      margin-bottom:1.5rem;
+    @media (max-width:640px){
+      .main-image { height:320px; }
+      .thumbs img { width:56px; height:56px; }
     }
 
-    /* layout responsiveness */
-    @media (max-width: 768px) {
-      .contact-intro { font-size: 1.5em; padding:0 16px; }
-      .contact-hero { height: 120px; }
-      header.scrolled + .contact-hero { height: 90px; }
-      .form-panel { padding:18px; }
-    }
+    .product-meta h1 { font-size:28px; margin-bottom:6px; }
+    .price { font-size:20px; font-weight:800; margin-top:8px; }
+    .qty-controls { display:flex; align-items:center; gap:8px; margin-top:10px; }
+    .qty-controls button { width:36px; height:36px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:white; cursor:pointer; }
+    .add-to-cart { margin-top:16px; width:100%; padding:12px; border-radius:10px; font-weight:900; }
+    .minor { color:#666; font-size:13px; margin-top:8px; }
+
+    .product-info { margin-top:18px; color:var(--black); }
+    .specs { margin-top:12px; }
+    .specs li { margin-bottom:8px; font-size:14px; color:#333; }
   </style>
 </head>
-<body class="monument site-static">
-  <!-- ========== NAV (verbatim Grillz header & UX) ========== -->
-  <nav class="bg-white text-black shadow-md sticky top-0 z-50" id="grillzHeader">
+<body class="monument">
+
+  <!-- ========== CONFIG: edit these for each category page ========== -->
+  <script>
+    const CATEGORY_NAME = 'Impression Kit';
+    const CATEGORY_SLUG = 'ImpressionKit';
+    const CATEGORY_TAGLINE = 'Tuff Tooth Dental Impression Kit — send us an accurate mould if you cannot visit our shop.' ;
+    const BANNER_URL = '/images/teethgif.gif'; // change to your banner image for impression kit
+  </script>
+
+  <!-- NAV (verbatim header from your All Products file — DO NOT MODIFY) -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
         <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
         </button>
@@ -190,11 +338,13 @@
 
         <div class="hidden md:flex space-x-8">
           <div class="group" id="all-products-group">
+            <!-- trigger -->
             <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
               <span class="menu-label">All Products</span>
               <i data-feather="chevron-down" class="w-4 h-4"></i>
             </button>
 
+            <!-- dropdown menu (white backing, auto width) -->
             <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
               <div class="grid grid-cols-1 gap-0">
                 <a href="/AllProducts/" class="monument">All Products</a>
@@ -203,12 +353,7 @@
                 <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
                 <a href="/Earrings/" class="monument">Earrings</a>
                 <div style="height:1px;background:#eee;margin:6px 0;"></div>
-                <a href="/VEERWEAR/" class="veerwear">Veerwear</a>
-                <div style="height:1px;background:#eee;margin:6px 0;"></div>
-                <a href="/aLvaLemerCh/" class="flex items-center pl-0">
-                  <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="merch-inline-img">
-                  <span class="plunct">aL vaLe merCh</span>
-                </a>
+                <!-- Veerwear and aL vaLe removed from desktop All Products dropdown -->
               </div>
             </div>
           </div>
@@ -221,7 +366,7 @@
         </div>
       </div>
 
-      <!-- header actions (search, fav, cart) -->
+      <!-- header icons: search, heart, cart -->
       <div class="header-actions">
         <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
           <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
@@ -255,6 +400,7 @@
         <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
       </div>
 
+      <!-- Mobile search area (toggled by header search icon on small screens) -->
       <div id="mobileSearchBar" aria-hidden="true">
         <form id="mobileSearchForm" action="/search.html" method="get" role="search">
           <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
@@ -269,74 +415,123 @@
           <a href="/Grillz/" class="block py-1">Grillz</a>
           <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
           <a href="/Earrings/" class="block py-1">Earrings</a>
-          <a href="/VEERWEAR/" class="block py-1"><span class="veerwear">Veerwear</span></a>
-          <a href="/aLvaLemerCh/" class="block py-1 flex items-center">
-            <img src="/images/vale-logo-removebg-preview.png" class="merch-inline-img" alt="vaLe"/>
-            <span class="plunct">aL vaLe merCh</span>
-          </a>
+          <!-- VEERWEAR and aL vaLe removed from mobile All Products list -->
         </div>
 
         <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
         <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
         <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
         <a href="/contact/" class="block py-2 border-b">Contact Us</a>
+
+
+        <!-- mobile favorites link -->
         <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
       </div>
     </div>
   </nav>
 
-  <!-- CONTACT HERO (right after header) -->
-  <section class="contact-hero mt-20">
-    <h1 class="hero-title">CONTACT</h1>
-  </section>
-
-  <!-- MAIN CONTENT -->
-  <main class="container mx-auto px-6 py-12 site-content">
-    <p class="contact-intro">I want to hear from you! You can send me a message for any comments or inquiries using the contact form below.</p>
-
-    <div class="max-w-4xl mx-auto">
-      <div class="form-panel">
-        <form id="contactForm" class="space-y-8" autocomplete="off">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label class="block text-sm mb-2">First Name*</label>
-              <input name="firstName" class="input-line" placeholder="First name" required>
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Last Name*</label>
-              <input name="lastName" class="input-line" placeholder="Last name" required>
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Email*</label>
-              <input type="email" name="email" class="input-line" placeholder="you@example.com" required>
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Company</label>
-              <input name="company" class="input-line" placeholder="Company (optional)">
-            </div>
+  <!-- HERO (reworked for Impression Kit) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/impression-kit-banner.jpg');">
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="container mx-auto px-6 hero-inner">
+      <div class="shop-banner">
+        <div>
+          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900;">Impression Kit</h1>
+          <div class="flex items-center text-gray-200 text-sm monument">
+            <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span id="categoryBreadcrumb">Impression Kit</span>
           </div>
-
-          <div>
-            <label class="block text-sm mb-2">Subject</label>
-            <input name="subject" class="input-line" placeholder="Subject">
+          <p id="categoryTagline" class="mt-4 text-base opacity-90">Tuff Tooth Dental Impression Kit — send us an accurate mould if you cannot visit the shop.</p>
+          <div class="mt-6">
+            <a id="viewAllBtn" class="btn-view-all monument bg-white text-black px-4 py-2 rounded-md inline-block" href="http://veerwear.com/HowToOrder/">How to order</a>
           </div>
-
-          <div>
-            <label class="block text-sm mb-2">Message</label>
-            <textarea name="message" class="textarea-line" placeholder="Write your message here..." required></textarea>
-          </div>
-
-          <div class="flex justify-center">
-            <button type="submit" class="btn-yellow">Send Message</button>
-          </div>
-
-          <div id="formStatus" class="text-center text-sm mt-2" aria-live="polite"></div>
-        </form>
+        </div>
       </div>
     </div>
-  </main>
+  </section>
 
-  <!-- FOOTER (verbatim Grillz footer) -->
+  <!-- PRODUCT DETAIL CONTENT (replaces curated landing) -->
+  <section class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col lg:flex-row gap-10">
+        <!-- Left: gallery -->
+        <div class="lg:w-1/2">
+          <div class="product-gallery">
+            <div class="bg-white p-6 rounded-lg text-center">
+              <!-- Main image -->
+              <img id="mainImage" src="/images/impression-kit-main.jpg" alt="Grillz Impression Kit" class="main-image mx-auto">
+            </div>
+
+            <!-- thumbnails -->
+            <div class="thumbs" role="tablist" aria-label="Product thumbnails">
+              <img src="/images/impression-kit-thumb1.jpg" alt="Kit front" data-src="/images/impression-kit-main.jpg" class="thumb active" />
+              <img src="/images/impression-kit-thumb2.jpg" alt="Instructions" data-src="/images/impression-kit-page2.jpg" class="thumb" />
+              <img src="/images/impression-kit-thumb3.jpg" alt="Close up" data-src="/images/impression-kit-page3.jpg" class="thumb" />
+              <img src="/images/impression-kit-thumb4.jpg" alt="Hands-on" data-src="/images/impression-kit-page4.jpg" class="thumb" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: meta & purchase -->
+        <div class="lg:w-1/2 product-meta">
+          <h1 class="monument">Grillz Impression Kit</h1>
+          <p class="minor">Our Tuff Tooth Dental Impression Kit — you'll need one of these to send us an accurate mould of your teeth if you can't come to the shop in London.</p>
+
+          <div class="product-info">
+            <p class="price">$35.00 USD</p>
+            <p class="minor">Taxes included.</p>
+
+            <div class="mt-4">
+              <label class="block text-sm mb-2">Quantity</label>
+              <div class="qty-controls" aria-label="Quantity controls">
+                <button id="qtyMinus" aria-label="Decrease quantity">−</button>
+                <input id="qtyInput" type="number" value="1" min="1" style="width:64px; text-align:center; border:1px solid rgba(0,0,0,0.06); border-radius:6px; padding:8px;" />
+                <button id="qtyPlus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+
+            <div>
+              <!-- Snipcart Add to Cart -->
+              <button id="addToCartBtn"
+                class="add-to-cart monument snipcart-add-item bg-amber-600 text-black hover:bg-amber-700"
+                data-item-id="impression-kit-001"
+                data-item-name="Grillz Impression Kit"
+                data-item-price="35.00"
+                data-item-url="/ImpressionKit/"
+                data-item-description="Tuff Tooth Dental Impression Kit — for sending an accurate mould."
+                data-item-image="/images/impression-kit-main.jpg">
+                Add to cart
+              </button>
+
+              <button id="buyWithShopBtn" class="add-to-cart monument mt-3 bg-white text-black border border-gray-200">
+                Buy with shop
+              </button>
+
+              <p class="minor mt-3">Watch our instructional video before starting the kit to ensure an accurate mould.</p>
+            </div>
+
+            <div class="specs">
+              <h4 class="monument text-base mt-6 mb-2">Inside the box you will find:</h4>
+              <ul>
+                <li>1x Top Tray</li>
+                <li>1x Bottom Tray</li>
+                <li>1x Light Body Silicone Dispenser</li>
+                <li>2x Mixing Tips</li>
+                <li>2x Sets of Silicone Putty</li>
+              </ul>
+            </div>
+
+            <div class="mt-6">
+              <a href="/HowToOrder/" class="text-sm monument hover:text-amber-600">How to send your mould</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (verbatim from All Products file — DO NOT MODIFY) -->
   <footer class="py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -377,15 +572,29 @@
     </div>
   </footer>
 
-  <!-- Snipcart root -->
+  <!-- Snipcart root (replace YOUR_SNIPCART_API_KEY) -->
   <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
 
-  <!-- ========== SCRIPTS: Grillz UX + Contact form handling ========== -->
+  <!-- SCRIPTS: keep your AllProducts JS & behavior, but simplified for this product page -->
   <script>
-    // feather icons
     feather.replace();
 
-    // ---------- Dropdown positioning utility (copied from Grillz file) ----------
+    // Mobile nav toggle (verbatim)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+    mobileBtn?.addEventListener('click', ()=> {
+      mobileNav.style.display='block';
+      document.body.classList.remove('mobile-search-open'); // don't auto-open mobile search here
+    });
+    mobileClose?.addEventListener('click', ()=> {
+      mobileNav.style.display='none';
+      const mIn = document.getElementById('mobileSearchInput');
+      if(mIn) mIn.value = '';
+      document.body.classList.remove('mobile-search-open');
+    });
+
+    // Dropdown positioning & behavior (re-used)
     function positionAndBindDropdowns(){
       document.querySelectorAll('.group').forEach(group=>{
         if(group.dataset.dropdownBound === "true") return;
@@ -500,22 +709,93 @@
       });
     }
 
-    // init positioning
+    // Init small product interactions
     document.addEventListener('DOMContentLoaded', ()=>{
-      feather.replace();
-      try { positionAndBindDropdowns(); } catch(e){ console.error(e); }
+      try {
+        positionAndBindDropdowns();
+        initCategoryHeroAndLinks(); // sets banner/title
+        initProductGallery();
+        initQtyControls();
+        initHeaderSearch();
+        initMobileSearch();
+      } catch (err) {
+        console.error('Error initializing Impression Kit page:', err);
+      }
     });
 
-    // ---------- header/mobile search helpers (copied from Grillz) ----------
+    function initCategoryHeroAndLinks(){
+      const hero = document.getElementById('categoryHero');
+      if(hero && typeof BANNER_URL === 'string') hero.style.backgroundImage = `url('${BANNER_URL}')`;
+      const title = document.getElementById('categoryTitle'); if(title) title.textContent = CATEGORY_NAME;
+      const breadcrumb = document.getElementById('categoryBreadcrumb'); if(breadcrumb) breadcrumb.textContent = CATEGORY_NAME;
+      const tagline = document.getElementById('categoryTagline'); if(tagline) tagline.textContent = CATEGORY_TAGLINE;
+      const viewAllHref = `/AllProducts/?category=${encodeURIComponent(CATEGORY_SLUG)}`;
+      document.querySelectorAll('[href="/AllProducts/?category=ImpressionKit"]').forEach(a => a.href = viewAllHref);
+      document.getElementById('viewAllBtn')?.setAttribute('href', viewAllHref);
+    }
+
+    function initProductGallery(){
+      const main = document.getElementById('mainImage');
+      const thumbs = document.querySelectorAll('.thumbs .thumb');
+      thumbs.forEach(t => {
+        t.addEventListener('click', (ev) => {
+          thumbs.forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          const src = t.getAttribute('data-src') || t.src;
+          if(main) main.src = src;
+        });
+        // support keyboard
+        t.setAttribute('tabindex','0');
+        t.addEventListener('keydown', (ev) => {
+          if(ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            t.click();
+          }
+        });
+      });
+    }
+
+    function initQtyControls(){
+      const minus = document.getElementById('qtyMinus');
+      const plus = document.getElementById('qtyPlus');
+      const input = document.getElementById('qtyInput');
+      const addBtn = document.getElementById('addToCartBtn');
+
+      minus?.addEventListener('click', ()=> {
+        const cur = Math.max(1, Number(input.value || 1) - 1);
+        input.value = cur;
+        updateSnipcartQuantity(addBtn, cur);
+      });
+      plus?.addEventListener('click', ()=> {
+        const cur = Math.max(1, Number(input.value || 1) + 1);
+        input.value = cur;
+        updateSnipcartQuantity(addBtn, cur);
+      });
+      input?.addEventListener('change', ()=> {
+        let v = Number(input.value || 1);
+        if(isNaN(v) || v < 1) v = 1;
+        input.value = v;
+        updateSnipcartQuantity(addBtn, v);
+      });
+
+      // set initial quantity param for Snipcart add button
+      updateSnipcartQuantity(addBtn, Number(input.value || 1));
+    }
+
+    function updateSnipcartQuantity(button, qty){
+      if(!button) return;
+      button.setAttribute('data-item-quantity', String(qty));
+      // if Snipcart is present, we can set attribute on click event as well; keep attribute updated
+    }
+
+    // Header search initialization (verbatim)
     function initHeaderSearch(){
       const wrap = document.getElementById('desktopSearchWrap');
       const form = document.getElementById('headerSearchForm');
       const input = document.getElementById('headerSearchInput');
       const btn = document.getElementById('headerSearchBtn');
-
       if(!wrap || !form || !input || !btn) return;
       function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
-
       btn.addEventListener('click', (ev) => {
         if (isMobile()) {
           openMobileSearchAndFocus();
@@ -530,7 +810,6 @@
           return;
         }
       });
-
       form.addEventListener('submit', (ev) => {
         ev.preventDefault();
         const q = (input.value || '').trim();
@@ -542,16 +821,16 @@
         wrap.classList.remove('open');
         const valueToSend = q;
         input.value = '';
-        setTimeout(()=> { window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend); }, 40);
+        setTimeout(()=> {
+          window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
+        }, 40);
       });
-
       document.addEventListener('click', (ev) => {
         if(!wrap.contains(ev.target)) {
           wrap.classList.remove('open');
           input.value = '';
         }
       });
-
       document.addEventListener('keydown', (ev) => {
         if(ev.key === 'Escape') {
           wrap.classList.remove('open');
@@ -563,7 +842,6 @@
     function initMobileSearch(){
       const mobileForm = document.getElementById('mobileSearchForm');
       const mobileInput = document.getElementById('mobileSearchInput');
-
       if(mobileForm){
         mobileForm.addEventListener('submit', (ev)=>{
           ev.preventDefault();
@@ -572,7 +850,9 @@
           mobileNav.style.display = 'none';
           document.body.classList.remove('mobile-search-open');
           mobileInput.value = '';
-          setTimeout(()=> { window.location.href = '/search.html?q=' + encodeURIComponent(q); }, 60);
+          setTimeout(()=> {
+            window.location.href = '/search.html?q=' + encodeURIComponent(q);
+          }, 60);
         });
       }
     }
@@ -588,67 +868,6 @@
         if(mobileInput) mobileInput.focus();
       }, 60);
     }
-
-    // mobile nav toggle logic (keeps Grillz behavior)
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    const mobileNav = document.getElementById('mobileNav');
-    const mobileClose = document.getElementById('mobileCloseBtn');
-    mobileBtn?.addEventListener('click', ()=> {
-      mobileNav.style.display='block';
-      document.body.classList.remove('mobile-search-open');
-    });
-    mobileClose?.addEventListener('click', ()=> {
-      mobileNav.style.display='none';
-      const mIn = document.getElementById('mobileSearchInput');
-      if(mIn) mIn.value = '';
-      document.body.classList.remove('mobile-search-open');
-    });
-
-    // make sure header scrolling class is synchronized with hero behavior (simple approach)
-    const headerEl = document.querySelector('nav.bg-white');
-    const hero = document.querySelector('.contact-hero');
-    const SCROLL_THRESHOLD = 60;
-    window.addEventListener('scroll', () => {
-      if(window.scrollY > SCROLL_THRESHOLD) headerEl.classList.add('scrolled');
-      else headerEl.classList.remove('scrolled');
-    });
-
-    // ---------- Form handling (Formspree) ----------
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzjjdbv'; // replace with your own if needed
-    const form = document.getElementById('contactForm');
-    const statusDiv = document.getElementById('formStatus');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusDiv.textContent = 'Sending…';
-      const fd = new FormData(form);
-
-      try {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: fd
-        });
-
-        if (res.ok) {
-          statusDiv.style.color = '#9ee89a';
-          statusDiv.textContent = 'Thanks! Your message has been sent.';
-          form.reset();
-        } else {
-          statusDiv.style.color = '#f7b2b2';
-          statusDiv.textContent = 'There was an error sending your message. Please try again or email directly.';
-        }
-      } catch (err) {
-        statusDiv.style.color = '#f7b2b2';
-        statusDiv.textContent = 'Network error. Try again or email directly.';
-      }
-    });
-
-    // Run header/search inits
-    document.addEventListener('DOMContentLoaded', ()=>{
-      feather.replace();
-      try { initHeaderSearch(); initMobileSearch(); positionAndBindDropdowns(); } catch(e){ console.error(e); }
-    });
   </script>
 </body>
 </html>

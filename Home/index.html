@@ -323,9 +323,12 @@
     /* slightly different smaller stagger for hero inner (so it leads) */
     .hero-inner { transition-delay: 0 !important; }
 
-    .social-strip { display:flex; gap:18px; align-items:center; justify-content:center; padding:16px 0; border-top:1px solid rgba(0,0,0,0.04); border-bottom:1px solid rgba(0,0,0,0.04); margin-top:2rem; }
-    .social-strip a { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); background:#fff; text-decoration:none; color:var(--black); }
-    .social-strip a:hover { transform:translateY(-3px); box-shadow:0 8px 18px rgba(0,0,0,0.04); }
+    .social-strip { display:flex; gap:12px; align-items:center; justify-content:center; padding:16px 0; border-top:1px solid rgba(0,0,0,0.04); border-bottom:1px solid rgba(0,0,0,0.04); margin-top:2rem; }
+
+    /* icon link styles for social strip */
+    .social-strip a { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:10px; background:#fff; border:1px solid rgba(0,0,0,0.04); box-shadow:0 6px 18px rgba(0,0,0,0.04); text-decoration:none; color:var(--black); }
+    .social-strip a:hover { transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.06); }
+    .social-strip svg { width:20px; height:20px; }
   </style>
 </head>
 <body class="monument">
@@ -376,7 +379,7 @@
                 <a href="/Grillz/" class="monument">Grillz</a>
                 <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
                 <a href="/Earrings/" class="monument">Earrings</a>
-                <!-- Veerwear and aL vaLe removed from the dropdown as requested -->
+                <!-- VEERWEAR and aL vaLe removed from dropdown as requested -->
               </div>
             </div>
           </div>
@@ -487,15 +490,32 @@
       <section class="mb-12 fade-up">
         <div class="bg-white p-8 rounded-lg shadow-sm border">
           <h3 class="monument text-2xl mb-3">Our Ethos</h3>
-          <p class="text-gray-700">Placeholder brand copy: handcrafted, small-batch, and made with attention to detail. Replace this with your real mission statement.</p>
+          <!-- changed subtext color to site gold -->
+          <p style="color:var(--gold);">Placeholder brand copy: handcrafted, small-batch, and made with attention to detail. Replace this with your real mission statement.</p>
         </div>
       </section>
 
       <div class="social-strip fade-up" aria-hidden="false">
-        <a href="#" aria-label="Instagram" title="Instagram"><i data-feather="instagram" class="w-5 h-5"></i></a>
-        <a href="#" aria-label="TikTok" title="TikTok"><i data-feather="music" class="w-5 h-5"></i></a>
-        <a href="#" aria-label="Twitter" title="Twitter"><i data-feather="twitter" class="w-5 h-5"></i></a>
-        <a href="#" aria-label="Facebook" title="Facebook"><i data-feather="facebook" class="w-5 h-5"></i></a>
+        <!-- replaced textual social links with icon buttons -->
+        <a href="#" aria-label="Instagram" title="Instagram">
+          <i data-feather="instagram"></i>
+        </a>
+
+        <a href="#" aria-label="TikTok" title="TikTok">
+          <!-- Feather doesn't include a TikTok icon — inline simple TikTok-like SVG used -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="width:20px;height:20px;">
+            <path d="M9 8v8a4 4 0 1 0 4-4V6" />
+            <path d="M15 8h3v3" />
+          </svg>
+        </a>
+
+        <a href="#" aria-label="Twitter" title="Twitter">
+          <i data-feather="twitter"></i>
+        </a>
+
+        <a href="#" aria-label="Facebook" title="Facebook">
+          <i data-feather="facebook"></i>
+        </a>
       </div>
 
     </div>
@@ -721,7 +741,7 @@
     /* --------------------------
        Subtypes & technique helpers (shared with AllProducts)
        (kept for compatibility in case other scripts rely on them)
-       -- Removed 'aL vaLe' and 'Veerwear' entries per request
+       NOTE: removed 'aL vaLe' and 'Veerwear' entries per request
     -------------------------- */
     const subtypesMap = {
       'Earrings': ['Hoops','Studs','Dangles'],
@@ -776,7 +796,7 @@
 
     /* --------------------------
        Product generator (kept for compatibility)
-       - Removed 'aL vaLe' and 'Veerwear' from demo categories array
+       Removed 'aL vaLe' and 'Veerwear' from demo categories so demo products won't include them.
     -------------------------- */
     const categories = ['Grillz','Earrings','Nail Jewelry','Accessories'];
     const materials = ['Gold','Silver','Platinum','With Diamonds','Resin'];

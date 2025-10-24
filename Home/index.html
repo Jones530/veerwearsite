@@ -467,7 +467,7 @@
 
   <!-- MAIN CONTENT -->
 <section class="mb-12 relative pt-10 ml-8">
-  <h2 class="monument text-5xl mb-4 fade-up";">Featured Collections</h2>
+  <h2 class="monument text-5xl mb-4 fade-up" style="color:var(--gold);">Featured Collections</h2>
 
   <div class="relative overflow-hidden">
     <!-- Carousel inner -->
@@ -476,7 +476,8 @@
       <!-- Collection 1 -->
       <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
         <div class="relative inline-block">
-          <img src="/images/Grillpagegif.gif" alt="" class="rounded-2xl mx-auto block">
+          <img src="/images/Grillpagegif.gif" alt=""
+               class="rounded-2xl mx-auto block w-[800px] max-w-full h-auto">
           <!-- Buttons inside same container as image -->
           <button id="prevBtn"
             class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
@@ -488,15 +489,16 @@
           </button>
         </div>
         <div class="p-4 text-center">
-          <h3 class="monument text-2xl mb-2";">Collection One</h3>
-          <p >Placeholder description text.</p>
+          <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection One</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
         </div>
       </div>
 
       <!-- Collection 2 -->
       <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
         <div class="relative inline-block">
-          <img src="/images/nailjewelrypagegif.gif" alt="" class="rounded-2xl mx-auto block">
+          <img src="/images/nailjewelrypagegif.gif" alt=""
+               class="rounded-2xl mx-auto block w-[800px] max-w-full h-auto">
           <button id="prevBtn2"
             class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
             &#10094;
@@ -507,15 +509,16 @@
           </button>
         </div>
         <div class="p-4 text-center">
-          <h3 class="monument text-2xl mb-2";">Collection Two</h3>
-          <p>Placeholder description text.</p>
+          <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection Two</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
         </div>
       </div>
 
       <!-- Collection 3 -->
       <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
         <div class="relative inline-block">
-          <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt="" class="rounded-2xl mx-auto block">
+          <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt=""
+               class="rounded-2xl mx-auto block w-[800px] max-w-full h-auto">
           <button id="prevBtn3"
             class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
             &#10094;
@@ -526,8 +529,8 @@
           </button>
         </div>
         <div class="p-4 text-center">
-          <h3 class="monument text-2xl mb-2";">Collection Three</h3>
-          <p>Placeholder description text.</p>
+          <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection Three</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
         </div>
       </div>
 
@@ -559,6 +562,7 @@
   document.querySelectorAll('[id^="nextBtn"]').forEach(btn => btn.addEventListener('click', nextSlide));
   document.querySelectorAll('[id^="prevBtn"]').forEach(btn => btn.addEventListener('click', prevSlide));
 </script>
+
 
 
     <section class="mb-12 fade-up">

@@ -472,9 +472,21 @@
   <div class="relative overflow-hidden">
     <!-- Carousel inner -->
     <div id="collectionsCarousel" class="flex transition-transform duration-500 ease-in-out">
+
       <!-- Collection 1 -->
-      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center">
-        <img src="/images/Grillpagegif.gif" alt="" class="rounded-2xl mx-auto block">
+      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
+        <div class="relative inline-block">
+          <img src="/images/Grillpagegif.gif" alt="" class="rounded-2xl mx-auto block">
+          <!-- Buttons inside same container as image -->
+          <button id="prevBtn"
+            class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10094;
+          </button>
+          <button id="nextBtn"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-l-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10095;
+          </button>
+        </div>
         <div class="p-4 text-center">
           <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection One</h3>
           <p style="color:var(--gold);">Placeholder description text.</p>
@@ -482,8 +494,18 @@
       </div>
 
       <!-- Collection 2 -->
-      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center">
-        <img src="/images/nailjewelrypagegif.gif" alt="" class="rounded-2xl mx-auto block">
+      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
+        <div class="relative inline-block">
+          <img src="/images/nailjewelrypagegif.gif" alt="" class="rounded-2xl mx-auto block">
+          <button id="prevBtn2"
+            class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10094;
+          </button>
+          <button id="nextBtn2"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-l-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10095;
+          </button>
+        </div>
         <div class="p-4 text-center">
           <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection Two</h3>
           <p style="color:var(--gold);">Placeholder description text.</p>
@@ -491,24 +513,25 @@
       </div>
 
       <!-- Collection 3 -->
-      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center">
-        <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt="" class="rounded-2xl mx-auto block">
+      <div class="min-w-full flex-shrink-0 section-card fade-up flex flex-col items-center relative">
+        <div class="relative inline-block">
+          <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt="" class="rounded-2xl mx-auto block">
+          <button id="prevBtn3"
+            class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10094;
+          </button>
+          <button id="nextBtn3"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white px-3 py-2 rounded-l-lg transition-colors duration-200 hover:bg-white hover:text-black">
+            &#10095;
+          </button>
+        </div>
         <div class="p-4 text-center">
           <h3 class="monument text-2xl mb-2" style="color:var(--gold);">Collection Three</h3>
           <p style="color:var(--gold);">Placeholder description text.</p>
         </div>
       </div>
-    </div>
 
-    <!-- Left/Right buttons -->
-    <button id="prevBtn"
-      class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black hover:bg-white hover:text-black text-white px-3 py-2 rounded-r-lg transition-colors duration-200">
-      &#10094;
-    </button>
-    <button id="nextBtn"
-      class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black hover:bg-white hover:text-black text-white px-3 py-2 rounded-l-lg transition-colors duration-200">
-      &#10095;
-    </button>
+    </div>
   </div>
 </section>
 
@@ -522,16 +545,21 @@
     carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
   }
 
-  document.getElementById('prevBtn').addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-    updateCarousel();
-  });
-
-  document.getElementById('nextBtn').addEventListener('click', () => {
+  function nextSlide() {
     currentIndex = (currentIndex + 1) % totalSlides;
     updateCarousel();
-  });
+  }
+
+  function prevSlide() {
+    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+    updateCarousel();
+  }
+
+  // Hook all next/prev buttons
+  document.querySelectorAll('[id^="nextBtn"]').forEach(btn => btn.addEventListener('click', nextSlide));
+  document.querySelectorAll('[id^="prevBtn"]').forEach(btn => btn.addEventListener('click', prevSlide));
 </script>
+
 
     <section class="mb-12 fade-up">
        <div class="bg-white p-8 rounded-lg shadow-sm border"> 

@@ -466,36 +466,70 @@
   </section>
 
   <!-- MAIN CONTENT -->
-<main class="py-12">
-   <div class="container mx-auto px-6">
+<section class="mb-12 relative">
+  <h2 class="monument text-3xl mb-4 fade-up">Featured Collections</h2>
 
-    <section class="mb-12">
-      <h2 class="monument text-5xl mb-4 fade-up">Featured Collections</h2>
-      <div class="collections-grid">
-        <div class="section-card fade-up">
-          <img src="/images/Grillpagegif.gif" alt="">
-          <div class="p-4">
-            <h3 class="monument text 2xl mb-2";">Collection One</h3>
-            <p style="color:var(--gold);">Placeholder description text.</p>
-          </div>
-        </div>
-        <div class="section-card fade-up">
-          <img src="/images/nailjewelrypagegif.gif" alt="">
-          <div class="p-4">
-            <h3 class="monument text 2xl mb-2";">Collection Two</h3>
-            <p style="color:var(--gold);">Placeholder description text.</p>
-          </div>
-        </div>
-        <div class="section-card fade-up">
-          <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt="">
-          <div class="p-4">
-            <h3 class="monument text 2xl mb-2";">Collection Three</h3>
-            <p style="color:var(--gold);">Placeholder description text.</p>
-          </div>
+  <div class="relative overflow-hidden">
+    <!-- Carousel inner -->
+    <div id="collectionsCarousel" class="flex transition-transform duration-500 ease-in-out">
+      <!-- Collection 1 -->
+      <div class="min-w-full flex-shrink-0 section-card fade-up text-center">
+        <img src="/images/Grillpagegif.gif" alt="" class="mx-auto">
+        <div class="p-4">
+          <h3 class="monument mb-2" style="color:var(--gold);">Collection One</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
         </div>
       </div>
-    </section>
 
+      <!-- Collection 2 -->
+      <div class="min-w-full flex-shrink-0 section-card fade-up text-center">
+        <img src="/images/nailjewelrypagegif.gif" alt="" class="mx-auto">
+        <div class="p-4">
+          <h3 class="monument mb-2" style="color:var(--gold);">Collection Two</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
+        </div>
+      </div>
+
+      <!-- Collection 3 -->
+      <div class="min-w-full flex-shrink-0 section-card fade-up text-center">
+        <img src="/images/Fozzie_ear_wiggle-ezgif.com-crop.gif" alt="" class="mx-auto">
+        <div class="p-4">
+          <h3 class="monument mb-2" style="color:var(--gold);">Collection Three</h3>
+          <p style="color:var(--gold);">Placeholder description text.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Left/Right buttons -->
+    <button id="prevBtn" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-40 hover:bg-opacity-70 text-white px-3 py-2 rounded-r-lg">
+      &#10094;
+    </button>
+    <button id="nextBtn" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-40 hover:bg-opacity-70 text-white px-3 py-2 rounded-l-lg">
+      &#10095;
+    </button>
+  </div>
+</section>
+
+<script>
+  const carousel = document.getElementById('collectionsCarousel');
+  const slides = carousel.children;
+  const totalSlides = slides.length;
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+    updateCarousel();
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % totalSlides;
+    updateCarousel();
+  });
+</script>
     <section class="mb-12 fade-up">
        <div class="bg-white p-8 rounded-lg shadow-sm border"> 
         <h3 class="monument text-3xl mb-3">Our Ethos</h3>

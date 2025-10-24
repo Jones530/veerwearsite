@@ -1,464 +1,820 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>vaLe — Contact</title>
-  <link rel="icon" type="image/png" href="/images/vale-logo-removebg-preview.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grin & Glisten</title>
+  <link rel="icon" type="image/png" href="/images/GG.png">
 
-  <!-- Tailwind CDN -->
+  <!-- Google font preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- Feather icons -->
-  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- Snipcart -->
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 
   <style>
-    @font-face {
-      font-family: 'Plunct';
-      src: url('/fonts/Plunct.woff2') format('woff2'),
-           url('/fonts/Plunct.woff') format('woff'),
-           url('/fonts/Plunct.otf') format('opentype');
-      font-display: swap;
-    }
+    /* ---------- fonts, variables and base (from All Products) ---------- */
+    @font-face { font-family: "Monument Extended"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.woff2") format("woff2"), url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Regular.ttf") format("truetype"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Monument Extended Ultrabold"; src: url("/fonts/MonumentExtended-FreeForPersonalUse/MonumentExtended-Ultrabold.otf") format("opentype"); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family: "Plunct"; src: url("/fonts/Plunct(1).woff2") format("woff2"); font-weight:400 800; font-style:normal; font-display:swap; }
+    @font-face { font-family: 'Pirata One'; src: url('/fonts/PirataOne-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
 
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: 'Plunct', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      color: #fff;
-      background-image: url('/images/tv-static4.gif');
-      background-repeat: repeat;
+    :root { --gold:#D4AF37; --gold-dark:#B58826; --black:#000; --white:#fff; --veer-deep:#B30000; }
+
+    html{ font-size:112.5%; }
+    html,body{ font-family:"Pirata One","Monument Extended",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0; color:var(--black); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    .plunct{ font-family:"Plunct","Pirata One","Monument Extended",sans-serif; font-weight:700; }
+    .veerwear{ font-family:"Monument Extended Ultrabold","Monument Extended","Pirata One",sans-serif; color:var(--veer-deep); font-weight:900; text-transform:uppercase; letter-spacing:0.6px; }
+    .monument{ font-family:"Monument Extended","Pirata One",sans-serif; font-weight:700; }
+
+    .bag-count{ font-family:"Monument Extended Ultrabold","Monument Extended",sans-serif; font-weight:900; font-size:11px; line-height:1; }
+
+    /* ---- select-with-icon: hide native arrow and position custom icon ---- */
+    .select-with-icon { position: relative; display: inline-flex; align-items:center; vertical-align:middle; }
+    .select-with-icon i, .select-with-icon svg { position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; z-index:2; width:18px; height:18px; display:block; }
+    .select-with-icon select { -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:none; padding-left:12px; padding-right:44px; height:38px; line-height:1; border-radius:6px; border:1px solid var(--black); color:var(--black); background:white; z-index:1; }
+
+    /* Hero (no hard-coded background here — set inline where needed) */
+    .shop-hero {
+      position: relative;
+      background-size: cover;
       background-position: center;
-      background-size: auto;
-      background-color: black;
+      background-repeat: no-repeat;
+      color:#fff;
+      overflow:visible; /* ensure dropdown can overlap if needed */
+      padding-top:6rem;
+      padding-bottom:6rem;
+      min-height:36vh;
+      display:flex;
+      align-items:center;
     }
-    .site-overlay::before {
+    .shop-hero .overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.35); pointer-events:none; }
+    .shop-hero .hero-inner{ position:relative; z-index:2; }
+
+    /* filter panel sticky */
+    .filter-panel{ position:sticky; top:96px; max-height:calc(100vh - 110px); overflow:auto; padding-right:8px; }
+    .filter-panel::-webkit-scrollbar{ width:8px; } .filter-panel::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.08); border-radius:6px; }
+
+    .merch-inline-img{ width:20px; height:20px; object-fit:contain; margin-right:8px; display:inline-block; vertical-align:middle; }
+    .badge-gold{ background:var(--gold); color:#000; font-weight:900; padding:4px 8px; border-radius:6px; font-size:11px; }
+
+    .product-card{ border:1px solid rgba(0,0,0,0.06); box-shadow:0 6px 18px rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease; }
+    .product-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,0.08); }
+
+    /* pagination buttons styling */
+    .page-btn {
+      transition: all .16s ease;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.12);
+      width: 40px; height:40px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      background-clip: padding-box;
+      position: relative; /* required for glow pseudo element */
+      z-index: 2;
+      overflow: visible; /* allow pseudo elements to be visible */
+    }
+    .page-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .page-btn.clicked { transform: scale(.98); }
+
+    /* active page: stronger glow & sparkle */
+    .page-active {
+      background: linear-gradient(180deg,#fff9e6,#f7e5b8);
+      color: #000;
+      border: 1px solid rgba(0,0,0,0.18);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.12);
+      overflow: visible;
+    }
+
+    .page-active::before{
       content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      width: 220%;
+      height: 220%;
+      border-radius: 16px;
+      z-index: -2;
+      background: radial-gradient(circle at 50% 30%,
+                  rgba(255,255,255,0.95) 0%,
+                  rgba(250,250,240,0.9) 6%,
+                  rgba(212,175,55,0.28) 20%,
+                  rgba(212,175,55,0.14) 30%,
+                  rgba(0,0,0,0) 70%);
+      filter: blur(28px);
       pointer-events: none;
-      z-index: 0;
-    }
-    .site-content { position: relative; z-index: 10; }
-
-    .font-plunct { font-family: 'Plunct', sans-serif; }
-
-    /* Logo sizing & transitions (match home) */
-    #valeLogo {
-      height: clamp(48px, 8vw, 120px);
-      width: auto;
-      transition: height 220ms ease, transform 220ms ease;
-      display: block;
     }
 
-    /* header background on scroll — disabled blur/background so no blur bar appears */
-    header.scrolled nav {
-      backdrop-filter: none;
-      background: transparent;
+    .page-active::after{
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0 20%, rgba(255,255,255,0.8) 21% 45%, rgba(255,255,255,0) 46%);
+      box-shadow: 0 0 12px rgba(212,175,55,0.75), 0 0 2px rgba(255,255,255,0.9);
+      transform-origin: center;
+      animation: sparkle 1.6s infinite ease-in-out;
+      opacity: 1;
+    }
+    @keyframes sparkle {
+      0%   { transform: translateY(0) scale(0.6) rotate(0deg); opacity:0; }
+      25%  { transform: translateY(-4px) scale(1.15) rotate(18deg); opacity:1; }
+      55%  { transform: translateY(-6px) scale(0.95) rotate(-10deg); opacity:0.9; }
+      100% { transform: translateY(0) scale(0.7) rotate(0deg); opacity:0; }
     }
 
-    .cloud-mask-btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      text-transform: uppercase;
-      font-weight: bold;
-      font-family: 'Plunct', sans-serif;
-      color: black;
-      background-color: #facc15;
-      width: clamp(160px, 25vw, 260px);
-      height: clamp(80px, 12vw, 120px);
-      -webkit-mask-image: url('/images/vale-logo-removebg-preview.png');
-      mask-image: url('/images/vale-logo-removebg-preview.png');
-      -webkit-mask-size: contain;
-      mask-size: contain;
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      mask-position: center;
-      border: none;
-      transition: transform 0.3s ease, background-color 0.3s ease;
+    /* nav arrow buttons */
+    .nav-btn { transition: all .12s ease; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+    .nav-btn.clicked { transform: scale(.96); opacity:.95; }
+
+    /* heart styling */
+    .heart-btn{ background:rgba(255,255,255,0.85); border-radius:9999px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .heart-active{ background:var(--gold); color:#000 !important; }
+
+    /* header icons container */
+    .header-actions{ display:flex; align-items:center; justify-content:space-between; width:140px; position:relative; } /* position relative kept for stacking */
+
+    /* ---- Dropdown menu (All Products) styling: white backing + left-aligned text ---- */
+    .group{ position: relative; display: inline-block; } /* keep this for the trigger, but menu is moved to body */
+    .menu-trigger{ display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:0; }
+    .menu-label{ display:inline-block; }
+
+    /* dropdown will be positioned as fixed (moved to document.body by JS) */
+    .dropdown-menu{
+      position: fixed;
+      background: #fff;
+      color: var(--black);
+      border-radius: 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+      padding: 6px 12px;     /* explicit left/right padding used by the positioning logic */
+      z-index: 9999;
+      display: none;
+      white-space: nowrap;
+      pointer-events: auto;
+      min-width: 120px;
     }
-    .cloud-mask-btn:hover { transform: scale(1.05); background-color: #fbbf24; }
+    .dropdown-menu.open { display: block; }
 
-    /* mobile nav animation */
-    #mobileNav { transition: max-height 280ms ease, opacity 220ms ease; }
-
-
-    /* ---------- Contact hero (black & white only) ---------- */
-.contact-hero {
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  background: #000; /* pure black background */
-  transition: height 220ms ease, padding 220ms ease;
-}
-
-/* keep the hero shrinking in sync with the header */
-header.scrolled + .contact-hero {
-  height: 110px;
-}
-
-.contact-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* very subtle overlay only (still black/white) — optional, remove if you want 100% flat black */
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-  pointer-events: none;
-}
-
-.hero-title {
-  font-size: clamp(48px, 8vw, 96px);
-  letter-spacing: 4px;
-  color: #ffffff;               /* white text */
-  font-weight: 900;
-  transition: transform 220ms ease, font-size 220ms ease;
-  transform-origin: center;
-  text-transform: uppercase;
-  /* subtle lift so white text reads crisply on the static tv gif */
-  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
-}
-
-/* keep the same shrink transform when header scrolled (in-line with header behavior) */
-header.scrolled + .contact-hero .hero-title {
-  transform: scale(0.76);
-}
-
-    /* shrink title when header is scrolled (in-line movement) */
-    header.scrolled + .contact-hero .hero-title {
-      transform: scale(0.76);
-    }
-
-/* form panel: black background while static remains visible around it */
-.form-panel {
-  background: rgba(0,0,0,0.78); /* mostly black but slightly translucent so static peeks through at edges */
-  border: 1px solid rgba(255,255,255,0.04); /* subtle light border for contrast */
-  padding: clamp(20px, 3.5vw, 36px);
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.55);
-  backdrop-filter: none; /* don't blur the static behind the panel */
-}
-
-/* keep the inputs looking crisp on the panel */
-.form-panel .input-line,
-.form-panel .textarea-line {
-  background: transparent;
-  color: #fff;
-}
-
-/* narrow screens: slightly reduce padding */
-@media (max-width: 640px) {
-  .form-panel { padding: 18px; border-radius: 10px; }
-}
-
-    /* form styles (transparent with bottom border) */
-    .input-line {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.8);
-      padding: 10px 6px;
-      color: #fff;
-      outline: none;
+    .dropdown-menu a{
+      display:inline-block;
+      padding: 8px 6px;
+      color: var(--black);
+      text-align: left;
+      border-radius: 6px;
       width: 100%;
     }
-    .input-line::placeholder { color: rgba(255,255,255,0.6); }
-    .textarea-line {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 14px;
-      color:#fff;
-      outline: none;
-      resize:vertical;
-      min-height:140px;
+    .dropdown-menu a:hover{ background: #f7f7f7; }
+
+    .dropdown-menu a.veerwear { color: var(--veer-deep); font-weight:900; }
+
+    /* filter toggle style */
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       width:100%;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font:inherit;
+    }
+    .filter-toggle .chev{ margin-left:12px; flex:0 0 auto; }
+
+    #price-body { margin-bottom: 1.25rem; padding-bottom: 0.25rem; }
+
+    /* mobile hamburger styling (visible on small screens) */
+    #mobileMenuBtn { display:none; background:transparent; border:none; padding:8px; cursor:pointer; }
+    @media (max-width:767px){
+      #mobileMenuBtn { display:inline-flex; align-items:center; justify-content:center; }
+      .hidden.md\\:flex { display:none !important; }
+      .header-actions{ width:120px; }
+      .dropdown-menu{ min-width: 180px; }
+      .filter-toggle{ padding:6px 0; }
+
+      /* Hide desktop inline search on mobile */
+      .search-wrap .search-input { display:none !important; width:0 !important; opacity:0 !important; position:static !important; }
     }
 
-    .btn-yellow {
-      background: #facc15;
-      color: black;
-      font-weight:700;
-      padding: 14px 26px;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-      transition: transform .14s ease, filter .14s ease;
-    }
-    .btn-yellow:hover { transform: translateY(-3px); filter:brightness(0.98); }
+    .menu-trigger:focus { outline: 2px solid rgba(212,175,55,0.45); outline-offset: 2px; border-radius:6px; }
 
-
-    @media (max-width: 768px) {
-      .social-pill { right: 8px; padding:10px 8px; gap:10px; }
-      .hero-title { font-size: clamp(36px,10vw,64px); }
-      .contact-hero { height: 120px; }
-      header.scrolled + .contact-hero { height: 90px; }
+    /* Header search UI */
+    .search-wrap { position:relative; display:inline-flex; align-items:center; gap:8px; }
+    .search-form { display:flex; align-items:center; }
+    .search-input {
+      position: absolute;
+      right: 44px;
+      width: 0;
+      opacity: 0;
+      transition: width .22s cubic-bezier(.2,.9,.3,1), opacity .18s ease;
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:0.95rem;
+      outline:none;
+      background:#fff;
+      color:var(--black);
+      transform-origin: right center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      z-index: 60;
+      white-space:nowrap;
     }
+    .search-wrap.open .search-input { width: 220px; opacity: 1; }
+    .search-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:transparent; border:none; cursor:pointer; padding:0; z-index: 65; }
+    .search-btn:focus { outline: 2px solid rgba(212,175,55,0.25); outline-offset:2px; border-radius:8px; }
+
+    /* Mobile search inside mobileNav */
+    #mobileSearchBar { display:none; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.04); }
+    #mobileSearchBar form { display:flex; gap:8px; align-items:center; }
+    #mobileSearchBar input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    #mobileSearchBar button { padding:8px 10px; border-radius:8px; }
+    .mobile-search-open #mobileSearchBar { display:block; }
+
+    /* product detail custom */
+    .product-gallery { display:flex; flex-direction:column; gap:12px; }
+    .main-image { width:100%; height:520px; object-fit:contain; background:#fff; border:1px solid rgba(0,0,0,0.06); display:block; }
+    .thumbs { display:flex; gap:8px; margin-top:8px; }
+    .thumbs img { width:72px; height:72px; object-fit:cover; border:1px solid rgba(0,0,0,0.06); cursor:pointer; border-radius:6px; }
+    .thumbs img.active { outline:3px solid var(--gold); transform:translateY(-2px); }
+    @media (max-width:1024px){
+      .main-image { height:420px; }
+    }
+    @media (max-width:640px){
+      .main-image { height:320px; }
+      .thumbs img { width:56px; height:56px; }
+    }
+
+    .product-meta h1 { font-size:28px; margin-bottom:6px; }
+    .price { font-size:20px; font-weight:800; margin-top:8px; }
+    .qty-controls { display:flex; align-items:center; gap:8px; margin-top:10px; }
+    .qty-controls button { width:36px; height:36px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:white; cursor:pointer; }
+    .add-to-cart { margin-top:16px; width:100%; padding:12px; border-radius:10px; font-weight:900; }
+    .minor { color:#666; font-size:13px; margin-top:8px; }
+
+    .product-info { margin-top:18px; color:var(--black); }
+    .specs { margin-top:12px; }
+    .specs li { margin-bottom:8px; font-size:14px; color:#333; }
   </style>
 </head>
-<body class="site-overlay">
-  <div class="site-content">
-    <!-- Header (same structure + JS-compatible IDs as home) -->
-    <header id="siteHeader" class="fixed w-full z-50">
-      <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-          <img id="valeLogo" src="/images/vale-logo-removebg-preview.png" alt="vaLe logo" />
-          <a href="/HOME/" class="font-plunct text-xl font-bold leading-none" id="brandText">vaLe.</a>
-        </div>
+<body class="monument">
 
-        <div class="hidden md:flex space-x-8 items-center">
-          <a href="/HOME/" class="hover:text-yellow-400 transition-colors uppercase tracking-wider">HOME</a>
-          <a href="/MUSIC/" class="hover:text-yellow-400 transition-colors uppercase tracking-wider">MUSIC</a>
-          <a href="/SHOP/" class="hover:text-yellow-400 transition-colors uppercase tracking-wider">SHOP</a>
-          <a href="/CONTACT/" class="hover:text-yellow-400 transition-colors uppercase tracking-wider">CONTACT</a>
-        </div>
-
-        <div class="md:hidden">
-          <button id="menuBtn" aria-controls="mobileNav" aria-expanded="false" class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400" title="Open menu">
-            <i data-feather="menu"></i>
-          </button>
-        </div>
-      </nav>
-
-      <div id="mobileNav" class="md:hidden container mx-auto px-6 overflow-hidden hidden">
-        <div class="flex flex-col bg-black/80 py-4 rounded-b-lg space-y-2">
-          <a href="/HOME/" class="block px-4 py-2 uppercase tracking-wider hover:text-yellow-400">HOME</a>
-          <a href="/MUSIC/" class="block px-4 py-2 uppercase tracking-wider hover:text-yellow-400">MUSIC</a>
-          <a href="/SHOP/" class="block px-4 py-2 uppercase tracking-wider hover:text-yellow-400">SHOP</a>
-          <a href="/CONTACT/" class="block px-4 py-2 uppercase tracking-wider hover:text-yellow-400">CONTACT</a>
-        </div>
-      </div>
-    </header>
-
-    <!-- Contact hero (immediately after header so header.scrolled + .contact-hero works) -->
-    <section class="contact-hero mt-20">
-      <h1 class="hero-title">CONTACT</h1>
-    </section>
-
-    <!-- Main content & form -->
-    <main class="container mx-auto px-6 py-12">
-    <p class="opacity-90 text-center text-[2em] md:text-[2.2em] leading-tight mb-8">
-      I want to hear from you! You can send me a message for any comments or inquiries using the contact form below.
-    </p>
-
-<div class="max-w-4xl mx-auto">
-  <div class="form-panel">
-    <form id="contactForm" class="space-y-8" autocomplete="off">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <label class="block text-sm mb-2">First Name*</label>
-          <input name="firstName" class="input-line" placeholder="First name" required>
-        </div>
-        <div>
-          <label class="block text-sm mb-2">Last Name*</label>
-          <input name="lastName" class="input-line" placeholder="Last name" required>
-        </div>
-        <div>
-          <label class="block text-sm mb-2">Email*</label>
-          <input type="email" name="email" class="input-line" placeholder="you@example.com" required>
-        </div>
-        <div>
-          <label class="block text-sm mb-2">Company</label>
-          <input name="company" class="input-line" placeholder="Company (optional)">
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-sm mb-2">Subject</label>
-        <input name="subject" class="input-line" placeholder="Subject">
-      </div>
-
-      <div>
-        <label class="block text-sm mb-2">Message</label>
-        <textarea name="message" class="textarea-line" placeholder="Write your message here..." required></textarea>
-      </div>
-
-      <div class="flex justify-center">
-        <button type="submit" class="btn-yellow">Send Message</button>
-      </div>
-
-      <div id="formStatus" class="text-center text-sm mt-2" aria-live="polite" style="color:#fff;"></div>
-    </form>
-  </div>
-</div>
-
-    </main>
-
-    <!-- Footer (same look as home) -->
-    <footer class="py-12">
-      <div class="container mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="mb-6 md:mb-0">
-            <div class="flex items-center space-x-2">
-              <span class="font-plunct text-xl font-bold">:] vaLe.</span>
-            </div>
-            <p class="text-white-400 mt-2">© 2025 All Rights Reserved</p>
-          </div>
-          <div class="flex space-x-6">
-            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i data-feather="twitter" class="text-yellow-400 hover:text-yellow-400 transition-colors"></i></a>
-            <a href="https://instagram.com/vale.tones" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i data-feather="instagram" class="text-yellow-400 hover:text-yellow-400 transition-colors"></i></a>
-            <a href="https://open.spotify.com/artist/5dQMITMypQMYoXxIU2NSmY?si=weiFPRCqQ2yiph_DnjAzwg" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><i data-feather="headphones" class="text-yellow-400 hover:text-yellow-400 transition-colors"></i></a>
-            <a href="https://music.apple.com/us/artist/kognac/1651538178" target="_blank" rel="noopener noreferrer" aria-label="Apple"> <i data-feather="music" class="text-yellow-400 hover:text-yellow-400 transition-colors"></i></a>
-            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Youtube"> <i data-feather="youtube" class="text-yellow-400 hover:text-yellow-400 transition-colors"></i></a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </div>
-
+  <!-- ========== CONFIG: edit these for each category page ========== -->
   <script>
-    // icons
+    const CATEGORY_NAME = 'Contact';
+    const CATEGORY_SLUG = 'Contact';
+    const CATEGORY_TAGLINE = 'Get in touch with Grin & Glisten.';
+    const BANNER_URL = '/images/contact-banner.jpg';
+
+    /* ====== FORMSPREE ENDPOINT: used by the contact form submit ====== */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzjjdbv';
+  </script>
+
+  <!-- NAV (from All Products UX) -->
+  <nav class="bg-white text-black shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6 min-w-0">
+        <!-- Mobile hamburger (visible < md) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
+        </button>
+
+        <a href="/Home/" class="flex items-center">
+          <span class="monument text-2xl" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </a>
+
+        <div class="hidden md:flex space-x-8">
+          <div class="group" id="all-products-group">
+            <!-- trigger -->
+            <button class="menu-trigger monument text-black" aria-expanded="false" aria-haspopup="true" id="allProductsTrigger">
+              <span class="menu-label">All Products</span>
+              <i data-feather="chevron-down" class="w-4 h-4"></i>
+            </button>
+
+            <!-- dropdown menu (white backing, auto width) -->
+            <div class="dropdown-menu rounded-md" role="menu" aria-hidden="true" id="allProductsMenu">
+              <div class="grid grid-cols-1 gap-0">
+                <a href="/AllProducts/" class="monument">All Products</a>
+                <div style="height:1px;background:#eee;margin:4px 0;"></div>
+                <a href="/Grillz/" class="monument">Grillz</a>
+                <a href="/NailJewelry/" class="monument">Nail Jewelry</a>
+                <a href="/Earrings/" class="monument">Earrings</a>
+                <!-- Veerwear and aL vaLe intentionally removed from the desktop All Products dropdown -->
+              </div>
+            </div>
+          </div>
+
+          <a href="/HowToOrder/" class="monument hover:text-amber-600 text-black">How to Order</a>
+          <a href="/ImpressionKit/" class="monument hover:text-amber-600 text-black">Impression Kit</a>
+          <a href="/Gallery/" class="monument hover:text-amber-600 text-black">Gallery</a>
+          <a href="/contact/" class="monument hover:text-amber-600 text-black">Contact Us</a>
+
+        </div>
+      </div>
+
+      <!-- header icons: search, heart, cart -->
+      <div class="header-actions">
+        <div class="search-wrap" id="desktopSearchWrap" aria-hidden="false">
+          <form id="headerSearchForm" class="search-form" role="search" action="/search.html" method="get">
+            <input id="headerSearchInput" name="q" type="search" class="search-input" placeholder="Search products..." aria-label="Search products">
+            <button id="headerSearchBtn" type="submit" class="search-btn" aria-label="Search">
+              <i data-feather="search" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="/favorites.html" class="text-black flex items-center justify-center" id="headerFavorites" aria-label="Favorites">
+          <i data-feather="heart" class="w-5 h-5"></i>
+        </a>
+
+        <a href="#" id="headerCartToggle" class="relative snipcart-checkout text-black nav-btn" aria-label="Cart">
+          <i data-feather="shopping-bag" class="w-5 h-5"></i>
+          <span class="absolute -top-2 -right-2 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center bag-count">
+            <span class="snipcart-items-count">0</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- mobile nav (from All Products UX) -->
+    <div id="mobileNav" class="md:hidden" style="display:none;">
+      <div class="flex items-center justify-between mb-4 px-4">
+        <div class="flex items-center gap-3">
+          <img src="/images/vale-logo-removebg-preview.png" alt="vaLe" class="w-8 h-8 object-contain">
+          <span class="monument text-lg" style="font-weight:900; color:var(--black);">Grin & Glisten</span>
+        </div>
+        <button id="mobileCloseBtn" class="p-2" title="Close menu"><i data-feather="x"></i></button>
+      </div>
+
+      <!-- Mobile search area -->
+      <div id="mobileSearchBar" aria-hidden="true">
+        <form id="mobileSearchForm" action="/search.html" method="get" role="search">
+          <input id="mobileSearchInput" name="q" type="search" placeholder="Search products..." aria-label="Search products">
+          <button type="submit" class="bg-amber-600 text-black px-3 py-2 rounded monument">Search</button>
+        </form>
+      </div>
+
+      <div class="space-y-3 monument px-4">
+        <a href="/Home/" class="block py-2 border-b">HOME</a>
+        <div class="pt-2 pb-2 border-b">
+          <div class="font-medium mb-2">All Products</div>
+          <a href="/Grillz/" class="block py-1">Grillz</a>
+          <a href="/NailJewelry/" class="block py-1">Nail Jewelry</a>
+          <a href="/Earrings/" class="block py-1">Earrings</a>
+          <!-- VEERWEAR and aL vaLe removed from the mobile All Products list -->
+        </div>
+
+        <a href="/HowToOrder/" class="block py-2 border-b">How to Order</a>
+        <a href="/ImpressionKit/" class="block py-2 border-b">Impression Kit</a>
+        <a href="/Gallery/" class="block py-2 border-b">Gallery</a>
+        <a href="/contact/" class="block py-2 border-b">Contact Us</a>
+
+        <!-- mobile favorites link -->
+        <a href="/favorites.html" class="block py-2 border-b">Favorites</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO (contact) -->
+  <section id="categoryHero" class="shop-hero text-white" style="background-image:url('/images/contact-banner.jpg');">
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="container mx-auto px-6 hero-inner">
+      <div class="shop-banner">
+        <div>
+          <h1 id="categoryTitle" class="monument text-4xl md:text-5xl mb-3" style="font-weight:900;">Contact Us</h1>
+          <div class="flex items-center text-gray-200 text-sm monument">
+            <a href="/Home/" class="hover:text-white text-gray-200">Home</a>
+            <i data-feather="chevron-right" class="mx-2 w-4 h-4"></i>
+            <span id="categoryBreadcrumb">Contact</span>
+          </div>
+          <p id="categoryTagline" class="mt-4 text-base opacity-90">Questions, orders, or custom requests — hit us up.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / PRODUCT DETAIL CONTENT (your original contact content preserved) -->
+  <section class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col lg:flex-row gap-10">
+        <!-- Left: gallery / image or map -->
+        <div class="lg:w-1/2">
+          <div class="bg-white p-6 rounded-lg text-center product-card">
+            <img src="/images/contact-storefront.jpg" alt="Grin & Glisten Storefront" class="main-image mx-auto">
+            <p class="minor mt-4">Visit our shop in London or message us — we reply within 48 hours.</p>
+          </div>
+        </div>
+
+        <!-- Right: contact form -->
+        <div class="lg:w-1/2">
+          <div class="bg-white p-6 rounded-lg product-card">
+            <h2 class="monument text-2xl mb-4">Get in touch</h2>
+            <form id="contactForm">
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Name</label>
+                <input type="text" id="contactName" required class="w-full border rounded p-2" />
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Email</label>
+                <input type="email" id="contactEmail" required class="w-full border rounded p-2" />
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm mb-2">Message</label>
+                <textarea id="contactMessage" rows="6" class="w-full border rounded p-2"></textarea>
+              </div>
+              <div class="flex gap-3 items-center">
+                <button type="submit" class="bg-amber-600 text-black py-2 px-4 rounded monument">Send Message</button>
+                <button type="button" id="contactPhoneBtn" class="bg-white border py-2 px-4 rounded monument">Call Us</button>
+              </div>
+              <p id="contactStatus" class="minor mt-3" aria-live="polite" style="display:none;"></p>
+            </form>
+
+            <div class="specs mt-6">
+              <h4 class="monument text-base mt-6 mb-2">Shop details</h4>
+              <ul>
+                <li>Address: 123 Shoreditch Lane, London</li>
+                <li>Hours: Tue–Sat 11:00–19:00</li>
+                <li>Email: hello@grinandglisten.com</li>
+                <li>Phone: +44 20 0000 0000</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (from All Products) -->
+  <footer class="py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="monument text-xl mb-4" style="font-weight:900;">Grin & Glisten</h3>
+          <p class="mb-4">Custom grillz and street jewelry crafted with precision and attitude.</p>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Shop</h4>
+          <ul class="space-y-2">
+            <li><a href="/AllProducts/" class="text-sm">All Products</a></li>
+            <li><a href="/Grillz/" class="text-sm">Grillz</a></li>
+            <li><a href="/NailJewelry/" class="text-sm">Nail Jewelry</a></li>
+            <li><a href="/Earrings/" class="text-sm">Earrings</a></li>
+            <li><a href="/VEERWEAR/" class="veerwear text-sm">Veerwear</a></li>
+            <li><a href="/aLvaLemerCh/" class="plunct text-sm">aL vaLe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="/HowToOrder/" class="text-sm">How to Order</a></li>
+            <li><a href="/ImpressionKit/" class="text-sm">Impression Kit</a></li>
+            <li><a href="/contact/" class="text-sm">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="monument font-medium mb-4">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="/TermsandConditions/" class="text-sm">Terms & Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t mt-12 pt-8 text-center text-sm" style="border-color:#111;">
+        <p>© 2025 Grin & Glisten. All rights reserved. <span class="plunct">aL vaLe</span> music subsidiary.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Snipcart root (replace YOUR_SNIPCART_API_KEY) -->
+  <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
+
+  <!-- UX Scripts (header/footer/search/dropdown behavior copied from All Products) -->
+  <script>
     feather.replace();
 
-    // ---------- Header + logo resize logic (same as home) ----------
-    const logo = document.getElementById('valeLogo');
-    const brandText = document.getElementById('brandText');
-    const header = document.getElementById('siteHeader');
-    const menuBtn = document.getElementById('menuBtn');
+    // Mobile nav toggle
+    const mobileBtn = document.getElementById('mobileMenuBtn');
     const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileCloseBtn');
+    mobileBtn?.addEventListener('click', ()=> {
+      mobileNav.style.display='block';
+      document.body.classList.remove('mobile-search-open');
+    });
+    mobileClose?.addEventListener('click', ()=> {
+      mobileNav.style.display='none';
+      const mIn = document.getElementById('mobileSearchInput');
+      if(mIn) mIn.value = '';
+      document.body.classList.remove('mobile-search-open');
+    });
 
-    let naturalLogoHeight = null;
+    // Dropdown positioning & behavior (re-used from All Products)
+    function positionAndBindDropdowns(){
+      document.querySelectorAll('.group').forEach(group=>{
+        if(group.dataset.dropdownBound === "true") return;
+        const label = group.querySelector('.menu-label');
+        const menu = group.querySelector('.dropdown-menu');
+        const trigger = group.querySelector('.menu-trigger');
 
-    function recordNaturalHeight() {
-      if (!logo) return;
-      logo.style.height = '';
-      const rect = logo.getBoundingClientRect();
-      naturalLogoHeight = rect.height || 64;
-      logo.style.height = naturalLogoHeight + 'px';
-    }
+        if(!menu || !label || !trigger) return;
 
-    function shrinkLogoToText() {
-      if (!logo || !brandText) return;
-      const targetHeight = brandText.getBoundingClientRect().height;
-      const minHeight = Math.min(28, targetHeight);
-      logo.style.height = Math.max(targetHeight, minHeight) + 'px';
-      logo.style.transform = 'translateY(0)';
-    }
-
-    function restoreLogo() {
-      if (!logo || !naturalLogoHeight) return;
-      logo.style.height = naturalLogoHeight + 'px';
-      logo.style.transform = '';
-    }
-
-    let scrollThreshold = 60;
-    function onScroll() {
-      if (window.scrollY > scrollThreshold) {
-        if (!header.classList.contains('scrolled')) {
-          header.classList.add('scrolled');
-          shrinkLogoToText();
+        if (!menu.dataset.moved) {
+          document.body.appendChild(menu);
+          menu.dataset.moved = "true";
+          menu.style.position = 'fixed';
+          menu.style.willChange = 'top, left, width';
+          menu.style.zIndex = 9999;
         }
-      } else {
-        if (header.classList.contains('scrolled')) {
-          header.classList.remove('scrolled');
-          restoreLogo();
+
+        function positionMenu(){
+          menu.style.display = 'block';
+          menu.style.visibility = 'hidden';
+          menu.style.left = '-9999px';
+          menu.style.top = '-9999px';
+          menu.style.width = 'auto';
+          menu.style.whiteSpace = 'nowrap';
+
+          let maxItemWidth = 0;
+          menu.querySelectorAll('a').forEach(a=>{
+            const w = a.scrollWidth;
+            if(w > maxItemWidth) maxItemWidth = w;
+          });
+
+          const cs = getComputedStyle(menu);
+          const padLeft = parseFloat(cs.paddingLeft) || 10;
+          const padRight = parseFloat(cs.paddingRight) || 10;
+          const extraBuffer = 16;
+          const finalWidth = Math.ceil(maxItemWidth + padLeft + padRight + extraBuffer);
+          menu.style.width = finalWidth + 'px';
+
+          const labelRect = label.getBoundingClientRect();
+          const triggerRect = trigger.getBoundingClientRect();
+          const left = Math.round(labelRect.left - padLeft);
+          const top = Math.round(triggerRect.bottom + 8);
+          const clampedLeft = Math.max(8, left);
+          menu.style.left = clampedLeft + 'px';
+          menu.style.top = top + 'px';
+
+          menu.style.visibility = '';
+          menu.style.display = group.classList.contains('open') ? 'block' : 'none';
         }
+
+        let leaveTimer = null;
+        const openMenu = ()=> {
+          clearTimeout(leaveTimer);
+          group.classList.add('open');
+          menu.classList.add('open');
+          menu.style.display = 'block';
+          trigger.setAttribute('aria-expanded','true');
+          menu.setAttribute('aria-hidden','false');
+          positionMenu();
+        };
+        const closeMenu = ()=> {
+          clearTimeout(leaveTimer);
+          leaveTimer = setTimeout(()=> {
+            group.classList.remove('open');
+            menu.classList.remove('open');
+            menu.style.display = 'none';
+            trigger.setAttribute('aria-expanded','false');
+            menu.setAttribute('aria-hidden','true');
+          }, 120);
+        };
+
+        group.addEventListener('pointerenter', openMenu);
+        group.addEventListener('pointerleave', closeMenu);
+        menu.addEventListener('pointerenter', openMenu);
+        menu.addEventListener('pointerleave', closeMenu);
+
+        trigger.addEventListener('focus', openMenu);
+        trigger.addEventListener('blur', ()=>{
+          leaveTimer = setTimeout(()=> {
+            const active = document.activeElement;
+            if(menu.contains(active)) return;
+            closeMenu();
+          }, 120);
+        });
+
+        trigger.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          if(group.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        const outsideHandler = (ev) => {
+          if (!trigger.contains(ev.target) && !menu.contains(ev.target)) {
+            closeMenu();
+          }
+        };
+        document.addEventListener('click', outsideHandler);
+
+        const repositionOnResize = () => { if (group.classList.contains('open')) positionMenu(); };
+        window.addEventListener('resize', repositionOnResize);
+        window.addEventListener('scroll', repositionOnResize, { passive: true });
+
+        document.addEventListener('keydown', (ev)=> {
+          if(ev.key === 'Escape') closeMenu();
+        });
+
+        group.dataset.dropdownBound = "true";
+      });
+    }
+
+    // Init UI behavior
+    document.addEventListener('DOMContentLoaded', ()=>{
+      try {
+        positionAndBindDropdowns();
+        initHeaderSearch();
+        initMobileSearch();
+        initContactForm();
+      } catch (err) {
+        console.error('Error initializing Contact page UX:', err);
+      }
+    });
+
+    // Header search (same behavior as All Products)
+    function initHeaderSearch(){
+      const wrap = document.getElementById('desktopSearchWrap');
+      const form = document.getElementById('headerSearchForm');
+      const input = document.getElementById('headerSearchInput');
+      const btn = document.getElementById('headerSearchBtn');
+      if(!wrap || !form || !input || !btn) return;
+      function isMobile() { return window.matchMedia('(max-width:767px)').matches; }
+      btn.addEventListener('click', (ev) => {
+        if (isMobile()) {
+          openMobileSearchAndFocus();
+          ev.preventDefault();
+          return;
+        }
+        const isOpen = wrap.classList.contains('open');
+        if(!isOpen) {
+          ev.preventDefault();
+          wrap.classList.add('open');
+          setTimeout(()=> input.focus(), 80);
+          return;
+        }
+      });
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const q = (input.value || '').trim();
+        if(!q) {
+          wrap.classList.remove('open');
+          input.value = '';
+          return;
+        }
+        wrap.classList.remove('open');
+        const valueToSend = q;
+        input.value = '';
+        setTimeout(()=> {
+          window.location.href = '/search.html?q=' + encodeURIComponent(valueToSend);
+        }, 40);
+      });
+      document.addEventListener('click', (ev) => {
+        if(!wrap.contains(ev.target)) {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+      document.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Escape') {
+          wrap.classList.remove('open');
+          input.value = '';
+        }
+      });
+    }
+
+    // Mobile search: show mobile nav and focus the mobile input.
+    function initMobileSearch(){
+      const mobileForm = document.getElementById('mobileSearchForm');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if(mobileForm){
+        mobileForm.addEventListener('submit', (ev)=>{
+          ev.preventDefault();
+          const q = (mobileInput.value || '').trim();
+          if(!q) return;
+          mobileNav.style.display = 'none';
+          document.body.classList.remove('mobile-search-open');
+          mobileInput.value = '';
+          setTimeout(()=> {
+            window.location.href = '/search.html?q=' + encodeURIComponent(q);
+          }, 60);
+        });
       }
     }
 
-    // mobile menu toggle (keeps same behavior)
-    function toggleMobileMenu(forceState) {
-      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
-      const willExpand = typeof forceState === 'boolean' ? forceState : !expanded;
-      menuBtn.setAttribute('aria-expanded', String(!!willExpand));
-      if (willExpand) {
-        mobileNav.classList.remove('hidden');
-        mobileNav.style.maxHeight = '400px';
-        mobileNav.style.opacity = '1';
-      } else {
-        mobileNav.style.maxHeight = '0';
-        mobileNav.style.opacity = '0';
-        setTimeout(() => mobileNav.classList.add('hidden'), 280);
+    function openMobileSearchAndFocus(){
+      const mobileSearchBar = document.getElementById('mobileSearchBar');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if(mobileNav.style.display === 'none' || mobileNav.style.display === '') {
+        mobileNav.style.display = 'block';
       }
-      feather.replace();
+      document.body.classList.add('mobile-search-open');
+      setTimeout(()=> {
+        if(mobileInput) mobileInput.focus();
+      }, 60);
     }
 
-    // close menu on outside click (mobile)
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth >= 768) return;
-      if (!menuBtn.contains(e.target) && !mobileNav.contains(e.target) && menuBtn.getAttribute('aria-expanded') === 'true') {
-        toggleMobileMenu(false);
-      }
-    });
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', () => {
-      recordNaturalHeight();
-      if (header.classList.contains('scrolled')) shrinkLogoToText();
-      else restoreLogo();
-    });
-    window.addEventListener('orientationchange', () => { recordNaturalHeight(); });
-
-    menuBtn?.addEventListener('click', (e) => { e.stopPropagation(); toggleMobileMenu(); });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      feather.replace();
-      recordNaturalHeight();
-      onScroll();
-    });
-
-    // ------------ Form handling (Formspree) --------------
-    // Set your Formspree endpoint here (keeps your original endpoint)
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzzjjdbv';
-
-    document.addEventListener('DOMContentLoaded', () => {
+    // REAL contact form submit — posts to Formspree endpoint as FormData
+    function initContactForm(){
       const form = document.getElementById('contactForm');
-      const statusDiv = document.getElementById('formStatus');
-      const submitBtn = form.querySelector('button[type="submit"]');
+      const status = document.getElementById('contactStatus');
+      const phoneBtn = document.getElementById('contactPhoneBtn');
 
-      if (!form) return;
+      if(phoneBtn){
+        phoneBtn.addEventListener('click', ()=> {
+          window.location.href = 'tel:+442000000000';
+        });
+      }
+      if(!form) return;
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Basic client-side validation (HTML required attributes already present)
-        const fd = new FormData(form);
-        // Optional: add a subject line for Formspree summary
-        if (!fd.get('subject') || fd.get('subject').toString().trim() === '') {
-          fd.set('subject', 'Contact form submission');
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+
+        if(!name || !email || !message){
+          if(status){ status.style.display = ''; status.textContent = 'Please fill all fields.'; }
+          return;
         }
 
-        // UX: disable submit while sending
-        submitBtn.disabled = true;
-        submitBtn.setAttribute('aria-busy', 'true');
-        statusDiv.style.color = '#fff';
-        statusDiv.textContent = 'Sending…';
+        if(status){ status.style.display = ''; status.textContent = 'Sending message...'; }
 
         try {
-          const res = await fetch(FORMSPREE_ENDPOINT, {
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('email', email);
+          formData.append('message', message);
+
+          const resp = await fetch(FORMSPREE_ENDPOINT, {
             method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: fd
+            body: formData,
+            headers: { 'Accept': 'application/json' }
           });
 
-          if (res.ok) {
-            statusDiv.style.color = '#9ee89a';
-            statusDiv.textContent = 'Thanks! Your message has been sent.';
+          if (resp.ok) {
+            // success
+            if(status){ status.textContent = 'Thanks — message sent. We will respond within 48 hours.'; }
             form.reset();
           } else {
-            // attempt to parse Formspree error message
-            let msg = 'There was an error sending your message. Please try again or email directly.';
+            // try to extract error
+            let errText = 'Send failed. Try again later.';
             try {
-              const data = await res.json();
-              if (data && data.error) msg = data.error;
-              else if (data && data.errors && data.errors.length) msg = data.errors.map(x => x.message || x).join(', ');
-            } catch (parseErr) {
-              // ignore parse error
-            }
-            statusDiv.style.color = '#f7b2b2';
-            statusDiv.textContent = msg;
-            console.error('Formspree response error', res.status, res.statusText);
+              const j = await resp.json();
+              if (j && j.error) errText = j.error;
+            } catch (_) {}
+            if(status){ status.textContent = errText; }
+            console.error('Formspree error', resp.status, resp.statusText);
           }
         } catch (err) {
-          statusDiv.style.color = '#f7b2b2';
-          statusDiv.textContent = 'Network error. Try again or email directly.';
+          if(status){ status.textContent = 'Network error — message not sent.'; }
           console.error('Network error sending form', err);
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.removeAttribute('aria-busy');
         }
       });
+    }
+
+    // Cart toggle behaviour (keeps parity with site)
+    const headerCartToggle = document.getElementById('headerCartToggle');
+    let cartOpen = false;
+    document.addEventListener('snipcart.ready', ()=>{ cartOpen = false; });
+    document.addEventListener('snipcart.opened', ()=>{ cartOpen = true; });
+    document.addEventListener('snipcart.closed', ()=>{ cartOpen = false; });
+
+    headerCartToggle?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      headerCartToggle.classList.add('clicked');
+      setTimeout(()=> headerCartToggle.classList.remove('clicked'), 140);
+
+      if(window.Snipcart && window.Snipcart.api && window.Snipcart.api.modal){
+        if(cartOpen) window.Snipcart.api.modal.close();
+        else window.Snipcart.api.modal.open();
+      } else {
+        const anchor = document.querySelector('a.snipcart-checkout');
+        if(anchor){ anchor.click(); } else { console.warn('Snipcart not initialized yet.'); }
+      }
     });
+
   </script>
 </body>
 </html>
